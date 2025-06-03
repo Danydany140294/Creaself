@@ -25,9 +25,12 @@ class UserFixtures extends Fixture
             $user = new User();
             $user->setEmail($faker->email);
             $user->setNom($faker->lastName);
-            $user->setPrénom($faker->firstName);
-            $user->setTéléphone($faker->numerify('06########'));
+            $user->setPrenom($faker->firstName);
+            $user->setTelephone($faker->numerify('06########'));
             $user->setRoles(['ROLE_USER']); // rôle utilisateur standard
+
+            // Date de création aléatoire convertie en DateTimeImmutable
+           
 
             // Mot de passe "test1234" encodé
             $user->setPassword(
@@ -41,13 +44,16 @@ class UserFixtures extends Fixture
         $admin = new User();
         $admin->setEmail('admin@creaself.com');
         $admin->setNom('Admin');
-        $admin->setPrénom('Super');
-        $admin->setTéléphone('0601010101');
+        $admin->setPrenom('Super');
+        $admin->setTelephone('0601010101');
         $admin->setRoles(['ROLE_ADMIN']); // rôle admin
+
+        // Date de création = maintenant (immutable)
+      
+
         $admin->setPassword(
             $this->passwordHasher->hashPassword($admin, 'admin1234')
         );
-        
 
         $manager->persist($admin);
 

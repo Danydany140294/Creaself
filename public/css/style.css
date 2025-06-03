@@ -8,3 +8,10 @@ body {
   padding: 200px;
   border: 9px solid #ddff1d;
 }
+
+/* dashboard config  */
+
+.card-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
