@@ -1,0 +1,173 @@
+/* Empêche l'affichage du curseur natif, on utilise un curseur personnalisé */
+html {
+  cursor: none;
+}
+
+/* Conteneur global du curseur personnalisé */
+#cursor {
+  position: fixed;           /* Toujours visible à l'écran */
+  top: 0;
+  left: 0;
+  pointer-events: none;      /* Le curseur ne bloque pas les clics */
+  z-index: 9999;             /* Toujours au-dessus des autres éléments */
+  mix-blend-mode: difference; /* Effet visuel du curseur selon le fond */
+}
+
+/* Chaque cercle du curseur */
+.ring {
+  position: fixed;           /* Suit la souris */
+  transform: translate(-50%, -50%); /* Centre les cercles sur la position souris */
+  border-radius: 50%;        /* Cercles parfaits */
+}
+
+/* Cercle extérieur (plus grand) du curseur */
+.ring--outer {
+  width: 40px;               /* Largeur du cercle extérieur */
+  height: 40px;              /* Hauteur du cercle extérieur */
+  border: 2px solid white;   /* Couleur et épaisseur de la bordure */
+  transition: transform 0.15s ease-out; /* Transition fluide lors des transformations */
+}
+
+/* Cercle intérieur (plus petit) du curseur */
+.ring--inner {
+  width: 8px;                /* Largeur du cercle intérieur */
+  height: 8px;               /* Hauteur du cercle intérieur */
+  background-color: white;   /* Couleur de remplissage du cercle intérieur */
+}
+
+/* === Animation d'apparition au scroll === */
+
+/* État initial des éléments à animer */
+[data-animate] {
+  opacity: 0;                /* Transparent au départ */
+  transform: translateY(-30px); /* Décalage vers le haut */
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Animation fluide */
+}
+
+/* Classe ajoutée quand l'élément est visible (intersection) */
+.animate-slide-down {
+  opacity: 1;                /* Rendu visible */
+  transform: translateY(0);  /* Position normale */
+}
+
+/* === Style général du body === */
+body {
+  margin: 0;                 /* Supprime marges par défaut */
+  padding: 0;                /* Supprime padding par défaut */
+  font-family: sans-serif;   /* Police globale */
+}
+
+/* === Header sticky en haut de page === */
+header {
+  position: sticky;          /* Reste visible en haut */
+  top: 0;
+  left: 0;
+  z-index: 1;                /* Devant le contenu normal mais derrière le curseur */
+  padding: 1.5rem;           /* Espacement intérieur */
+}
+
+/* === Navigation === */
+nav {
+  width: 100%;               /* Prend toute la largeur */
+  background-color: rgba(76, 76, 76, 0.36); /* Fond semi-transparent gris */
+  color: black;              /* Couleur du texte (peut être modifiée) */
+  padding: 10px 0;           /* Padding vertical */
+  text-align: center;        /* Centrage du texte */
+  display: flex;             /* Flexbox pour centrer les éléments */
+  justify-content: center;   /* Centre horizontalement les éléments */
+  border-radius: 5rem;       /* Bords arrondis très arrondis */
+  backdrop-filter: blur(4px); /* Flou de l'arrière-plan sous le nav */
+}
+
+/* Liste horizontale des liens */
+nav ul {
+  list-style: none;          /* Supprime les puces */
+  display: flex;             /* Aligne les <li> en ligne */
+  justify-content: space-between; /* Espace égal entre les éléments */
+  width: 80%;                /* Largeur fixe relative */
+  padding: 0;                /* Pas de padding */
+  margin: 0;                 /* Pas de marge */
+}
+
+/* Style des éléments de la liste */
+nav ul li {
+  font-weight: bold;         /* Texte en gras */
+}
+
+/* Style des liens */
+a {
+  text-decoration: none;     /* Supprime le soulignement */
+  color: var(--text);        /* Couleur des liens, modifiable via la variable CSS */
+  font-size: 1.1rem;         /* Taille du texte */
+  padding: 0.5rem 1rem;      /* Espacement interne du lien */
+  transition: color 0.3s ease; /* Transition douce sur le changement de couleur */
+}
+
+/* Couleur au survol, modifiable */
+a:hover {
+  color: #00ff95;
+}
+
+/* === Sections pleine hauteur === */
+section {
+  height: 100vh;             /* Hauteur égale à la hauteur de la fenêtre */
+  display: flex;             /* Flexbox */
+  justify-content: center;   /* Centre horizontalement */
+  align-items: center;       /* Centre verticalement */
+}
+
+/* Titres principaux (h2) */
+h2 {
+  transition: font-size 300ms ease-out; /* Animation douce de la taille */
+  font-size: 20vw;           /* Taille responsive basée sur la largeur viewport */
+  color: #fff;               /* Couleur blanche (sera masquée par le dégradé) */
+  
+  /* Dégradé texte */
+  background: linear-gradient(45deg, #09009f, #00ff95 80%);
+  background-clip: text;           /* Propriété standard pour clip le fond sur le texte */
+  -webkit-background-clip: text;  /* Préfixe Safari/Chrome */
+  -webkit-text-fill-color: transparent; /* Rend le texte transparent pour voir le dégradé */
+  
+  /* Effet de reflet sous le texte */
+  -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4));
+  
+  text-align: center;        /* Centre le texte */
+}
+
+/* Taille fixe sur grand écran */
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 16.5rem;
+  }
+}
+
+/* === Sections spécifiques (changer images ou couleurs ici) === */
+#press {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0idmlzdWFsIiB2aWV3Qm94PSIwIDAgOTAwIDYwMCIgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIHZlcnNpb249IjEuMSI+PHBhdGggZD0iTTAgNDc4TDIxLjUgNDcxLjhDNDMgNDY1LjcgODYgNDUzLjMgMTI4LjggNDQxLjVDMTcxLjcgNDI5LjcgMjE0LjMgNDE4LjMgMjU3LjIgNDIxLjJDMzAwIDQyNCAzNDMgNDQxIDM4NS44IDQ1MS41QzQyOC43IDQ2MiA0NzEuMyA0NjYgNTE0LjIgNDY3LjNDNTU3IDQ2OC43IDYwMCA0NjcuMyA2NDIuOCA0NjUuNUM2ODUuNyA0NjMuNyA3MjguMyA0NjEuMyA3NzEuMiA0NTMuN0M4MTQgNDQ2IDg1NyA0MzMgODc4LjUgNDI2LjVMOTAwIDQyMEw5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2ZhNzI2OCIvPjxwYXRoIGQ9Ik0wIDUxNEwyMS41IDUxMC4yQzQzIDUwNi4zIDg2IDQ5OC43IDEyOC44IDQ5OUMxNzEuNyA0OTkuMyAyMTQuMyA1MDcuNyAyNTcuMiA1MDNDMzAwIDQ5OC4zIDM0MyA0ODAuNyAzODUuOCA0ODMuMkM0MjguNyA0ODUuNyA0NzEuMyA1MDguMyA1MTQuMiA1MTdDNTU3IDUyNS43IDYwMCA1MjAuMyA2NDIuOCA1MDguMkM2ODUuNyA0OTYgNzI4LjMgNDc3IDc3MS4yIDQ2OC4zQzgxNCA0NTkuNyA4NTcgNDYxLjMgODc4LjUgNDYyLjJMOTAwIDQ2M0w5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2UzNGM2NyIvPjxwYXRoIGQ9Ik0wIDU2MkwyMS41IDU1Ni43QzQzIDU1MS4zIDg2IDU0MC43IDEyOC44IDUzNC4yQzE3MS43IDUyNy43IDIxNC4zIDUyNS4zIDI1Ny4yIDUyNC4zQzMwMCA1MjMuMyAzNDMgNTIzLjcgMzg1LjggNTMwLjdDNDI4LjcgNTM3LjcgNDcxLjMgNTUxLjMgNTE0LjIgNTU2LjJDNTU3IDU2MSA2MDAgNTU3IDY0Mi44IDU1My4zQzY4NS43IDU0OS43IDcyOC4zIDU0Ni4zIDc3MS4yIDU0OC43QzgxNCA1NTEgODU3IDU1OSA4NzguNSA1NjNMOTAwIDU2N0w5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2M2MjM2OCIvPjwvc3ZnPg==");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+#shop {
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0idmlzdWFsIiB2aWV3Qm94PSIwIDAgOTAwIDYwMCIgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIHZlcnNpb249IjEuMSI+PHBhdGggZD0iTTAgNDc4TDIxLjUgNDcxLjhDNDMgNDY1LjcgODYgNDUzLjMgMTI4LjggNDQxLjVDMTcxLjcgNDI5LjcgMjE0LjMgNDE4LjMgMjU3LjIgNDIxLjJDMzAwIDQyNCAzNDMgNDQxIDM4NS44IDQ1MS41QzQyOC43IDQ2MiA0NzEuMyA0NjYgNTE0LjIgNDY3LjNDNTU3IDQ2OC43IDYwMCA0NjcuMyA2NDIuOCA0NjUuNUM2ODUuNyA0NjMuNyA3MjguMyA0NjEuMyA3NzEuMiA0NTMuN0M4MTQgNDQ2IDg1NyA0MzMgODc4LjUgNDI2LjVMOTAwIDQyMEw5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2ZhNzI2OCIvPjxwYXRoIGQ9Ik0wIDUxNEwyMS41IDUxMC4yQzQzIDUwNi4zIDg2IDQ5OC43IDEyOC44IDQ5OUMxNzEuNyA0OTkuMyAyMTQuMyA1MDcuNyAyNTcuMiA1MDNDMzAwIDQ5OC4zIDM0MyA0ODAuNyAzODUuOCA0ODMuMkM0MjguNyA0ODUuNyA0NzEuMyA1MDguMyA1MTQuMiA1MTdDNTU3IDUyNS43IDYwMCA1MjAuMyA2NDIuOCA1MDguMkM2ODUuNyA0OTYgNzI4LjMgNDc3IDc3MS4yIDQ2OC4zQzgxNCA0NTkuNyA4NTcgNDYxLjMgODc4LjUgNDYyLjJMOTAwIDQ2M0w5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2UzNGM2NyIvPjxwYXRoIGQ9Ik0wIDU2MkwyMS41IDU1Ni43QzQzIDU1MS4zIDg2IDU0MC43IDEyOC44IDUzNC4yQzE3MS43IDUyNy43IDIxNC4zIDUyNS4zIDI1Ny4yIDUyNC4zQzMwMCA1MjMuMyAzNDMgNTIzLjcgMzg1LjggNTMwLjdDNDI4LjcgNTM3LjcgNDcxLjMgNTUxLjMgNTE0LjIgNTU2LjJDNTU3IDU2MSA2MDAgNTU3IDY0Mi44IDU1My4zQzY4NS43IDU0OS43IDcyOC4zIDU0Ni4zIDc3MS4yIDU0OC43QzgxNCA1NTEgODU3IDU1OSA4NzguNSA1NjNMOTAwIDU2N0w5MDAgNjAxTDg3OC41IDYwMUM4NTcgNjAxIDgxNCA2MDEgNzcxLjIgNjAxQzcyOC4zIDYwMSA2ODUuNyA2MDEgNjQyLjggNjAxQzYwMCA2MDEgNTU3IDYwMSA1MTQuMiA2MDFDNDcxLjMgNjAxIDQyOC43IDYwMSAzODUuOCA2MDFDMzQzIDYwMSAzMDAgNjAxIDI1Ny4yIDYwMUMyMTQuMyA2MDEgMTcxLjcgNjAxIDEyOC44IDYwMUM4NiA2MDEgNDMgNjAxIDIxLjUgNjAxTDAgNjAxWiIgZmlsbD0iI2M2MjM2OCIvPjwvc3ZnPg==");
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #c61266; /* couleur de fond en cas de non chargement de l'image */
+}
+
+/* Style spécifique pour le h2 dans #shop */
+#shop h2 {
+  background: linear-gradient(0deg, rgba(249,113,9,1) 0%, rgba(236,155,33,1) 35%, rgba(255,185,19,1) 100%);
+  background-clip: text;           /* propriété standard */
+  -webkit-background-clip: text;  /* préfixe Safari */
+  -webkit-text-fill-color: transparent;
+}
+#about {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBpZD0idmlzdWFsIiB2aWV3Qm94PSIwIDAgOTAwIDYwMCIgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2MDAiIHZlcnNpb249IjEuMSI+PHBhdGggZD0iTTAgMTMwTDIxLjUgMTQwLjNDNDMgMTUwLjcgODYgMTcxLjMgMTI4LjggMTc4QzE3MS43IDE4NC43IDIxNC4zIDE3Ny4zIDI1Ny4yIDE2OS43QzMwMCAxNjIgMzQzIDE1NCAzODUuOCAxNDRDNDI4LjcgMTM0IDQ3MS4zIDEyMiA1MTQuMiAxMjlDNTU3IDEzNiA2MDAgMTYyIDY0Mi44IDE2NS43QzY4NS43IDE2OS4zIDcyOC4zIDE1MC43IDc3MS4yIDEzOS43QzgxNCAxMjguNyA4NTcgMTI1LjMgODc4LjUgMTIzLjdMOTAwIDEyMkw5MDAgMEw4NzguNSAwQzg1NyAwIDgxNCAwIDc3MS4yIDBDNzI4LjMgMCA2ODUuNyAwIDY0Mi44IDBDNjAwIDAgNTU3IDAgNTE0LjIgMEM0NzEuMyAwIDQyOC43IDAgMzg1LjggMEMzNDMgMCAzMDAgMCAyNTcuMiAwQzIxNC4zIDAgMTcxLjcgMCAxMjguOCAwQzg2IDAgNDMgMCAyMS41IDBMMCAwWiIgZmlsbD0iI2ZhNzI2OCIvPjxwYXRoIGQ9Ik0wIDkxTDIxLjUgOTUuOEM0MyAxMDAuNyA4NiAxMTAuMyAxMjguOCAxMTVDMTcxLjcgMTE5LjcgMjE0LjMgMTE5LjMgMjU3LjIgMTIyLjVDMzAwIDEyNS43IDM0MyAxMzIuMyAzODUuOCAxMjguOEM0MjguNyAxMjUuMyA0NzEuMyAxMTEuNyA1MTQuMiAxMTEuN0M1NTcgMTExLjcgNjAwIDEyNS4zIDY0Mi44IDEyNS43QzY4NS43IDEyNiA3MjguMyAxMTMgNzcxLjIgMTA2LjNDODE0IDk5LjcgODU3IDk5LjMgODc4LjUgOTkuMkw5MDAgOTlMOTAwIDBMODc4LjUgMEM4NTcgMCA4MTQgMCA3NzEuMiAwQzcyOC4zIDAgNjg1LjcgMCA2NDIuOCAwQzYwMCAwIDU1NyAwIDUxNC4yIDBDNDcxLjMgMCA0MjguNyAwIDM4NS44IDBDMzQzIDAgMzAwIDAgMjU3LjIgMEMyMTQuMyAwIDE3MS43IDAgMTI4LjggMEM4NiAwIDQzIDAgMjEuNSAwTDAgMFoiIGZpbGw9IiNlMzRjNjciLz48cGF0aCBkPSJNMCA3MUwyMS41IDczLjhDNDMgNzYuNyA4NiA4Mi4zIDEyOC44IDgzLjhDMTcxLjcgODUuMyAyMTQuMyA4Mi43IDI1Ny4yIDgwLjJDMzAwIDc3LjcgMzQzIDc1LjMgMzg1LjggNzZDNDI4LjcgNzYuNyA0NzEuMyA4MC4zIDUxNC4yIDc2LjdDNTU3IDczIDYwMCA2MiA2NDIuOCA2MS43QzY4NS43IDYxLjMgNzI4LjMgNzEuNyA3NzEuMiA3Ny4zQzgxNCA4MyA4NTcgODQgODc4LjUgODQuNUw5MDAgODVMOTAwIDBMODc4LjUgMEM4NTcgMCA4MTQgMCA3NzEuMiAwQzcyOC4zIDAgNjg1LjcgMCA2NDIuOCAwQzYwMCAwIDU1NyAwIDUxNC4yIDBDNDcxLjMgMCA0MjguNyAwIDM4NS44IDBDMzQzIDAgMzAwIDAgMjU3LjIgMEMyMTQuMyAwIDE3MS43IDAgMTI4LjggMEM4NiAwIDQzIDAgMjEuNSAwTDAgMFoiIGZpbGw9IiNjNjIzNjgiLz48L3N2Zz4=");
+	background-position: top;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
