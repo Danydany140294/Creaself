@@ -7,44 +7,26 @@
   <link rel="stylesheet" href="navbar.css" />
 </head>
 <body>
-  <!-- Curseur personnalisé -->
-  <div class="ring ring--outer"></div>
-  <div class="ring ring--inner"></div>
+
 
   <!-- NAVBAR FIXE -->
-  <header class="navbar">
+  <header >
    
-    <nav>
+    <nav class="navbar">
       <ul class="nav-links">
-        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#Home">Home</a></li>
         <li><a href="#press">Press</a></li>
         <li><a href="#shop">Shop</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="#footer">Contactez-nous</a></li>
       </ul>
     </nav>
+
   </header>
 
-  <!-- Sections -->
-  <section id="portfolio" data-animate="true">
-    <h2>Portfolio</h2>
-  </section>
-  <section id="press" data-animate="true">
-    <h2>Press</h2>
-  </section>
-  <section id="shop" data-animate="true">
-    <h2>Shop</h2>
-  </section>
-  <section id="about" data-animate="true">
-    <h2>About</h2>
-  </section>
-
-  <div id="cursor">
-  <div class="ring ring--outer"></div>
-  <div class="ring ring--inner"></div>
-</div>
-
-
-
   <script src="navbar.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="{{ asset('js/fullcalendar.js') }}"></script>
+
+  
 </body>
 </html>

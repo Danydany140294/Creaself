@@ -1,0 +1,23 @@
+{# templates/calendar.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Full Calendar Demo{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/homepage/calendar.css') }}">
+{% endblock %}
+
+{% block body %}
+<section id="full-calendar-section">
+    <h1>FullCalendar Demo</h1>
+    <div id="calendar"></div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {# Chargement de FullCalendar depuis CDN #}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    {# Ton script JS dédié #}
+    <script src="{{ asset('js/fullcalendar.js') }}"></script>
+{% endblock %}

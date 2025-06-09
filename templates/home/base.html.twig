@@ -12,6 +12,7 @@
     {# Tes feuilles de style personnalisées avec version aléatoire pour forcer le rafraîchissement #}
     <link rel="stylesheet" href="{{ asset('css/homepage/style.css') }}?v={{ random() }}">
     <link rel="stylesheet" href="{{ asset('css/homepage/navbar.css') }}?v={{ random() }}">
+    <link rel="stylesheet" href="{{ asset('css/homepage/footer.css') }}?v={{ random() }}">
 
     {% block stylesheets %}{% endblock %}
 </head>
@@ -19,11 +20,34 @@
 <body>
     {# Bloc pour la navbar #}
     {% block navbar %}
-
         {% include 'home/composant/navbar.html.twig' %}
+    {% endblock %}
 
-        
+                <!-- Sections -->
+            <section id="Home" data-animate="true">
+                <h2>Home</h2>
+            </section>
 
+            <section id="press" data-animate="true">
+                <h2>Calendrier des événements</h2>
+                <div id="calendar"></div>
+            </section>
+
+            <section id="shop" data-animate="true">
+                <h2>Shop</h2>
+            </section>
+
+            <section id="footer" data-animate="true">
+                
+            </section>
+
+            <div id="cursor">
+                <div class="ring ring--outer"></div>
+                <div class="ring ring--inner"></div>
+            </div>
+
+    {% block footer %}
+        {% include 'home/composant/footer.html.twig' %}
     {% endblock %}
 
     {# Bloc pour le corps de la page #}
