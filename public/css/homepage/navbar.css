@@ -1,112 +1,76 @@
-/* === Curseur personnalisé === */
-
-/* Empêche l'affichage du curseur natif, on utilise un curseur personnalisé */
-html {
-  cursor: none;
-}
-
-/* Conteneur global du curseur personnalisé */
-#cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  cursor: none; /* Redondant mais inoffensif */
-}
-
-/* Chaque cercle du curseur */
-.ring {
-  position: fixed;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-}
-
-/* Cercle extérieur (plus grand) du curseur */
-.ring--outer {
-  width: 40px;
-  height: 40px;
-  border: 2px solid white;
-  transition: transform 0.15s ease-out;
-  display: block;
-}
-
-/* Cercle intérieur (plus petit) du curseur */
-.ring--inner {
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  display: block;
-}
-
-/* === Styles généraux === */
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-
-/* === Header et Navigation === */
-
-/* Header sticky en haut de page */
-header {
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  padding: 1.5rem;
+/* Hero Image */
+.image {
+  background: url(https://sonorangirl.github.io/Earth-Quotes/img/google-earth-view-South-Iceland3.jpg) no-repeat center center;
+  background-size: cover;
+  height: 570px;
+  margin-top: -20px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-}
-
-/* Barre de navigation */
-nav {
-  width: 96%;
-  background-color: rgba(76, 76, 76, 0.36);
-  color: black; /* Attention, peut être écrasé par color des liens */
-  padding: 10px 0;
-  height: 85px;
-  display: flex;
   justify-content: center;
-  align-items: center;
-  border-radius: 5rem;
-  backdrop-filter: blur(4px);
+  color: white;
+  text-align: center;
 }
 
-/* Liste horizontale des liens */
-nav ul {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  width: 96%;
-  height: 60px;
-  margin: 0;  /* annule marges par défaut */
-  padding: 0; /* annule padding par défaut */
+.image .heading {
+  font-size: 2.5em;
+  margin-bottom: 20px;
 }
 
-/* Éléments de la liste */
-nav ul li {
+.image .btn {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  transition: all 0.3s ease;
+}
+
+.image .btn:hover {
+  color: #C57ED3;
+  border-color: #C57ED3;
+}
+
+/* Navbar */
+.navbar {
+  background-color: transparent;
+  transition: background-color 1s ease 0s;
+  padding: 20px 0;
+}
+
+.navbar-brand {
+  color: white;
+  font-size: 1.5em;
   font-weight: bold;
-  display: flex;
-  align-items: center;
-}
-
-/* Liens */
-nav ul li a {
-  text-decoration: none;
-  color: var(--text); /* Assure-toi que --text est défini quelque part */
-  font-size: 1.1rem;
-  padding: 0.5rem 1rem;
   transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-  height: 100%;
 }
 
-/* Couleur au survol */
-a:hover {
-  color: #ffa600;
+.navbar-brand:hover {
+  color: #C57ED3;
+  border: 1px solid #C57ED3;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.nav-link {
+  color: white !important;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  color: #C57ED3 !important;
+  border-bottom: 1px solid #C57ED3;
+}
+
+/* Solid navbar on scroll */
+.navbar.solid {
+  background-color: #490D40 !important;
+  box-shadow: 0 0 4px grey;
+}
+
+.navbar.solid .navbar-brand,
+.navbar.solid .nav-link {
+  color: #C57ED3 !important;
 }
