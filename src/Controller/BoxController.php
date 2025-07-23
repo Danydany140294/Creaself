@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FullCalendarController extends AbstractController
+final class BoxController extends AbstractController
 {
-    #[Route('/full/calendar', name: 'app_full_calendar')]
+    #[Route('/box', name: 'app_box')]
     public function index(): Response
     {
-    return $this->render('home/atelier.html.twig', [
-        // passe ici les variables nécessaires si besoin
-    ]);
-}
+        return $this->render('box/box.html.twig', [
+            'controller_name' => 'BoxController',
+        ]);
+    }
 }
