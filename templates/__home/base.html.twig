@@ -6,7 +6,7 @@
     <title>{% block title %}CreaSelf{% endblock %}</title>
     
     {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
     {% endblock %}
 
    
@@ -20,7 +20,7 @@
     <main class="container mt-4">
 
         {% block body %}
-        
+        {% include '__home/main.html.twig' %}
         {% endblock %}
 
     </main>
