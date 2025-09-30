@@ -17,13 +17,17 @@
 
     {% include '__home/component/navbar.html.twig' %}
 
-    <main class="container mt-4">
+        <div class="video-container">
+            <video autoplay muted loop playsinline>
+                <source src="asset/output_free.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas les vidéos HTML5.
+            </video>
+        </div>
 
-        {% block body %}
-        {% include '__home/main.html.twig' %}
-        {% endblock %}
-
-    </main>
+       
+            {% block body %}
+            {% endblock %}
+        
 
 
     {% include '__home/component/footer.html.twig' %}

@@ -1,130 +1,28 @@
-/* ----- Structure de base ----- */
-body {
+*{
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+
 }
 
-/* ----- Navbar fixée en haut ----- */
-.navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* ----- Logo ----- */
-.logo img {
-    height: 40px; /* taille standard */
-}
-
-/* ----- Liens de navigation ----- */
-.nav-links {
-    display: flex;
-    gap: 1rem;
+li {
     list-style: none;
-    margin: 0;
-    padding: 0;
 }
 
-.nav-links li a {
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    color: #333;
-    transition: background-color 0.3s, color 0.3s;
+a {
+    text-decoration:none ;
+    color: rgb(196, 22, 22);
+    font-size: 1rem;
 }
 
-.nav-links li a:hover {
-    background-color: #f0f0f0;
-    color: #007bff;
+a:hover{
+    color: chartreuse;
 }
 
-/* ----- Barre de recherche ----- */
-.search-bar {
-    display: flex;
-    align-items: center;
-    margin: 0 1rem;
-}
+hearder {
+    position:relative;
+    padding: 0 2rem;
+    background-color: rgba(0, 0, 0, 0.238);
 
-.search-bar input {
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px 0 0 20px;
-    outline: none;
-    width: 150px;
-    transition: width 0.3s;
-}
-
-.search-bar input:focus {
-    width: 200px;
-}
-
-.search-bar button {
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-left: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 0 20px 20px 0;
-    cursor: pointer;
-}
-
-.search-bar button:hover {
-    background-color: #0056b3;
-}
-
-/* ----- Boutons Login et Panier ----- */
-.nav-buttons .btn {
-    background-color: #007bff;
-    color: white;
-    border-radius: 20px;
-    padding: 6px 12px;
-    margin-left: 10px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-}
-
-.nav-buttons .btn:hover {
-    background-color: #0056b3;
-}
-
-/* ----- Bouton hamburger (mobile) ----- */
-.hamburger {
-    display: none;
-    font-size: 26px;
-    cursor: pointer;
-}
-
-/* ----- Responsive : version mobile ----- */
-@media (max-width: 768px) {
-    .nav-links,
-    .search-bar,
-    .nav-buttons {
-        display: none;
-        flex-direction: column;
-        background-color: white;
-        width: 100%;
-        padding: 1rem;
-    }
-
-    .navbar.expanded .nav-links,
-    .navbar.expanded .search-bar,
-    .navbar.expanded .nav-buttons {
-        display: flex;
-    }
-
-    .hamburger {
-        display: block;
-    }
-
-    .navbar {
-        flex-wrap: wrap;
-    }
 }
