@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Poppins", sans-serif;
 
 }
 
@@ -12,12 +12,21 @@ li {
 
 a {
     text-decoration:none ;
-    color: rgb(196, 22, 22);
-    font-size: 1rem;
+    color: #ff6f61 ;
+    font-size: 0.85rem;
+    
 }
 
-a:hover{
-    color: chartreuse;
+a {
+    cursor: pointer;
+}
+
+
+a:hover {
+    color: #a3b1a8;
+    cursor: pointer;
+    
+    
 }
 
 hearder {
@@ -25,4 +34,156 @@ hearder {
     padding: 0 2rem;
     background-color: rgba(0, 0, 0, 0.238);
 
+}
+
+.logo {
+  max-height: 90px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
+.navbar {
+    width: 100%;
+    min-height: 90px;
+    max-width: 1220px;
+    height: 60px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar .links {
+    display: flex;
+    gap: 2rem;
+}
+
+.navbar .burger-menu-button {
+    color: #ff6f61;
+    font-size:  1.5rem;
+    cursor: pointer;
+    display:none;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-button {
+    background-color: #ff6f61;
+    color: #fff;
+    border:  1px solid #ff6f61;
+    padding: 0.5rem 1.2rem;
+    border-radius:25px;
+    outline: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    color: #395560;
+    border: 1px solid #fff;
+}
+
+.login{
+    background-color: transparent;
+    color:#ff6f61;
+    border: 1px solid #ff6f61;
+}
+
+.login:hover{
+    background-color:#a3b1a8;
+    color:#fff;
+}
+
+
+.burger-menu {
+    position: absolute;
+    top: 90px;
+    right: 2rem;
+    width: 250px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centre tout horizontalement */
+    padding: 1rem 0;
+}
+
+.burger-menu li {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* centre le texte horizontalement */
+    padding: 0.7rem 0;
+}
+
+/* Liens du menu burger */
+.burger-menu li a {
+    display: inline-block; /* important pour que le hover et cursor fonctionnent */
+    cursor: pointer;
+    color: #ff6f61;
+    text-decoration: none;
+    padding: 0.5rem 1rem; /* ajoute de l’espace pour le hover */
+}
+
+.burger-menu li a:hover {
+    color: #a3b1a8;
+}
+
+
+
+
+.divider {
+    height: 1px;
+    background-color: #fff;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+
+}
+
+
+.buttons-burger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* centre les boutons horizontalement */
+    gap: 10px;
+    width: 100%;
+}
+
+.buttons-burger-menu .action-button,
+.buttons-burger-menu .login {
+    width: auto; /* ne prend pas toute la largeur */
+    min-width: 120px; /* taille minimale si tu veux */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+
+
+@media (max-width:990px){
+    header {
+        background: none;
+    }
+
+    .navbar .links,
+    .navbar .action-button {
+        display: none;
+    }
+    
+    .navbar .burger-menu-button {
+        display: block;
+    }
 }
