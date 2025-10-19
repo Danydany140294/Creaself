@@ -1,9 +1,9 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
-
+    
 }
 
 li {
@@ -11,36 +11,28 @@ li {
 }
 
 a {
-    text-decoration:none ;
-    color: #ff6f61 ;
+    text-decoration: none;
+    color: #ff6f61;
     font-size: 0.85rem;
-    
-}
-
-a {
     cursor: pointer;
 }
-
 
 a:hover {
     color: #a3b1a8;
     cursor: pointer;
-    
-    
 }
 
-hearder {
-    position:relative;
+header {
+    position: relative;
     padding: 0 2rem;
-    background-color: rgba(0, 0, 0, 0.238);
-
+     background-color: transparent !important; /* ← ou gardez rgba(0, 0, 0, 0.238) si vous voulez un fond légèrement sombre */
 }
 
 .logo {
-  max-height: 90px;
-  height: auto;
-  width: auto;
-  object-fit: contain;
+    max-height: 90px;
+    height: auto;
+    width: auto;
+    object-fit: contain;
 }
 
 .navbar {
@@ -53,6 +45,7 @@ hearder {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: transparent !important;
 }
 
 .navbar .links {
@@ -62,9 +55,9 @@ hearder {
 
 .navbar .burger-menu-button {
     color: #ff6f61;
-    font-size:  1.5rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    display:none;
+    display: none;
 }
 
 .buttons {
@@ -75,9 +68,9 @@ hearder {
 .action-button {
     background-color: #ff6f61;
     color: #fff;
-    border:  1px solid #ff6f61;
+    border: 1px solid #ff6f61;
     padding: 0.5rem 1.2rem;
-    border-radius:25px;
+    border-radius: 25px;
     outline: none;
     font-size: 0.9rem;
     font-weight: bold;
@@ -89,25 +82,22 @@ hearder {
     border: 1px solid #fff;
 }
 
-.login{
+.login {
     background-color: transparent;
-    color:#ff6f61;
+    color: #ff6f61;
     border: 1px solid #ff6f61;
 }
 
-.login:hover{
-    background-color:#a3b1a8;
-    color:#fff;
+.login:hover {
+    background-color: #a3b1a8;
+    color: #fff;
 }
-
 
 /* ============================= */
 /*         MENU BURGER           */
 /* ============================= */
-/* Conteneur principal du menu burger déroulant : positionné sous la navbar,
-   avec un effet flou, fond transparent et alignement vertical des éléments. */
 .burger-menu {
-    display: none; /* totalement caché par défaut */
+    display: none;
     position: absolute;
     top: 95px;
     right: 1.75rem;
@@ -123,21 +113,11 @@ hearder {
     transition: height 0.3s ease;
 }
 
-
-
-/* Quand le menu burger est ouvert */
 .burger-menu.open {
-    display: flex;      /* le menu s’affiche */
-    height: auto;       /* il prend sa taille normale */
+    display: flex;
+    height: auto;
 }
 
-
-
-/* ============================= */
-/*     STRUCTURE DES LI (liens)  */
-/* ============================= */
-/* Chaque élément de la liste est centré horizontalement avec un peu d’espace
-   entre eux pour une bonne lisibilité. */
 .burger-menu li {
     width: 100%;
     display: flex;
@@ -145,12 +125,6 @@ hearder {
     padding: 0.7rem 0;
 }
 
-
-/* ============================= */
-/*     STYLE DES LIENS A         */
-/* ============================= */
-/* Liens cliquables à l’intérieur du menu :
-   couleur principale, zone élargie pour le clic et effet de survol. */
 .burger-menu li a {
     display: inline-block;
     cursor: pointer;
@@ -159,16 +133,10 @@ hearder {
     padding: 0.5rem 1rem;
 }
 
-/* Changement de couleur au survol pour indiquer l’interaction. */
 .burger-menu li a:hover {
     color: #a3b1a8;
 }
 
-
-/* ============================= */
-/*        LIGNE DE SÉPARATION    */
-/* ============================= */
-/* Ligne blanche entre les liens et la section des boutons du menu. */
 .divider {
     height: 1px;
     background-color: #fff;
@@ -178,12 +146,6 @@ hearder {
     margin-bottom: 1rem;
 }
 
-
-/* ============================= */
-/*   BOUTONS DU MENU BURGER      */
-/* ============================= */
-/* Conteneur vertical pour les boutons (Panier / Login),
-   centré et espacé uniformément. */
 .buttons-burger-menu {
     display: flex;
     flex-direction: column;
@@ -193,8 +155,6 @@ hearder {
     width: 100%;
 }
 
-/* Style des boutons à l’intérieur du menu burger :
-   centrés, de taille fixe minimale, et au curseur interactif. */
 .buttons-burger-menu .action-button,
 .buttons-burger-menu .login {
     width: auto;
@@ -206,171 +166,90 @@ hearder {
     cursor: pointer;
 }
 
-
-
-
-
-
 /* ============================= */
-/* 📱 TABLETTES ET PETITS ÉCRANS */
+/*       MEDIA QUERIES           */
 /* ============================= */
-@media (max-width: 990px) {
 
-  /* Header plus léger */
-  header {
-    background: none;
-    padding: 0 1rem;
-  }
-
-  /* Navbar redimensionnée à 70% */
-  .navbar {
-    width: 70%;
-    margin: 0 auto; /* Centre la navbar horizontalement */
-    padding: 0 1rem;
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Masque les liens et boutons standards */
-  .navbar .links,
-  .navbar .buttons {
-    display: none;
-  }
-
-  /* Bouton burger visible */
-  .navbar .burger-menu-button {
-    display: block;
-    font-size: 1.8rem;
-    cursor: pointer;
-  }
-
-  /* Menu burger centré (pour tablettes) */
-  .burger-menu {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70%; /* ✅ 70% de largeur */
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
-    z-index: 50;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  }
-
-  /* Quand on ouvre le menu */
-  .burger-menu.open {
-    display: flex;
-  }
-}
-
-/* ============================= */
-/* 📱 TÉLÉPHONES (écrans < 576px) */
-/* ============================= */
-@media (max-width: 576px) {
-
-  /* Navbar compacte et centrée */
-  .navbar {
-    width: 70%; /* ✅ Toujours 70% */
-    height: 55px;
-    margin: 0 auto;
-    padding: 0 0.75rem;
-  }
-
-  /* Logo réduit */
-  .logo img {
-    max-height: 45px;
-  }
-
-  /* Menu burger centré */
-  .burger-menu {
-    position: fixed;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70%; /* ✅ Toujours 70% */
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 0;
-    z-index: 50;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  }
-
-  .burger-menu.open {
-    display: flex;
-    animation: fadeIn 0.3s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -55%);
+/* TABLETTES (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .navbar {
+        padding: 0 1.5rem;
     }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%);
+
+    .navbar .links {
+        gap: 2rem;
     }
-  }
 
-  /* Liens */
-  .burger-menu li a {
-    font-size: 1rem;
-    color: #ff6f61;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease;
-  }
+    a {
+        font-size: 0.8rem;
+    }
 
-  .burger-menu li a:hover {
-    color: #a3b1a8;
-  }
-
-  /* Boutons */
-  .buttons-burger-menu .action-button,
-  .buttons-burger-menu .login {
-    min-width: 120px;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    text-align: center;
-  }
+    .action-button {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+    }
 }
 
-/* ============================= */
-/* 📱 TRÈS PETITS ÉCRANS (<400px) */
-/* ============================= */
-@media (max-width: 400px) {
+/* MOBILES - iPhone 14, iPhone 11 (< 768px) */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 0 1rem;
+    }
 
-  .navbar {
-    width: 70%; /* ✅ Toujours 70% */
-  }
+    .navbar {
+        padding: 0 1rem;
+        min-height: 70px;
+    }
 
-  .burger-menu {
-    width: 70%; /* ✅ Toujours 70% */
-    gap: 0.75rem;
-  }
+    .logo {
+        max-height: 60px;
+    }
 
-  .burger-menu li a {
-    font-size: 0.85rem;
-  }
+    /* Cacher les liens et boutons de la navbar */
+    .navbar .links {
+        display: none !important;
+    }
 
-  .buttons-burger-menu .action-button,
-  .buttons-burger-menu .login {
-    font-size: 0.8rem;
-    min-width: 100px;
-  }
+    .navbar .buttons {
+        display: none !important;
+    }
+
+    /* Afficher l'icône burger */
+    .navbar .burger-menu-button {
+        display: block !important;
+    }
+
+    /* Ajuster le menu burger */
+    .burger-menu {
+        top: 75px;
+        right: 1rem;
+        width: 220px;
+    }
 }
 
+/* iPhone 14 et petits écrans (< 414px) */
+@media screen and (max-width: 414px) {
+    .navbar {
+        padding: 0 0.8rem;
+    }
+
+    .logo {
+        max-height: 55px;
+    }
+
+    .burger-menu {
+        width: 200px;
+        right: 0.8rem;
+    }
+
+    .burger-menu li a {
+        font-size: 0.8rem;
+    }
+
+    .buttons-burger-menu .action-button,
+    .buttons-burger-menu .login {
+        min-width: 110px;
+        font-size: 0.85rem;
+        padding: 0.4rem 1rem;
+    }
+}
