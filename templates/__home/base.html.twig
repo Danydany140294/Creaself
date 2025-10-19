@@ -6,7 +6,8 @@
     <title>{% block title %}CreaSelf{% endblock %}</title>
     
     {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/intro.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
     {% endblock %}
 
@@ -45,6 +46,59 @@
             <img src="{{ asset('asset/logo1.jpg') }}" alt="CreaSelf Logo">
         </div>
     </div>
+
+        <!-- === SECTION CARROUSEL === -->
+    <section class="carousel">
+        <div class="slides">
+            <img src="{{ asset('asset/carroussel/RAW09430_resultat.jpg') }}" alt="Photo 1">
+            <img src="{{ asset('asset/carroussel/RAW09457_resultat.jpg') }}" alt="Photo 2">
+            <img src="{{ asset('asset/carroussel/RAW07871.jpg') }}" alt="Photo 3">
+            <img src="{{ asset('asset/carroussel/RAW09515_resultat.jpg') }}" alt="Photo ">
+
+        </div>
+    </section>
+
+    <!-- === SECTION QUI SOMMES-NOUS === -->
+    <section class="about">
+        <h2>Qui sommes-nous ?</h2>
+
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    Nous sommes une équipe passionnée par la création et le partage de savoir-faire.
+                    Notre mission : offrir des expériences uniques à travers des ateliers et des desserts faits maison,
+                    alliant qualité, créativité et convivialité.
+                </p>
+                <p>
+                    Chaque jour, nous travaillons avec des artisans locaux et des partenaires de confiance
+                    pour garantir des produits frais et authentiques.
+                </p>
+            </div>
+            <div class="about-image">
+                <img src="{{ asset('asset/RAW09394_resultat.jpg') }}" alt="Notre équipe">
+            </div>
+        </div>
+
+                <div class="about-content">
+
+             <div class="about-image">
+                <img src="{{ asset('asset/6.png') }}" alt="Notre équipe">
+            </div>
+
+            <div class="about-text">
+                <p>
+                    Nous sommes une équipe passionnée par la création et le partage de savoir-faire.
+                    Notre mission : offrir des expériences uniques à travers des ateliers et des desserts faits maison,
+                    alliant qualité, créativité et convivialité.
+                </p>
+                <p>
+                    Chaque jour, nous travaillons avec des artisans locaux et des partenaires de confiance
+                    pour garantir des produits frais et authentiques.
+                </p>
+            </div>
+           
+        </div>
+    </section>
             {% endblock %}
         
 
