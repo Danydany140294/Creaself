@@ -9,23 +9,17 @@
     <link rel="stylesheet" href="{{ asset('css/intro.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
     {% endblock %}
-
-   
-
 </head>
 
+<body class="intro-active">
     {% include '__home/component/navbar.html.twig' %}
 
-     
-
-       
-            {% block body %}
-            <body class="intro-active">
-    
+    {% block body %}
     {# Animation d'intro du logo #}
     <div id="logo-intro">
-                <div class="particle"></div>
+        <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
         <div class="particle"></div>
@@ -47,14 +41,13 @@
         </div>
     </div>
 
-        <!-- === SECTION CARROUSEL === -->
+    <!-- === SECTION CARROUSEL === -->
     <section class="carousel">
         <div class="slides">
             <img src="{{ asset('asset/carroussel/RAW09430_resultat.jpg') }}" alt="Photo 1">
             <img src="{{ asset('asset/carroussel/RAW09457_resultat.jpg') }}" alt="Photo 2">
             <img src="{{ asset('asset/carroussel/RAW07871.jpg') }}" alt="Photo 3">
-            <img src="{{ asset('asset/carroussel/RAW09515_resultat.jpg') }}" alt="Photo ">
-
+            <img src="{{ asset('asset/carroussel/RAW09515_resultat.jpg') }}" alt="Photo 4">
         </div>
     </section>
 
@@ -79,9 +72,8 @@
             </div>
         </div>
 
-                <div class="about-content">
-
-             <div class="about-image">
+        <div class="about-content">
+            <div class="about-image">
                 <img src="{{ asset('asset/6.png') }}" alt="Notre équipe">
             </div>
 
@@ -96,27 +88,20 @@
                     pour garantir des produits frais et authentiques.
                 </p>
             </div>
-           
         </div>
     </section>
-            {% endblock %}
-        
-
+    {% endblock %}
 
     {% include '__home/component/footer.html.twig' %}
 
-    
-       
     {% block javascripts %}
-    {# <script src="{{ asset('public\js\main.js') }}"></script> #}
-
-      <script>
+    <script>
         // Gestion de l'animation d'intro
         document.addEventListener('DOMContentLoaded', function() {
             const logoIntro = document.getElementById('logo-intro');
             const body = document.body;
 
-            // Après 4 secondes, on cache l'intro
+            // Après 6 secondes, on cache l'intro
             setTimeout(() => {
                 logoIntro.classList.add('hidden');
                 body.classList.remove('intro-active');
@@ -127,8 +112,7 @@
                 }, 800);
             }, 6000);
         });
-        </script>
-    
+    </script>
     {% endblock %}
 </body>
 </html>
