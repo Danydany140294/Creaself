@@ -1,4 +1,5 @@
 {# templates/base.html.twig #}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -41,7 +42,7 @@
 
                 <div class="buttons">
                     <a href="#" class= "action-button panier"> Panier </a>
-                    <a href="#" class= "action-button login" > Login </a>               
+                    <a href="{{ path('app_login') }}" class= "action-button login" > Login </a>               
                 </div>
 
                 <div class="burger-menu-button">

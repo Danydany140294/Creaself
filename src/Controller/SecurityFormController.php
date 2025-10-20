@@ -13,7 +13,7 @@ class SecurityFormController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
+        //     return $this->redirectToRoute('app_panier');
         // }
 
         // get the login error if there is one
