@@ -34,10 +34,9 @@
                 </div>
 
                 <ul class="links"> 
-                    <li><a href=" accueil ">Qui sommes nous ?</a></li>
-                    <li><a href=" ateliers ">Ateliers</a></li>
-                    <li><a href=" boxs ">Nos box</a></li>
-                    <li><a href="propos"> A propos </a></li>
+                    <li><a href="{{ path('app_quisommesnous') }}">Qui sommes nous ?</a></li>
+                    <li><a href=" {{ path('app_produits') }} ">Nos Produits</a></li>
+                    <li><a href=" {{ path('app_propos') }}"> A propos </a></li>
                 </ul>
 
                 <div class="buttons">
@@ -54,8 +53,7 @@
             <div class="burger-menu">
                 <ul>
                     <li><a href="#">Qui sommes nous ?</a></li>
-                    <li><a href="#">Ateliers</a></li>
-                    <li><a href="#">Nos box</a></li>
+                    <li><a href="#">Nos Produits</a></li>
                     <li><a href="#">A propos</a></li>
                 </ul>
                 

@@ -6,13 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FullCalendarController extends AbstractController
+final class ProposController extends AbstractController
 {
-    #[Route('/full/calendar', name: 'app_full_calendar')]
+    #[Route('/propos', name: 'app_propos')]
     public function index(): Response
     {
-    return $this->render('home/atelier.html.twig', [
-        // passe ici les variables nécessaires si besoin
-    ]);
-}
+        return $this->render('Page/propos.html.twig', [
+            'controller_name' => 'ProposController',
+        ]);
+    }
 }

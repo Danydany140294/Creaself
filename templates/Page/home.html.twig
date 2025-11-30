@@ -1,0 +1,41 @@
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}CreaSelf{% endblock %}</title>
+
+    {# Stylesheets génériques #}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    {% endblock %}
+</head>
+
+<body class="intro-active">
+    {# Navbar incluse sur toutes les pages #}
+    {% include 'component/navbar.html.twig' %}
+
+
+
+
+
+    {# Contenu principal injecté par les templates enfants #}
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+
+
+
+
+
+    {# Scripts JS #}
+    {% block javascripts %}
+        <script>
+            // Tes scripts personnalisés
+        </script>
+    {% endblock %}
+</body>
+</html>

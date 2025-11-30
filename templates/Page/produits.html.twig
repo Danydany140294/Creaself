@@ -1,0 +1,24 @@
+{% extends 'Page/home.html.twig' %}
+
+{% block title %}Ateliers - CreaSelf{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/produits.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="cart-container">
+    <h1>Mon Panier</h1>
+
+ 
+
+<h1>Produits</h1>
+<ul>
+    {% for produit in produits %}
+        <li>{{ produit.name }} - {{ produit.prix }} €</li>
+    {% else %}
+        <li>Aucun produit trouvé.</li>
+    {% endfor %}
+</ul>
+</div>
+{% endblock %}
