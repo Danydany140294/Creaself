@@ -1,99 +1,41 @@
-{# templates/base.html.twig #}
+{# templates/component/navbar.html.twig #}
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}CreaSelf{% endblock %}</title>
-    
-    {% block stylesheets %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-    {# <img src="{{ asset('asset/logo1.jpg') }}" alt="Logo" class="logo"> #}
-    {% endblock %}
-
-   
-</head>
-
- {% block body %}
-
-<body>
+<!-- Bandeau défilant -->
+<div class="promo-banner">
+    <div class="promo-banner-content">
+        <span>🎉 Livraison offerte dès 20€</span>
+        <span>🍪 Nouveaux cookies chaque semaine</span>
+        <span>✨ Cookies d'exception faits maison</span>
+        <span>🎉 Livraison offerte dès 20€</span>
+        <span>🍪 Nouveaux cookies chaque semaine</span>
+        <span>✨ Cookies d'exception faits maison</span>
+    </div>
+</div>
 
 
-        <header>
+     <div class="logo-section">
+        <img src="asset/perline.jpg" alt="Logo">
+    </div>
 
-            <div class="navbar">
-                <div class="logo">
-                    <a href="{{ path('app_home') }}">
-                    <img src="{{ asset('asset/logo2.jpg') }}" alt="Logo" class="logo">
-                    </a>
+    <!-- 3. Navbar avec liens + boutons -->
+    <nav class="navbar">
+        <!-- Liens de navigation centrés -->
+        <ul class="nav-links">
+            <li><a href="#">Qui sommes nous ?</a></li>
+            <li><a href="#">Nos Cookies</a></li>
+            <li><a href="#">Nos Box</a></li>
+            <li><a href="#">A propos</a></li>
+        </ul>
 
-                </div>
-
-                <ul class="links"> 
-                    <li><a href="{{ path('app_quisommesnous') }}">Qui sommes nous ?</a></li>
-                    <li><a href=" {{ path('app_produits') }} ">Nos Produits</a></li>
-                    <li><a href=" {{ path('app_propos') }}"> A propos </a></li>
-                </ul>
-
-                <div class="buttons">
-                    <a href="#" class= "action-button panier"> Panier </a>
-                    <a href="{{ path('app_login') }}" class= "action-button login" > Login </a>               
-                </div>
-
-                <div class="burger-menu-button">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-            </div>
-
-            <!-- Menu Burger Déroulant -->
-            <div class="burger-menu">
-                <ul>
-                    <li><a href="#">Qui sommes nous ?</a></li>
-                    <li><a href="#">Nos Produits</a></li>
-                    <li><a href="#">A propos</a></li>
-                </ul>
-                
-                <div class="divider"></div>
-                
-                <div class="buttons-burger-menu">
-                    <a href="#" class="action-button panier">Panier</a>
-                    <a href="#" class="action-button login">Login</a>
-                </div>
-            </div>
-            
-
-
-
-        </header>
-        </body>
-    {% endblock %}
-       
-
-       
-    {% block javascripts %}
-    <script src="{{ asset('public\js\main.js') }}"></script>
-    <script>
-    function toggleMenu() {
-        const navbar = document.querySelector('.navbar');
-        navbar.classList.toggle('expanded');
-    }
-    const burgerMenuButton = document.querySelector(".burger-menu-button")
-    const burgerMenuButtonIcon = document.querySelector(".burger-menu-button i")
-    const burgerMenu = document.querySelector(".burger-menu")
-
-    burgerMenuButton.onclick = function(){
-        burgerMenu.classList.toggle("open")
-        const isOpen = burgerMenu.classList.contains("open")
-        burgerMenuButtonIcon.classList = isOpen ? "fa-solid fa-xmark" : "fa-solid fa-bars"
-    }
-
-    </script>
-    {% endblock %}
-
-
-
-</html>
+        <!-- Boutons à droite -->
+        <div class="nav-buttons">
+            <a href="#" class="btn btn-panier">
+                <i class="fas fa-shopping-cart"></i>
+                Panier
+            </a>
+            <a href="#" class="btn btn-login">
+                <i class="fas fa-user"></i>
+                Login
+            </a>
+        </div>
+    </nav>

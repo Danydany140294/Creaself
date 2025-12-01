@@ -1,255 +1,139 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+ * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* 1. Bandeau défilant en haut */
+        .promo-banner {
+            background-color: #000;
+            color: #ff0000;
+            padding: 15px 0;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .promo-banner-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 20s linear infinite;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .promo-banner-content span {
+            margin: 0 50px;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* 2. Logo centré */
+    /* 2. Logo centré */
+.logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #fff;
+    position: relative;
+    z-index: 1; /* Logo en arrière-plan */
+}
+
+.logo-section img {
+    height: 550px; /* Ajuste la taille que tu veux */
+    width: auto;
+    object-fit: contain;
     
 }
 
-li {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-    color: #ff6f61;
-    font-size: 0.85rem;
-    cursor: pointer;
-}
-
-a:hover {
-    color: #a3b1a8;
-    cursor: pointer;
-}
-
-header {
-    position: relative;
-    padding: 0 2rem;
-     background-color: transparent !important; /* ← ou gardez rgba(0, 0, 0, 0.238) si vous voulez un fond légèrement sombre */
-}
-
-.logo {
-    max-height: 90px;
-    height: auto;
-    width: auto;
-    object-fit: contain;
-}
-
+/* 3. Navbar avec liens + boutons */
 .navbar {
-    width: 100%;
-    min-height: 90px;
-    max-width: 1820px;
-    height: 60px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: transparent !important;
-}
-
-.navbar .links {
-    display: flex;
-    gap: 3rem;
-}
-
-.navbar .burger-menu-button {
-    color: #ff6f61;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: none;
-}
-
-.buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.action-button {
-    background-color: #ff6f61;
-    color: #fff;
-    border: 1px solid #ff6f61;
-    padding: 0.5rem 1.2rem;
-    border-radius: 25px;
-    outline: none;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.action-button:hover {
-    color: #395560;
-    border: 1px solid #fff;
-}
-
-.login {
-    background-color: transparent;
-    color: #ff6f61;
-    border: 1px solid #ff6f61;
-}
-
-.login:hover {
-    background-color: #a3b1a8;
-    color: #fff;
-}
-
-/* ============================= */
-/*         MENU BURGER           */
-/* ============================= */
-.burger-menu {
-    display: none;
-    position: absolute;
-    top: 95px;
-    right: 1.75rem;
-    width: 200px;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(15px);
-    border-radius: 10px;
-    overflow: hidden;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0;
-    z-index: 20;
-    transition: height 0.3s ease;
-}
-
-.burger-menu.open {
-    display: flex;
-    height: auto;
-}
-
-.burger-menu li {
-    width: 100%;
     display: flex;
     justify-content: center;
-    padding: 0.7rem 0;
-}
-
-.burger-menu li a {
-    display: inline-block;
-    cursor: pointer;
-    color: #ff6f61;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-}
-
-.burger-menu li a:hover {
-    color: #a3b1a8;
-}
-
-.divider {
-    height: 1px;
+    align-items: center;
+    padding: 15px 40px;
     background-color: #fff;
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10; /* Navbar par-dessus le logo */
+    margin-top: -150px; /* Remonte la navbar pour chevaucher le logo */
 }
+        /* Liens de navigation centrés */
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
 
-.buttons-burger-menu {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
+        .nav-links li a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
 
-.buttons-burger-menu .action-button,
-.buttons-burger-menu .login {
-    width: auto;
-    min-width: 120px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
+        .nav-links li a:hover {
+            color: #ff0000;
+        }
 
-/* ============================= */
-/*       MEDIA QUERIES           */
-/* ============================= */
+        /* Boutons à droite (position absolue) */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            position: absolute;
+            right: 40px;
+        }
 
-/* TABLETTES (768px - 1024px) */
-@media screen and (max-width: 1024px) {
-    .navbar {
-        padding: 0 1.5rem;
-    }
+        .btn {
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-    .navbar .links {
-        gap: 2rem;
-    }
+        .btn-panier {
+            background-color: transparent;
+            color: #333;
+            border: 2px solid #333;
+        }
 
-    a {
-        font-size: 0.8rem;
-    }
+        .btn-panier:hover {
+            background-color: #333;
+            color: #fff;
+            transform: translateY(-2px);
+        }
 
-    .action-button {
-        padding: 0.4rem 1rem;
-        font-size: 0.85rem;
-    }
-}
+        .btn-login {
+            background-color: #ff0000;
+            color: #fff;
+            border: 2px solid #ff0000;
+        }
 
-/* MOBILES - iPhone 14, iPhone 11 (< 768px) */
-@media screen and (max-width: 768px) {
-    header {
-        padding: 0 1rem;
-    }
+        .btn-login:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
 
-    .navbar {
-        padding: 0 1rem;
-        min-height: 70px;
-    }
-
-    .logo {
-        max-height: 60px;
-    }
-
-    /* Cacher les liens et boutons de la navbar */
-    .navbar .links {
-        display: none !important;
-    }
-
-    .navbar .buttons {
-        display: none !important;
-    }
-
-    /* Afficher l'icône burger */
-    .navbar .burger-menu-button {
-        display: block !important;
-    }
-
-    /* Ajuster le menu burger */
-    .burger-menu {
-        top: 75px;
-        right: 1rem;
-        width: 220px;
-    }
-}
-
-/* iPhone 14 et petits écrans (< 414px) */
-@media screen and (max-width: 414px) {
-    .navbar {
-        padding: 0 0.8rem;
-    }
-
-    .logo {
-        max-height: 55px;
-    }
-
-    .burger-menu {
-        width: 200px;
-        right: 0.8rem;
-    }
-
-    .burger-menu li a {
-        font-size: 0.8rem;
-    }
-
-    .buttons-burger-menu .action-button,
-    .buttons-burger-menu .login {
-        min-width: 110px;
-        font-size: 0.85rem;
-        padding: 0.4rem 1rem;
-    }
-}
+        .btn i {
+            font-size: 15px;
+        }
