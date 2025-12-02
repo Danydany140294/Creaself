@@ -9,28 +9,32 @@
         <span>🎉 Livraison offerte dès 20€</span>
         <span>🍪 Nouveaux cookies chaque semaine</span>
         <span>✨ Cookies d'exception faits maison</span>
+        
     </div>
 </div>
 
 
      <div class="logo-section">
+     <a href="{{ path('app_home') }}">
         <img src="asset/perline.jpg" alt="Logo">
+    </a>
     </div>
 
     <!-- 3. Navbar avec liens + boutons -->
     <nav class="navbar">
         <!-- Liens de navigation centrés -->
         <ul class="nav-links">
-            <li><a href="#">Qui sommes nous ?</a></li>
-            <li><a href="#">Nos Cookies</a></li>
-            <li><a href="#">Nos Box</a></li>
-            <li><a href="#">A propos</a></li>
+            <li><a href="{{ path('app_quisommesnous') }}">Qui sommes nous ?</a></li>
+            <li><a href="{{ path('app_produits') }}">Nos Cookies</a></li>
+
+            <li><a href="{{ path('app_box') }}">Nos Box</a></li>
+            <li><a href="{{ path('app_propos') }}">A propos</a></li>
         </ul>
 
         <!-- Boutons à droite -->
         <div class="nav-buttons">
             <a href="#" class="btn btn-panier">
-                <i class="fas fa-shopping-cart"></i>
+                <i class="fa-solid fa-basket-shopping"></i>
                 Panier
             </a>
             <a href="#" class="btn btn-login">

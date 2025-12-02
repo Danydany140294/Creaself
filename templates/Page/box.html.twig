@@ -3,8 +3,8 @@
 {% block title %}Ateliers - CreaSelf{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/produits.css') }}">
+{{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/box.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -15,11 +15,7 @@
 
 <h1>Produits</h1>
 <ul>
-    {% for produit in produits %}
-        <li>{{ produit.name }} - {{ produit.prix }} €</li>
-    {% else %}
-        <li>Aucun produit trouvé.</li>
-    {% endfor %}
+   
 </ul>
 </div>
 {% endblock %}

@@ -1,4 +1,9 @@
 /* === SECTION QUI SOMMES-NOUS === */
+
+body {
+    background-color: #EBDAC9;
+}
+
 .about {
     padding: 100px 10%;
     background: #fff;

@@ -1,45 +1,52 @@
- * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ========================================
+   0. Import Google Font Nabla
+======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
 
-        body {
-            font-family: Arial, sans-serif;
-        }
+/* ========================================
+   1. Reset général et box-sizing
+======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        /* 1. Bandeau défilant en haut */
-        .promo-banner {
-            background-color: #000;
-            color: #ff0000;
-            padding: 15px 0;
-            overflow: hidden;
-            width: 100%;
-        }
+/* body {
+    font-family: 'Bungee Spice', cursive;
+} */
 
-        .promo-banner-content {
-            display: inline-block;
-            white-space: nowrap;
-            animation: scroll-left 20s linear infinite;
-            font-size: 16px;
-            font-weight: bold;
-        }
+/* ========================================
+   2. Bandeau défilant en haut (promo)
+======================================== */
+.promo-banner {
+    background-color: #000;      
+    color: #ff0000;              
+    padding: 15px 0;
+    overflow: hidden;            
+    width: 100%;
+}
 
-        .promo-banner-content span {
-            margin: 0 50px;
-        }
+.promo-banner-content {
+    display: inline-block;
+    white-space: nowrap;         
+    animation: scroll-left 20s linear infinite; 
+    font-size: 16px;
+    font-weight: bold;
+}
 
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(100%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
+.promo-banner-content span {
+    margin: 0 50px;              
+}
 
-        /* 2. Logo centré */
-    /* 2. Logo centré */
+@keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* ========================================
+   3. Logo centré
+======================================== */
 .logo-section {
     display: flex;
     justify-content: center;
@@ -47,93 +54,124 @@
     padding: 10px 0;
     background-color: #fff;
     position: relative;
-    z-index: 1; /* Logo en arrière-plan */
+    z-index: 1;
 }
 
 .logo-section img {
-    height: 550px; /* Ajuste la taille que tu veux */
+    height: 200px;     
     width: auto;
     object-fit: contain;
-    
 }
 
-/* 3. Navbar avec liens + boutons */
+/* ========================================
+   4. Navbar transparente avec blur
+======================================== */
 .navbar {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 15px 40px;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.4); /* transparent */
+    backdrop-filter: blur(10px);
     position: relative;
-    z-index: 10; /* Navbar par-dessus le logo */
-    margin-top: -150px; /* Remonte la navbar pour chevaucher le logo */
+    width: 100%;
+    z-index: 100;
+     box-shadow: 0 2px 3px -1px rgba(208, 80, 96, 0.5);
+    
 }
-        /* Liens de navigation centrés */
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
 
-        .nav-links li a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
+/* ---- Liens de navigation centrés ---- */
+.nav-links {
+    display: flex;
+    gap: 70px;
+    list-style: none;
+     font-family: 'Bungee Spice', cursive;
+}
 
-        .nav-links li a:hover {
-            color: #ff0000;
-        }
+.nav-links li a {
+    position: relative;
+    text-decoration: none;
+    color: #9c6a40; /* marron par défaut */
+    font-size: 16px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
 
-        /* Boutons à droite (position absolue) */
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            position: absolute;
-            right: 40px;
-        }
+/* Souligné animé */
+.nav-links li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #D05060; /* rose au hover */
+    left: 0;
+    bottom: -5px;
+    transition: 0.3s;
+}
 
-        .btn {
-            padding: 10px 20px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.nav-links li a:hover::after {
+    width: 100%;
+}
 
-        .btn-panier {
-            background-color: transparent;
-            color: #333;
-            border: 2px solid #333;
-        }
+.nav-links li a:hover {
+    color: #D05060; /* rose au hover */
+}
 
-        .btn-panier:hover {
-            background-color: #333;
-            color: #fff;
-            transform: translateY(-2px);
-        }
+/* ---- Boutons à droite ---- */
+.nav-buttons {
+    display: flex;
+    gap: 19px;
+    align-items: center;
+    position: absolute;
+    right: 40px;
+}
 
-        .btn-login {
-            background-color: #ff0000;
-            color: #fff;
-            border: 2px solid #ff0000;
-        }
+/* ========================================
+   5. Boutons modernes avec hover
+======================================== */
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;                    
+    padding: 8px 8px;         
+    border-radius: 50px;        
+    cursor: pointer;
+    border: 0;                  
+    background-color: #c5a387; /* marron par défaut */
+    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+    letter-spacing: 1.5px;      
+    text-transform: uppercase;  
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    color: #fff;                
+}
 
-        .btn-login:hover {
-            background-color: #cc0000;
-            border-color: #cc0000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-        }
+/* Hover pour boutons */
+.btn:hover {
+    letter-spacing: 3px;
+    background-color: #D05060; /* rose au hover */
+    color: #fff;               
+    box-shadow: 0px 7px 29px #9c6a40;
+}
 
-        .btn i {
-            font-size: 15px;
-        }
+/* Active / clic */
+.btn:active {
+    letter-spacing: 3px;
+    background-color: #D05060;
+    color: #fff;
+    box-shadow: 0px 0px 0px rgba(208, 80, 96, 0);
+    transform: translateY(4px); 
+    transition: 100ms;
+}
+
+/* Icônes dans les boutons */
+.btn i {
+    font-size: 18px;           
+    transition: transform 0.3s ease;
+}
+
+/* Animation icône au hover */
+.btn:hover i {
+    transform: rotate(15deg) scale(1.1); 
+}
