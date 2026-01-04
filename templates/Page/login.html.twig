@@ -19,12 +19,18 @@
         </div>
         <div class="form">
             <div class="logo">
-                <span>LOGIX</span>
-            </div>
+    <a href="{{ path('app_home') }}">
+        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo" style="max-width: 150px; height: auto; border-radius: 10px;">
+    </a>
+</div>
             <form method="post" action="{{ path('app_login') }}">
                 {% if error %}
                     <div class="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
+
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
 
                 <div class="inputBox">
                     <input type="email" name="email" value="{{ last_username }}" required="required">
@@ -40,7 +46,7 @@
                 <button type="submit" class="enter">LOGIN</button>
                 
                 <div class="links">
-                    <a href="#">Forgot Password?</a>
+                    <a href="{{ path('app_forgot_password_request') }}">Forgot Password?</a>
                     <a href="{{ path('app_register') }}">Sign Up</a>
                 </div>
             </form>

@@ -122,6 +122,18 @@ form {
     width: 100%;
 }
 
+/* Alert success pour les messages de confirmation */
+.alert-success {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: rgba(76, 175, 80, 0.2);
+    color: #2e7d32;
+    font-size: 0.9em;
+    text-align: center;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
 .logo {
     text-align: center;
     margin-bottom: 30px;

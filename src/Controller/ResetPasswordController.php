@@ -15,6 +15,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -44,8 +45,7 @@ class ResetPasswordController extends AbstractController
             /** @var string $email */
             $email = $form->get('email')->getData();
 
-            return $this->processSendingPasswordResetEmail($email, $mailer, $translator
-            );
+            return $this->processSendingPasswordResetEmail($email, $mailer, $translator);
         }
 
         return $this->render('reset_password/request.html.twig', [
@@ -121,7 +121,10 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('> app_login');
+            // Message de confirmation
+            $this->addFlash('success', '✅ Votre mot de passe a été réinitialisé avec succès !');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('reset_password/reset.html.twig', [
@@ -159,7 +162,7 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('admin@creaself.com', 'Creabot'))
             ->to((string) $user->getEmail())
-            ->subject('Your password reset request')
+            ->subject('Réinitialisation de votre mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
@@ -167,6 +170,18 @@ class ResetPasswordController extends AbstractController
         ;
 
         $mailer->send($email);
+
+        // 🎭 MODE DÉMO : Message visible pour le portfolio
+        $this->addFlash('demo', '🎭 MODE DÉMO : En production, un email serait envoyé à ' . $user->getEmail());
+        
+        // 🔗 Lien direct pour faciliter les tests en développement
+        if ($this->getParameter('kernel.environment') === 'dev') {
+            $resetLink = $this->generateUrl('app_reset_password', 
+                ['token' => $resetToken->getToken()], 
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $this->addFlash('reset_link', '🔗 Lien de réinitialisation (dev uniquement) : <a href="' . $resetLink . '" class="demo-link">' . $resetLink . '</a>');
+        }
 
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);

@@ -1,11 +1,187 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Envoyé - LOGIX</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <style>
+        .alert-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .alert-dev {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px dashed #a1c4fd;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-size: 0.85em;
+            line-height: 1.8;
+            animation: slideIn 0.7s ease-out;
+        }
+        
+        .demo-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            word-break: break-all;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        
+        .demo-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: #1e40af;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Container agrandi pour check_email */
+        .container {
+            width: 600px !important;
+            min-height: 850px !important;
+            max-height: 120vh;
+            overflow-y: auto;
+        }
+        
+        .email-content {
+            text-align: center;
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .email-content h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .email-content p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        
+        .btn-back {
+            display: inline-block;
+            padding: 15px 40px;
+            margin-top: 30px;
+            background: linear-gradient(90deg, #ff9a9e, #a1c4fd);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: 0.5s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-back:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .retry-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: 0.3s;
+        }
+        
+        .retry-link:hover {
+            color: #a1c4fd;
+        }
+        
+        /* Scrollbar personnalisée pour alert-dev */
+        .alert-dev::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .alert-dev::-webkit-scrollbar-track {
+            background: rgba(161, 196, 253, 0.1);
+            border-radius: 10px;
+        }
+        
+        .alert-dev::-webkit-scrollbar-thumb {
+            background: #a1c4fd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ path('app_home') }}" class="back-btn">BACK</a>
+    
+    <div class="floating-elements">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    
+    <div class="container">
+        <div class="form">
+            {# Messages démo pour le portfolio #}
+            {% for message in app.flashes('demo') %}
+                <div class="alert-demo">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
-
-{% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
-{% endblock %}
+            {% for message in app.flashes('reset_link') %}
+                <div class="alert-dev">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+            
+            <div class="email-content">
+                <div style="font-size: 4em; margin-bottom: 20px;">✉️</div>
+                
+                <h1>Email envoyé !</h1>
+                
+                <p>
+                    Si un compte correspondant à votre email existe, un lien de réinitialisation vous a été envoyé.
+                </p>
+                
+                <p>
+                    Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                </p>
+                
+                <p style="font-size: 0.85em; margin-top: 20px;">
+                    Si vous ne recevez pas d'email, vérifiez votre dossier spam.
+                </p>
+                
+                <a href="{{ path('app_login') }}" class="btn-back">← RETOUR À LA CONNEXION</a>
+                
+                <a href="{{ path('app_forgot_password_request') }}" class="retry-link">Réessayer</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
