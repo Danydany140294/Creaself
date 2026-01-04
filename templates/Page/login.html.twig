@@ -1,52 +1,52 @@
-{# {% extends 'base.html.twig' %}   #}
-
-
-
-{% block stylesheets %}
-   
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LOGIX</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-{% endblock %}
-
-{% block body %}
-    <div class="card">
-        <div class="hero">
-            <div class="hero-inner">
-                <h2>Tu nous as manqué, il y a plein de nouveautés !</h2>
-            </div>
+</head>
+<body>
+    <a href="{{ path('app_home') }}" class="back-btn">BACK</a>
+    
+    <div class="container">
+        <div class="floating-elements">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-        <form method="post" action="{{ path('app_login') }}">
-            <h2>Hey</h2>
-            <h3>Connecte-toi sur ton compte</h3>
-
-            {# Afficher les erreurs d'authentification #}
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
-
-            <div class="socials">
-                <button class="social-btn" type="button">
-                    <img src="{{ asset('asset/google.svg') }}" alt="google" class="google">
-                    <p><span class="extra-text">Connexion avec</span> Google</p>
-                </button>
-                <button class="social-btn" type="button">
-                    <img src="{{ asset('asset/facebook.svg') }}" alt="fb" class="fb">
-                    <p><span class="extra-text">Connexion avec</span> Facebook</p>
-                </button>
+        <div class="form">
+            <div class="logo">
+                <span>LOGIX</span>
             </div>
-            <span class="or"></span>
+            <form method="post" action="{{ path('app_login') }}">
+                {% if error %}
+                    <div class="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-            <input type="email" id="inputEmail" name="email" value="{{ last_username }}" placeholder="Email" required autofocus>
-            <input type="password" id="inputPassword" name="password" placeholder="Password" required>
+                <div class="inputBox">
+                    <input type="email" name="email" value="{{ last_username }}" required="required">
+                    <span>Email</span>
+                </div>
+                <div class="inputBox">
+                    <input type="password" name="password" required="required">
+                    <span>Password</span>
+                </div>
 
-            {# Champ CSRF pour la sécurité #}
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <button type="submit">Login</button>
-        </form>
+                <button type="submit" class="enter">LOGIN</button>
+                
+                <div class="links">
+                    <a href="#">Forgot Password?</a>
+                    <a href="{{ path('app_register') }}">Sign Up</a>
+                </div>
+            </form>
+        </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
 
     <script src="{{ asset('js/login.js') }}"></script>
-{% endblock %}
+</body>
+</html>

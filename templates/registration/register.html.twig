@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - LOGIX</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
+<body>
+    <a href="{{ path('app_home') }}" class="back-btn">BACK</a>
+    
+    <div class="container" style="height: 650px;">
+        <div class="floating-elements">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="form">
+            <div class="logo">
+                <span>LOGIX</span>
+            </div>
+            {{ form_start(registrationForm) }}
+                <h3 style="color: #666; margin-bottom: 20px; text-align: center;">Créer un compte</h3>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.Nom, {'attr': {'required': 'required'}}) }}
+                    <span>Nom</span>
+                </div>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.Prenom, {'attr': {'required': 'required'}}) }}
+                    <span>Prénom</span>
+                </div>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.email, {'attr': {'required': 'required'}}) }}
+                    <span>Email</span>
+                </div>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.Telephone, {'attr': {'required': 'required'}}) }}
+                    <span>Téléphone</span>
+                </div>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'required': 'required'}}) }}
+                    <span>Mot de passe</span>
+                </div>
+
+                <div class="inputBox">
+                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'required': 'required'}}) }}
+                    <span>Confirmer</span>
+                </div>
+
+                <button type="submit" class="enter">SIGN UP</button>
+                
+                <div class="links">
+                    <a href="{{ path('app_login') }}">Déjà un compte ? Connexion</a>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+
+    <script src="{{ asset('js/login.js') }}"></script>
+</body>
+</html>
