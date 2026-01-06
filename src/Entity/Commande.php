@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\CommandeStatut;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,8 +22,8 @@ class Commande
     #[ORM\Column]
     private ?\DateTime $dateCommande = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $statut = null;
+    #[ORM\Column(length: 50, enumType: CommandeStatut::class)]
+    private ?CommandeStatut $statut = null;
 
     #[ORM\Column]
     private ?float $totalTTC = null;
@@ -31,21 +32,16 @@ class Commande
     private ?User $user = null;
 
     /**
-     * @var Collection<int, Produit>
+     * @var Collection<int, LigneCommande>
      */
-    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'commandes')]
-    private Collection $produits;
-
-    /**
-     * @var Collection<int, Box>
-     */
-    #[ORM\ManyToMany(targetEntity: Box::class, inversedBy: 'commandes')]
-    private Collection $boxes;
+    #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'commande', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $lignesCommande;
 
     public function __construct()
     {
-        $this->produits = new ArrayCollection();
-        $this->boxes = new ArrayCollection();
+        $this->lignesCommande = new ArrayCollection();
+        $this->dateCommande = new \DateTime();
+        $this->statut = CommandeStatut::EN_ATTENTE;
     }
 
     public function getId(): ?int
@@ -77,12 +73,12 @@ class Commande
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getStatut(): ?CommandeStatut
     {
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(CommandeStatut $statut): static
     {
         $this->statut = $statut;
 
@@ -114,50 +110,40 @@ class Commande
     }
 
     /**
-     * @return Collection<int, Produit>
+     * @return Collection<int, LigneCommande>
      */
-    public function getProduits(): Collection
+    public function getLignesCommande(): Collection
     {
-        return $this->produits;
+        return $this->lignesCommande;
     }
 
-    public function addProduit(Produit $produit): static
+    public function addLigneCommande(LigneCommande $ligneCommande): static
     {
-        if (!$this->produits->contains($produit)) {
-            $this->produits->add($produit);
+        if (!$this->lignesCommande->contains($ligneCommande)) {
+            $this->lignesCommande->add($ligneCommande);
+            $ligneCommande->setCommande($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(Produit $produit): static
+    public function removeLigneCommande(LigneCommande $ligneCommande): static
     {
-        $this->produits->removeElement($produit);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Box>
-     */
-    public function getBoxes(): Collection
-    {
-        return $this->boxes;
-    }
-
-    public function addBox(Box $box): static
-    {
-        if (!$this->boxes->contains($box)) {
-            $this->boxes->add($box);
+        if ($this->lignesCommande->removeElement($ligneCommande)) {
+            if ($ligneCommande->getCommande() === $this) {
+                $ligneCommande->setCommande(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeBox(Box $box): static
+    public function calculerTotal(): float
     {
-        $this->boxes->removeElement($box);
-
-        return $this;
+        $total = 0;
+        foreach ($this->lignesCommande as $ligne) {
+            $total += $ligne->getSousTotal();
+        }
+        return $total;
     }
 }

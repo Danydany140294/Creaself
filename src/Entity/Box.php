@@ -27,6 +27,9 @@ class Box
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
+    #[ORM\Column]
+    private ?int $stock = null;
+
     /**
      * @var Collection<int, Produit>
      */
@@ -36,16 +39,9 @@ class Box
     #[ORM\Column(length: 50)]
     private ?string $type = null;
 
-    /**
-     * @var Collection<int, Commande>
-     */
-    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'boxes')]
-    private Collection $commandes;
-
     public function __construct()
     {
         $this->produits = new ArrayCollection();
-        $this->commandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,6 +97,18 @@ class Box
         return $this;
     }
 
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): static
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Produit>
      */
@@ -133,33 +141,6 @@ class Box
     public function setType(string $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Commande>
-     */
-    public function getCommandes(): Collection
-    {
-        return $this->commandes;
-    }
-
-    public function addCommande(Commande $commande): static
-    {
-        if (!$this->commandes->contains($commande)) {
-            $this->commandes->add($commande);
-            $commande->addBox($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommande(Commande $commande): static
-    {
-        if ($this->commandes->removeElement($commande)) {
-            $commande->removeBox($this);
-        }
 
         return $this;
     }

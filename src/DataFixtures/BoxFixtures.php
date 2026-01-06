@@ -25,6 +25,7 @@ class BoxFixtures extends Fixture implements DependentFixtureInterface
         $box1->setNom('Box Gourmande');
         $box1->setDescription('Une sélection premium de nos cookies les plus gourmands : Macadamia Framboise, Pêche Caramel et Pistache Cannelle. Pour les vrais amateurs de saveurs raffinées.');
         $box1->setPrix(24.90);
+        $box1->setStock(50);
         $box1->setImage('box-gourmande.jpg');
         $box1->setType('fixe');
         // Associer les produits
@@ -38,6 +39,7 @@ class BoxFixtures extends Fixture implements DependentFixtureInterface
         $box2->setNom('Box Découverte');
         $box2->setDescription('Découvrez l\'ensemble de notre gamme avec cette box contenant nos 5 cookies phares : Pistache Cannelle, Pêche Caramel, Noisette Vanille, Macadamia Framboise et Fruits Rouges.');
         $box2->setPrix(19.90);
+        $box2->setStock(60);
         $box2->setImage('box-decouverte.jpg');
         $box2->setType('fixe');
         // Associer tous les produits
@@ -53,6 +55,7 @@ class BoxFixtures extends Fixture implements DependentFixtureInterface
         $box3->setNom('Box Surprise');
         $box3->setDescription('Laissez-vous surprendre ! Chaque mois, une nouvelle sélection de 6 cookies incluant nos créations exclusives et nos nouvelles recettes. Un voyage gustatif garanti !');
         $box3->setPrix(22.90);
+        $box3->setStock(40);
         $box3->setImage('box-surprise.jpg');
         $box3->setType('fixe');
         // Produits aléatoires/du mois
@@ -66,6 +69,7 @@ class BoxFixtures extends Fixture implements DependentFixtureInterface
         $box4->setNom('Box Personnalisable');
         $box4->setDescription('Composez votre propre box ! Choisissez 6, 12 ou 24 cookies parmi toute notre gamme selon vos envies et vos préférences.');
         $box4->setPrix(19.90);
+        $box4->setStock(100);
         $box4->setImage('box-personnalisable.jpg');
         $box4->setType('personnalisable');
         // Pas de produits associés : le client choisit
@@ -76,6 +80,7 @@ class BoxFixtures extends Fixture implements DependentFixtureInterface
         $box5->setNom('Box Prestige');
         $box5->setDescription('L\'excellence à l\'état pur. Une box luxueuse avec nos cookies d\'exception préparés avec des ingrédients nobles : chocolat Valrhona, pistaches de Sicile, noix de macadamia premium. Le cadeau idéal.');
         $box5->setPrix(34.90);
+        $box5->setStock(30);
         $box5->setImage('box-prestige.jpg');
         $box5->setType('fixe');
         // Les meilleurs produits
