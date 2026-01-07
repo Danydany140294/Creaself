@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Service\PanierService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private PanierService $panierService  // ← AJOUT : Injection du service
+    ) {
     }
 
     public function authenticate(Request $request): Passport
@@ -44,13 +47,23 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        // ← AJOUT : Migration automatique du panier session → BDD
+        $user = $token->getUser();
+        
+        // Forcer la récupération de la session courante
+        $session = $request->getSession();
+        $panierSession = $session->get('panier', null);
+        
+        // Debug temporaire (à retirer après)
+        if ($panierSession) {
+            $this->panierService->migrerSessionVersBDD($user);
+        }
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
         // Ici, tu peux rediriger en fonction du rôle de l'utilisateur
-        $user = $token->getUser();
-
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }

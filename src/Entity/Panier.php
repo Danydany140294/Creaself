@@ -80,11 +80,11 @@ class Panier
     }
 
     /**
-     * Rafraîchit la date d'expiration à +30 minutes
+     * Rafraîchit la date d'expiration à +10 minutes (durée courte pour tests/démos)
      */
     public function rafraichirExpiration(): void
     {
-        $this->dateExpiration = new \DateTimeImmutable('+30 minutes');
+        $this->dateExpiration = new \DateTimeImmutable('+10 minutes');
     }
 
     /**
@@ -127,7 +127,7 @@ class Panier
     /**
      * Calcule le total du panier
      */
-    public function calculerTotal(): float
+    public function getTotal(): float
     {
         $total = 0;
         foreach ($this->lignesPanier as $ligne) {
