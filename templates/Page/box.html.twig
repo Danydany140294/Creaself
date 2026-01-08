@@ -1,21 +1,248 @@
-{% extends 'Page/home.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Ateliers - CreaSelf{% endblock %}
+{% block title %}Nos Boxes - CreaSelf{% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/box.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="cart-container">
-    <h1>Mon Panier</h1>
 
- 
+{# ========== EN-TÊTE PAGE ========== #}
+<section class="page-header">
+    <div class="header-content">
+        <h1>Nos Boxes Gourmandes</h1>
+        <p class="subtitle">Des assortiments de cookies préparés avec amour</p>
+    </div>
+</section>
 
-<h1>Produits</h1>
-<ul>
-   
-</ul>
-</div>
+{# ========== BOX PERSONNALISABLE EN VEDETTE ========== #}
+{% if box_personnalisable %}
+    <section class="box-perso-hero">
+        <div class="hero-container">
+            <div class="hero-image">
+                <img src="{{ asset('uploads/boxes/' ~ box_personnalisable.image) }}" 
+                     alt="{{ box_personnalisable.nom }}"
+                     class="box-hero-img">
+                <span class="badge-hero">Personnalisable</span>
+            </div>
+            
+            <div class="hero-content">
+                <h2 class="hero-title">{{ box_personnalisable.nom }}</h2>
+                <p class="hero-description">{{ box_personnalisable.description }}</p>
+                
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <i class="fas fa-cookie-bite"></i>
+                        <span>12 cookies au choix</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-palette"></i>
+                        <span>{{ produits|length }} saveurs disponibles</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-gift"></i>
+                        <span>Parfait pour offrir</span>
+                    </div>
+                </div>
+                
+                <div class="hero-price">
+                    <span class="price-label">Seulement</span>
+                    <span class="price-value">{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</span>
+                </div>
+                
+                <button type="button" class="btn-composer-hero" onclick="openModalBoxPerso()">
+                    <i class="fas fa-magic"></i> Composer ma box personnalisée
+                </button>
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+{# ========== BOXES FIXES ========== #}
+<section class="boxes-section">
+    <div class="section-header">
+        <h2>Nos Boxes Prêtes à Déguster</h2>
+        <p class="section-description">Sélections gourmandes pré-composées par nos soins</p>
+    </div>
+
+    <div class="boxes-container">
+        {% if boxes_fixes|length > 0 %}
+            <div class="boxes-grid">
+                {% for box in boxes_fixes %}
+                    <div class="box-card">
+                        {# Image de la box #}
+                        <div class="box-image-wrapper">
+                            <img src="{{ asset('uploads/boxes/' ~ box.image) }}" 
+                                 alt="{{ box.nom }}"
+                                 class="box-image">
+                            
+                            {# Badges #}
+                            {% if box.stock == 0 %}
+                                <span class="badge badge-rupture">Rupture</span>
+                            {% elseif box.stock < 3 %}
+                                <span class="badge badge-stock-faible">Dernières boxes !</span>
+                            {% endif %}
+                        </div>
+
+                        {# Informations box #}
+                        <div class="box-info">
+                            <h3 class="box-nom">{{ box.nom }}</h3>
+                            <p class="box-description">{{ box.description }}</p>
+
+                            {# Composition de la box #}
+                            {% if box.produits|length > 0 %}
+                                <div class="box-composition">
+                                    <h4 class="composition-title">
+                                        <i class="fas fa-cookie-bite"></i> Contient :
+                                    </h4>
+                                    <ul class="composition-list">
+                                        {% for produit in box.produits %}
+                                            <li class="composition-item">
+                                                <i class="fas fa-check"></i>
+                                                <span>{{ produit.name }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            {# Prix #}
+                            <div class="box-prix-wrapper">
+                                <span class="prix">{{ box.prix|number_format(2, ',', ' ') }} €</span>
+                            </div>
+
+                            {# Stock #}
+                            <div class="box-stock">
+                                {% if box.stock > 0 %}
+                                    <i class="fas fa-check-circle icon-success"></i>
+                                    <span class="stock-disponible">{{ box.stock }} box(es) disponible(s)</span>
+                                {% else %}
+                                    <i class="fas fa-times-circle icon-error"></i>
+                                    <span class="stock-rupture">Rupture de stock</span>
+                                {% endif %}
+                            </div>
+
+                            {# Formulaire ajout panier #}
+                            {% if box.stock > 0 %}
+                                <form method="POST" 
+                                      action="{{ path('app_panier_ajouter_box', {id: box.id}) }}" 
+                                      class="form-ajout-panier">
+                                    
+                                    <div class="quantity-selector">
+                                        <label for="quantite_box_{{ box.id }}">Quantité:</label>
+                                        <div class="quantity-controls">
+                                            <button type="button" 
+                                                    class="btn-qty btn-minus" 
+                                                    onclick="updateBoxQty('quantite_box_{{ box.id }}', -1, 1, {{ box.stock }})"
+                                                    aria-label="Diminuer la quantité">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            
+                                            <input type="number" 
+                                                   id="quantite_box_{{ box.id }}"
+                                                   name="quantite" 
+                                                   value="1" 
+                                                   min="1" 
+                                                   max="{{ box.stock }}"
+                                                   class="input-quantity"
+                                                   readonly>
+                                            
+                                            <button type="button" 
+                                                    class="btn-qty btn-plus" 
+                                                    onclick="updateBoxQty('quantite_box_{{ box.id }}', 1, 1, {{ box.stock }})"
+                                                    aria-label="Augmenter la quantité">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn-ajouter-panier">
+                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn-rupture" disabled>
+                                    <i class="fas fa-ban"></i> Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-boxes">
+                <i class="fas fa-box-open fa-3x"></i>
+                <p>Aucune box fixe disponible pour le moment.</p>
+                <a href="{{ path('app_home') }}" class="btn-retour">
+                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{# ========== CTA BOX PERSO (bas de page) ========== #}
+{% if box_personnalisable %}
+    <section class="cta-box-perso">
+        <div class="cta-content">
+            <div class="cta-icon">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div class="cta-text">
+                <h3>Tu veux une box unique ?</h3>
+                <p>Compose ta box personnalisée avec exactement les cookies que tu préfères !</p>
+            </div>
+            <button type="button" class="btn-cta" onclick="openModalBoxPerso()">
+                <i class="fas fa-cookie-bite"></i> Créer ma box maintenant
+            </button>
+        </div>
+    </section>
+{% endif %}
+
+{# Inclure la modal box personnalisable #}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        /**
+         * Gestion des quantités +/- pour les boxes
+         */
+        function updateBoxQty(inputId, delta, min, max) {
+            const input = document.getElementById(inputId);
+            let currentValue = parseInt(input.value) || min;
+            let newValue = currentValue + delta;
+            
+            // Limiter entre min et max
+            if (newValue >= min && newValue <= max) {
+                input.value = newValue;
+            }
+        }
+
+        /**
+         * Animation au scroll
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.box-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
 {% endblock %}

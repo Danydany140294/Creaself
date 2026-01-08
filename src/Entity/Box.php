@@ -16,10 +16,10 @@ class Box
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Nom = null;
+    private ?string $nom = null;
 
     #[ORM\Column]
-    private ?float $Prix = null;
+    private ?float $prix = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
@@ -30,14 +30,14 @@ class Box
     #[ORM\Column]
     private ?int $stock = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
+
     /**
      * @var Collection<int, Produit>
      */
     #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'boxes')]
     private Collection $produits;
-
-    #[ORM\Column(length: 50)]
-    private ?string $type = null;
 
     public function __construct()
     {
@@ -51,25 +51,23 @@ class Box
 
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): static
+    public function setNom(string $nom): static
     {
-        $this->Nom = $Nom;
-
+        $this->nom = $nom;
         return $this;
     }
 
     public function getPrix(): ?float
     {
-        return $this->Prix;
+        return $this->prix;
     }
 
-    public function setPrix(float $Prix): static
+    public function setPrix(float $prix): static
     {
-        $this->Prix = $Prix;
-
+        $this->prix = $prix;
         return $this;
     }
 
@@ -81,7 +79,6 @@ class Box
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -93,7 +90,6 @@ class Box
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -105,7 +101,17 @@ class Box
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
+        return $this;
+    }
 
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
         return $this;
     }
 
@@ -122,26 +128,12 @@ class Box
         if (!$this->produits->contains($produit)) {
             $this->produits->add($produit);
         }
-
         return $this;
     }
 
     public function removeProduit(Produit $produit): static
     {
         $this->produits->removeElement($produit);
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
         return $this;
     }
 }

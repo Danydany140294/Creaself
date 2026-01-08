@@ -19,23 +19,211 @@
     {# Navbar incluse sur toutes les pages #}
     {% include 'component/navbar.html.twig' %}
 
-
-
-
-
     {# Contenu principal injecté par les templates enfants #}
     <main>
-        {% block body %}{% endblock %}
+        {% block body %}
+
+        {# ========== SECTION HERO / BANNIÈRE ========== #}
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Bienvenue chez CreaSelf</h1>
+                <p>Découvrez nos délicieux cookies artisanaux</p>
+            </div>
+        </section>
+
+        {# ========== SECTION COOKIES ========== #}
+        <section class="cookies-section">
+            <div class="section-header">
+                <h2>Nos Cookies</h2>
+                <a href="{{ path('app_produits') }}" class="btn-voir-plus">Voir tous nos cookies →</a>
+            </div>
+
+            <div class="produits-grid">
+                {% for produit in produits %}
+                    <div class="produit-card">
+                        {# Image du produit #}
+                        <div class="produit-image-wrapper">
+                            <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+                                 alt="{{ produit.name }}"
+                                 class="produit-image">
+                            
+                            {# Badge si stock faible #}
+                            {% if produit.stock > 0 and produit.stock < 5 %}
+                                <span class="badge-stock-faible">Stock limité</span>
+                            {% endif %}
+                        </div>
+
+                        {# Informations produit #}
+                        <div class="produit-info">
+                            <h3 class="produit-nom">{{ produit.name }}</h3>
+                            <p class="produit-prix">{{ produit.prix|number_format(2, ',', ' ') }} €</p>
+
+                            {# Stock disponible #}
+                            {% if produit.stock > 0 %}
+                                <p class="stock-info disponible">
+                                    <i class="fas fa-check-circle"></i> 
+                                    {{ produit.stock }} en stock
+                                </p>
+
+                                {# Formulaire ajout au panier #}
+                                <form method="POST" action="{{ path('app_panier_ajouter_produit', {id: produit.id}) }}" class="form-ajout-panier">
+                                    <div class="quantity-selector">
+                                        <label for="qty_{{ produit.id }}">Quantité:</label>
+                                        <input type="number" 
+                                               id="qty_{{ produit.id }}"
+                                               name="quantite" 
+                                               value="1" 
+                                               min="1" 
+                                               max="{{ produit.stock }}"
+                                               class="input-quantity">
+                                    </div>
+                                    <button type="submit" class="btn-ajouter">
+                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="stock-info rupture">
+                                    <i class="fas fa-times-circle"></i> Rupture de stock
+                                </p>
+                                <button class="btn-rupture" disabled>Indisponible</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="no-products">Aucun cookie disponible pour le moment.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        {# ========== SECTION BOXES ========== #}
+        <section class="boxes-section">
+            <div class="section-header">
+                <h2>Nos Boxes Gourmandes</h2>
+                <a href="{{ path('app_box') }}" class="btn-voir-plus">Voir toutes nos boxes →</a>
+            </div>
+
+            <div class="boxes-grid">
+                {# Boxes fixes #}
+                {% for box in boxes %}
+                    <div class="box-card">
+                        {# Image de la box #}
+                        <div class="box-image-wrapper">
+                            <img src="{{ asset('uploads/boxes/' ~ box.image) }}" 
+                                 alt="{{ box.nom }}"
+                                 class="box-image">
+                            
+                            {# Badge si stock faible #}
+                            {% if box.stock > 0 and box.stock < 3 %}
+                                <span class="badge-stock-faible">Dernières boxes !</span>
+                            {% endif %}
+                        </div>
+
+                        {# Informations box #}
+                        <div class="box-info">
+                            <h3 class="box-nom">{{ box.nom }}</h3>
+                            <p class="box-description">{{ box.description }}</p>
+
+                            {# Composition de la box #}
+                            {% if box.produits|length > 0 %}
+                                <div class="box-composition">
+                                    <h4><i class="fas fa-cookie-bite"></i> Contient:</h4>
+                                    <ul class="composition-list">
+                                        {% for produit in box.produits %}
+                                            <li>{{ produit.name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            <p class="box-prix">{{ box.prix|number_format(2, ',', ' ') }} €</p>
+
+                            {# Stock et formulaire #}
+                            {% if box.stock > 0 %}
+                                <p class="stock-info disponible">
+                                    <i class="fas fa-check-circle"></i> 
+                                    {{ box.stock }} box(es) disponible(s)
+                                </p>
+
+                                {# Formulaire ajout au panier #}
+                                <form method="POST" action="{{ path('app_panier_ajouter_box', {id: box.id}) }}" class="form-ajout-panier">
+                                    <div class="quantity-selector">
+                                        <label for="qty_box_{{ box.id }}">Quantité:</label>
+                                        <input type="number" 
+                                               id="qty_box_{{ box.id }}"
+                                               name="quantite" 
+                                               value="1" 
+                                               min="1" 
+                                               max="{{ box.stock }}"
+                                               class="input-quantity">
+                                    </div>
+                                    <button type="submit" class="btn-ajouter">
+                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="stock-info rupture">
+                                    <i class="fas fa-times-circle"></i> Rupture de stock
+                                </p>
+                                <button class="btn-rupture" disabled>Indisponible</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {# Box personnalisable #}
+                {% if box_personnalisable %}
+                    <div class="box-card box-personnalisable-card">
+                        <div class="box-image-wrapper">
+                            <img src="{{ asset('uploads/boxes/' ~ box_personnalisable.image) }}" 
+                                 alt="{{ box_personnalisable.nom }}"
+                                 class="box-image">
+                            <span class="badge-perso">Personnalisable</span>
+                        </div>
+
+                        <div class="box-info">
+                            <h3 class="box-nom">{{ box_personnalisable.nom }}</h3>
+                            <p class="box-description">{{ box_personnalisable.description }}</p>
+
+                            <div class="box-perso-features">
+                                <div class="feature">
+                                    <i class="fas fa-cookie-bite"></i>
+                                    <span>12 cookies au choix</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-palette"></i>
+                                    <span>5 saveurs disponibles</span>
+                                </div>
+                            </div>
+
+                            <p class="box-prix">{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</p>
+
+                            <button type="button" class="btn-composer" onclick="openModalBoxPerso()">
+                                <i class="fas fa-magic"></i> Composer ma box
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        {% endblock %}
     </main>
 
-
-
-
+    {# Inclure la modal si box perso existe #}
+    {% if box_personnalisable is defined and box_personnalisable %}
+        {% include 'panier/_modal_box_personnalisable.html.twig' %}
+    {% endif %}
 
     {# Scripts JS #}
     {% block javascripts %}
         <script>
-            // Tes scripts personnalisés
+            // Animation d'intro (si nécessaire)
+            document.addEventListener('DOMContentLoaded', function() {
+                // Retirer la classe intro-active après l'animation
+                setTimeout(() => {
+                    document.body.classList.remove('intro-active');
+                }, 1000);
+            });
         </script>
     {% endblock %}
 </body>

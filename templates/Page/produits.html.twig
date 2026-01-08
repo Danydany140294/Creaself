@@ -1,6 +1,6 @@
-{% extends 'Page/home.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Ateliers - CreaSelf{% endblock %}
+{% block title %}Nos Cookies - CreaSelf{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -8,18 +8,196 @@
 {% endblock %}
 
 {% block body %}
-<div class="cart-container">
-    <h1>Mon Panier</h1>
 
- 
+{# ========== EN-TÊTE PAGE ========== #}
+<section class="page-header">
+    <div class="header-content">
+        <h1>Nos Cookies Artisanaux</h1>
+        <p class="subtitle">Découvrez notre sélection de cookies faits maison avec amour</p>
+    </div>
+</section>
 
-<h1>Produits</h1>
-<ul>
-    {% for produit in produits %}
-        <li>{{ produit.name }} - {{ produit.prix }} €</li>
-    {% else %}
-        <li>Aucun produit trouvé.</li>
-    {% endfor %}
-</ul>
-</div>
+{# ========== BANNIÈRE BOX PERSONNALISABLE ========== #}
+{% if box_personnalisable %}
+    <section class="box-perso-banner">
+        <div class="banner-wrapper">
+            <div class="banner-icon">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div class="banner-content">
+                <h2>🍪 Compose ta box personnalisée !</h2>
+                <p>Choisis 12 cookies parmi nos {{ produits|length }} saveurs pour seulement {{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</p>
+            </div>
+            <button type="button" class="btn-composer-banner" onclick="openModalBoxPerso()">
+                <i class="fas fa-cookie-bite"></i> Composer ma box
+            </button>
+        </div>
+    </section>
+{% endif %}
+
+{# ========== LISTE DES COOKIES ========== #}
+<section class="produits-section">
+    <div class="produits-container">
+        
+        {% if produits|length > 0 %}
+            <div class="produits-grid">
+                {% for produit in produits %}
+                    <div class="cookie-card">
+                        {# Image du cookie #}
+                        <div class="cookie-image-wrapper">
+                            <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+                                 alt="{{ produit.name }}"
+                                 class="cookie-image">
+                            
+                            {# Badges #}
+                            {% if produit.stock == 0 %}
+                                <span class="badge badge-rupture">Rupture</span>
+                            {% elseif produit.stock < 5 %}
+                                <span class="badge badge-stock-faible">Stock limité</span>
+                            {% endif %}
+                        </div>
+
+                        {# Informations cookie #}
+                        <div class="cookie-info">
+                            <h3 class="cookie-nom">{{ produit.name }}</h3>
+                            
+                            {# Prix #}
+                            <div class="cookie-prix-wrapper">
+                                <span class="prix">{{ produit.prix|number_format(2, ',', ' ') }} €</span>
+                                <span class="prix-unitaire">/ pièce</span>
+                            </div>
+
+                            {# Stock #}
+                            <div class="cookie-stock">
+                                {% if produit.stock > 0 %}
+                                    <i class="fas fa-check-circle icon-success"></i>
+                                    <span class="stock-disponible">{{ produit.stock }} en stock</span>
+                                {% else %}
+                                    <i class="fas fa-times-circle icon-error"></i>
+                                    <span class="stock-rupture">Rupture de stock</span>
+                                {% endif %}
+                            </div>
+
+                            {# Formulaire ajout panier #}
+                            {% if produit.stock > 0 %}
+                                <form method="POST" 
+                                      action="{{ path('app_panier_ajouter_produit', {id: produit.id}) }}" 
+                                      class="form-ajout-panier">
+                                    
+                                    <div class="quantity-selector">
+                                        <label for="quantite_{{ produit.id }}">Quantité:</label>
+                                        <div class="quantity-controls">
+                                            <button type="button" 
+                                                    class="btn-qty btn-minus" 
+                                                    onclick="updateQty('quantite_{{ produit.id }}', -1, 1, {{ produit.stock }})"
+                                                    aria-label="Diminuer la quantité">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            
+                                            <input type="number" 
+                                                   id="quantite_{{ produit.id }}"
+                                                   name="quantite" 
+                                                   value="1" 
+                                                   min="1" 
+                                                   max="{{ produit.stock }}"
+                                                   class="input-quantity"
+                                                   readonly>
+                                            
+                                            <button type="button" 
+                                                    class="btn-qty btn-plus" 
+                                                    onclick="updateQty('quantite_{{ produit.id }}', 1, 1, {{ produit.stock }})"
+                                                    aria-label="Augmenter la quantité">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn-ajouter-panier">
+                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn-rupture" disabled>
+                                    <i class="fas fa-ban"></i> Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-products">
+                <i class="fas fa-cookie-bite fa-3x"></i>
+                <p>Aucun cookie disponible pour le moment.</p>
+                <a href="{{ path('app_home') }}" class="btn-retour">
+                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{# ========== SECTION CTA BOX PERSO (bas de page) ========== #}
+{% if box_personnalisable %}
+    <section class="cta-box-perso">
+        <div class="cta-content">
+            <div class="cta-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="cta-text">
+                <h3>Envie d'un assortiment sur mesure ?</h3>
+                <p>Créez votre box personnalisée avec 12 cookies de votre choix !</p>
+            </div>
+            <button type="button" class="btn-cta" onclick="openModalBoxPerso()">
+                <i class="fas fa-magic"></i> Créer ma box
+            </button>
+        </div>
+    </section>
+{% endif %}
+
+{# Inclure la modal box personnalisable #}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        /**
+         * Gestion des quantités +/-
+         */
+        function updateQty(inputId, delta, min, max) {
+            const input = document.getElementById(inputId);
+            let currentValue = parseInt(input.value) || min;
+            let newValue = currentValue + delta;
+            
+            // Limiter entre min et max
+            if (newValue >= min && newValue <= max) {
+                input.value = newValue;
+            }
+        }
+
+        /**
+         * Animation au scroll
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.cookie-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
 {% endblock %}

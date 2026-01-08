@@ -78,6 +78,43 @@ class PanierController extends AbstractController
         return $this->redirectToReferer($request, 'app_home');
     }
 
+
+    /**
+ * Ajoute une box personnalisable au panier
+ */
+#[Route('/ajouter-box-personnalisable/{id}', name: 'app_panier_ajouter_box_personnalisable', methods: ['POST'])]
+public function ajouterBoxPersonnalisable(Box $box, Request $request): Response
+{
+    if ($box->getType() !== 'personnalisable') {
+        $this->addFlash('error', 'Cette box n\'est pas personnalisable.');
+        return $this->redirectToReferer($request, 'app_home');
+    }
+
+    // Récupérer les cookies choisis depuis le formulaire
+    // Format attendu: cookies[produit_id] = quantite
+    $cookiesChoisis = $request->request->all('cookies');
+    
+    if (empty($cookiesChoisis)) {
+        $this->addFlash('error', 'Veuillez sélectionner au moins un cookie.');
+        return $this->redirectToReferer($request, 'app_home');
+    }
+
+    // Filtrer et convertir en entiers
+    $cookiesChoisis = array_filter(
+        array_map('intval', $cookiesChoisis),
+        fn($quantite) => $quantite > 0
+    );
+
+    try {
+        $this->panierService->ajouterBoxPersonnalisable($box, $cookiesChoisis);
+        $this->addFlash('success', 'Box personnalisée ajoutée au panier ! 🎉');
+    } catch (\Exception $e) {
+        $this->addFlash('error', $e->getMessage());
+    }
+
+    return $this->redirectToReferer($request, 'app_home');
+}
+
     /**
      * Modifie la quantité d'un élément du panier
      */
