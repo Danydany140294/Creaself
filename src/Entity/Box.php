@@ -33,6 +33,13 @@ class Box
     #[ORM\Column(length: 50)]
     private ?string $type = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?User $createur = null;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $dateCreation = null;
+
     /**
      * @var Collection<int, Produit>
      */
@@ -115,6 +122,28 @@ class Box
         return $this;
     }
 
+    public function getCreateur(): ?User
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(?User $createur): static
+    {
+        $this->createur = $createur;
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeImmutable
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(?\DateTimeImmutable $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Produit>
      */
@@ -135,5 +164,21 @@ class Box
     {
         $this->produits->removeElement($produit);
         return $this;
+    }
+
+    /**
+     * Vérifie si la box est personnalisable
+     */
+    public function estPersonnalisable(): bool
+    {
+        return $this->type === 'personnalisable';
+    }
+
+    /**
+     * Vérifie si la box a été créée par un utilisateur (box perso)
+     */
+    public function estBoxPersoUser(): bool
+    {
+        return $this->createur !== null;
     }
 }

@@ -27,9 +27,90 @@ class PanierController extends AbstractController
     {
         $panier = $this->panierService->getPanier();
         
-        return $this->render('panier/index.html.twig', [
+        // Si c'est un panier BDD (utilisateur connecté)
+        if (isset($panier['lignes'])) {
+            return $this->render('Page/panier.html.twig', [
+                'panier' => $panier,
+            ]);
+        }
+        
+        // Si c'est un panier session (visiteur) - calculer le total
+        $total = 0;
+        $nombreArticles = 0;
+        
+        // Calculer le total des produits
+        if (isset($panier['produits'])) {
+            foreach ($panier['produits'] as $item) {
+                $total += $item['produit']->getPrix() * $item['quantite'];
+                $nombreArticles += $item['quantite'];
+            }
+        }
+        
+        // Calculer le total des boxes
+        if (isset($panier['boxes'])) {
+            foreach ($panier['boxes'] as $item) {
+                $total += $item['box']->getPrix() * $item['quantite'];
+                $nombreArticles += $item['quantite'];
+            }
+        }
+        
+        // Calculer le total des boxes perso
+        if (isset($panier['boxes_perso'])) {
+            foreach ($panier['boxes_perso'] as $item) {
+                $total += $item['box']->getPrix();
+                $nombreArticles += 1;
+            }
+        }
+        
+        // Ajouter les données calculées au panier
+        $panier['total'] = $total;
+        $panier['nombre_articles'] = $nombreArticles;
+        $panier['is_empty'] = $nombreArticles === 0;
+        
+        return $this->render('Page/panier.html.twig', [
             'panier' => $panier,
         ]);
+    }
+
+    /**
+     * Retourne le panier au format JSON pour la modal
+     */
+    #[Route('/api/panier', name: 'app_panier_api', methods: ['GET'])]
+    public function getPanierApi(): Response
+    {
+        try {
+            $panier = $this->panierService->getPanier();
+            
+            // Si c'est un panier BDD (utilisateur connecté)
+            if (isset($panier['lignes'])) {
+                $items = $this->formatPanierBdd($panier['lignes']);
+                
+                return $this->json([
+                    'success' => true,
+                    'items' => $items,
+                    'total' => $panier['total'],
+                    'nombre_articles' => $panier['nombre_articles'],
+                    'is_empty' => $panier['is_empty']
+                ]);
+            }
+            
+            // Si c'est un panier session (visiteur)
+            $result = $this->formatPanierSession($panier);
+            
+            return $this->json([
+                'success' => true,
+                'items' => $result['items'],
+                'total' => $result['total'],
+                'nombre_articles' => $result['nombre_articles'],
+                'is_empty' => empty($result['items'])
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -78,42 +159,62 @@ class PanierController extends AbstractController
         return $this->redirectToReferer($request, 'app_home');
     }
 
-
     /**
- * Ajoute une box personnalisable au panier
- */
-#[Route('/ajouter-box-personnalisable/{id}', name: 'app_panier_ajouter_box_personnalisable', methods: ['POST'])]
-public function ajouterBoxPersonnalisable(Box $box, Request $request): Response
-{
-    if ($box->getType() !== 'personnalisable') {
-        $this->addFlash('error', 'Cette box n\'est pas personnalisable.');
-        return $this->redirectToReferer($request, 'app_home');
+     * Ajoute une box personnalisable au panier
+     */
+    #[Route('/ajouter-box-personnalisable', name: 'app_panier_ajouter_box_personnalisable', methods: ['POST'])]
+    public function ajouterBoxPersonnalisable(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!$data || !isset($data['cookies'])) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Données invalides'
+            ], 400);
+        }
+
+        $cookiesChoisis = $data['cookies'];
+        
+        if (empty($cookiesChoisis)) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Veuillez sélectionner au moins un cookie.'
+            ], 400);
+        }
+
+        // Convertir les clés "produit_X" en IDs numériques
+        $cookiesIds = [];
+        foreach ($cookiesChoisis as $key => $quantite) {
+            $produitId = (int) str_replace('produit_', '', $key);
+            $cookiesIds[$produitId] = (int) $quantite;
+        }
+
+        try {
+            // Récupérer la box "template" personnalisable depuis la BDD
+            $boxTemplate = $this->entityManager->getRepository(Box::class)
+                ->findOneBy(['type' => 'personnalisable']);
+            
+            if (!$boxTemplate) {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Box personnalisable non disponible'
+                ], 404);
+            }
+
+            $this->panierService->ajouterBoxPersonnalisable($boxTemplate, $cookiesIds);
+            
+            return $this->json([
+                'success' => true,
+                'message' => 'Box personnalisée ajoutée au panier ! 🎉'
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
-
-    // Récupérer les cookies choisis depuis le formulaire
-    // Format attendu: cookies[produit_id] = quantite
-    $cookiesChoisis = $request->request->all('cookies');
-    
-    if (empty($cookiesChoisis)) {
-        $this->addFlash('error', 'Veuillez sélectionner au moins un cookie.');
-        return $this->redirectToReferer($request, 'app_home');
-    }
-
-    // Filtrer et convertir en entiers
-    $cookiesChoisis = array_filter(
-        array_map('intval', $cookiesChoisis),
-        fn($quantite) => $quantite > 0
-    );
-
-    try {
-        $this->panierService->ajouterBoxPersonnalisable($box, $cookiesChoisis);
-        $this->addFlash('success', 'Box personnalisée ajoutée au panier ! 🎉');
-    } catch (\Exception $e) {
-        $this->addFlash('error', $e->getMessage());
-    }
-
-    return $this->redirectToReferer($request, 'app_home');
-}
 
     /**
      * Modifie la quantité d'un élément du panier
@@ -168,6 +269,146 @@ public function ajouterBoxPersonnalisable(Box $box, Request $request): Response
         }
 
         return $this->redirectToRoute('app_panier_index');
+    }
+
+    /**
+     * Formate les lignes d'un panier BDD pour l'API
+     */
+    private function formatPanierBdd(array $lignes): array
+    {
+        $items = [];
+        
+        foreach ($lignes as $ligne) {
+            $item = [
+                'id' => $ligne['id'],
+                'nom' => $ligne['nom_article'],
+                'quantite' => $ligne['quantite'],
+                'prix_unitaire' => $ligne['prix_unitaire'],
+                'sous_total' => $ligne['sous_total'],
+                'image' => null,
+                'type' => 'Cookie'
+            ];
+            
+            // Produit simple
+            if (isset($ligne['produit'])) {
+                $item['image'] = $ligne['produit']['image'];
+                $item['type'] = 'Cookie';
+            }
+            
+            // Box fixe
+            if (isset($ligne['box']) && !$ligne['is_box_perso']) {
+                $item['image'] = $ligne['box']['image'];
+                $item['type'] = 'Box ' . ucfirst($ligne['box']['type']);
+            }
+            
+            // Box personnalisable
+            if ($ligne['is_box_perso']) {
+                $item['image'] = $ligne['box']['image'] ?? 'box-perso.jpg';
+                $item['type'] = 'Box Personnalisée';
+                
+                // Ajouter la composition
+                if (isset($ligne['compositions'])) {
+                    $item['composition'] = [];
+                    foreach ($ligne['compositions'] as $compo) {
+                        $item['composition'][] = [
+                            'nom' => $compo['produit']['name'],
+                            'quantite' => $compo['quantite']
+                        ];
+                    }
+                }
+            }
+            
+            $items[] = $item;
+        }
+        
+        return $items;
+    }
+
+    /**
+     * Formate un panier session pour l'API
+     */
+    private function formatPanierSession(array $panier): array
+    {
+        $items = [];
+        $total = 0;
+        $nombreArticles = 0;
+        
+        // Produits
+        if (isset($panier['produits'])) {
+            foreach ($panier['produits'] as $item) {
+                $produit = $item['produit'];
+                $quantite = $item['quantite'];
+                
+                $items[] = [
+                    'nom' => $produit->getName(),
+                    'quantite' => $quantite,
+                    'prix_unitaire' => $produit->getPrix(),
+                    'sous_total' => $produit->getPrix() * $quantite,
+                    'image' => $produit->getImage(),
+                    'type' => 'Cookie'
+                ];
+                
+                $total += $produit->getPrix() * $quantite;
+                $nombreArticles += $quantite;
+            }
+        }
+        
+        // Boxes fixes
+        if (isset($panier['boxes'])) {
+            foreach ($panier['boxes'] as $item) {
+                $box = $item['box'];
+                $quantite = $item['quantite'];
+                
+                $items[] = [
+                    'nom' => $box->getNom(),
+                    'quantite' => $quantite,
+                    'prix_unitaire' => $box->getPrix(),
+                    'sous_total' => $box->getPrix() * $quantite,
+                    'image' => $box->getImage(),
+                    'type' => 'Box ' . ucfirst($box->getType())
+                ];
+                
+                $total += $box->getPrix() * $quantite;
+                $nombreArticles += $quantite;
+            }
+        }
+        
+        // Boxes perso
+        if (isset($panier['boxes_perso'])) {
+            foreach ($panier['boxes_perso'] as $item) {
+                $box = $item['box'];
+                
+                $composition = [];
+                foreach ($item['composition'] as $produitId => $qty) {
+                    $produit = $this->entityManager->getRepository(Produit::class)->find($produitId);
+                    if ($produit) {
+                        $composition[] = [
+                            'nom' => $produit->getName(),
+                            'quantite' => $qty
+                        ];
+                    }
+                }
+                
+                $items[] = [
+                    'nom' => 'Box Personnalisée',
+                    'quantite' => 1,
+                    'prix_unitaire' => $box->getPrix(),
+                    'sous_total' => $box->getPrix(),
+                    'image' => $box->getImage(),
+                    'type' => 'Box Personnalisée',
+                    'composition' => $composition
+                ];
+                
+                $total += $box->getPrix();
+                $nombreArticles += 1;
+            }
+        }
+        
+        return [
+            'items' => $items,
+            'total' => $total,
+            'nombre_articles' => $nombreArticles
+        ];
     }
 
     /**

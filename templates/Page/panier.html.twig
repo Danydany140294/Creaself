@@ -1,0 +1,618 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier - CreaSelf{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .panier-page {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .panier-header {
+            margin-bottom: 30px;
+        }
+
+        .panier-header h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panier-header h1 i {
+            color: #667eea;
+        }
+
+        .panier-vide {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .panier-vide i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+
+        .panier-vide h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .panier-vide p {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .btn-retour-boutique {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-retour-boutique:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .panier-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+        }
+
+        .panier-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panier-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .panier-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .panier-item-info {
+            flex: 1;
+        }
+
+        .panier-item-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .panier-item-type {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .panier-item-composition {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .panier-item-composition h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .composition-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .composition-item {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .panier-item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .panier-item-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-qty {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-qty:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .input-quantity {
+            width: 60px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 6px;
+            font-weight: 600;
+        }
+
+        .btn-supprimer {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .btn-supprimer:hover {
+            background: #dc2626;
+        }
+
+        .panier-resume {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .resume-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .resume-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #6b7280;
+        }
+
+        .resume-row.total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            padding-top: 16px;
+            border-top: 2px solid #e5e7eb;
+            margin-top: 16px;
+        }
+
+        .resume-row.total .value {
+            color: #667eea;
+        }
+
+        .btn-commander {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .btn-commander:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-vider-panier {
+            width: 100%;
+            padding: 12px;
+            background: #e5e7eb;
+            color: #6b7280;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-vider-panier:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 968px) {
+            .panier-content {
+                grid-template-columns: 1fr;
+            }
+
+            .panier-resume {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .panier-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .panier-item-actions {
+                align-items: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="panier-page">
+    <div class="panier-header">
+        <h1>
+            <i class="fas fa-shopping-cart"></i>
+            Mon Panier
+        </h1>
+    </div>
+
+    {% if panier.is_empty is defined and panier.is_empty %}
+        {# Panier vide #}
+        <div class="panier-vide">
+            <i class="fa-solid fa-basket-shopping"></i>
+            <h2>Votre panier est vide</h2>
+            <p>Découvrez nos délicieux cookies et boxes gourmandes !</p>
+            <a href="{{ path('app_home') }}" class="btn-retour-boutique">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la boutique
+            </a>
+        </div>
+    {% else %}
+        {# Panier avec articles #}
+        <div class="panier-content">
+            {# Liste des articles #}
+            <div class="panier-items">
+                {# Panier BDD (utilisateur connecté) #}
+                {% if panier.lignes is defined %}
+                    {% for ligne in panier.lignes %}
+                        <div class="panier-item">
+                            {% if ligne.produit is defined %}
+                                {% set image_path = ligne.produit.image %}
+                                {% set folder = 'produits' %}
+                            {% else %}
+                                {% set image_path = ligne.box.image %}
+                                {% set folder = 'boxes' %}
+                            {% endif %}
+                            
+                            <img src="{{ asset('uploads/' ~ folder ~ '/' ~ image_path) }}" 
+                                 alt="{{ ligne.nom_article }}"
+                                 class="panier-item-image"
+                                 onerror="this.src='/images/placeholder.jpg'">
+
+                            <div class="panier-item-info">
+                                <div class="panier-item-name">{{ ligne.nom_article }}</div>
+                                <div class="panier-item-type">
+                                    {% if ligne.produit is defined %}
+                                        Cookie
+                                    {% elseif ligne.is_box_perso %}
+                                        Box Personnalisée
+                                    {% else %}
+                                        Box {{ ligne.box.type|capitalize }}
+                                    {% endif %}
+                                </div>
+
+                                {# Composition pour box perso #}
+                                {% if ligne.is_box_perso and ligne.compositions is defined %}
+                                    <div class="panier-item-composition">
+                                        <h4>📦 Composition :</h4>
+                                        <div class="composition-list">
+                                            {% for compo in ligne.compositions %}
+                                                <span class="composition-item">
+                                                    {{ compo.quantite }}x {{ compo.produit.name }}
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <div class="panier-item-price-mobile">
+                                    {{ ligne.prix_unitaire|number_format(2, ',', ' ') }} € × {{ ligne.quantite }}
+                                </div>
+                            </div>
+
+                            <div class="panier-item-actions">
+                                <div class="panier-item-price">
+                                    {{ ligne.sous_total|number_format(2, ',', ' ') }} €
+                                </div>
+
+                                {% if not ligne.is_box_perso %}
+                                    {# Contrôles de quantité #}
+                                    {% set item_type = ligne.produit is defined ? 'produit' : 'box' %}
+                                    <form method="POST" action="{{ path('app_panier_modifier', {type: item_type, id: ligne.id}) }}">
+                                        <div class="quantity-controls">
+                                            <button type="button" class="btn-qty" onclick="updateQty('qty_{{ ligne.id }}', -1, 1, 99)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" 
+                                                   id="qty_{{ ligne.id }}"
+                                                   name="quantite" 
+                                                   value="{{ ligne.quantite }}" 
+                                                   min="1" 
+                                                   class="input-quantity"
+                                                   onchange="this.form.submit()">
+                                            <button type="button" class="btn-qty" onclick="updateQty('qty_{{ ligne.id }}', 1, 1, 99)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <div style="font-size: 0.875rem; color: #6b7280;">
+                                        Quantité : {{ ligne.quantite }}
+                                    </div>
+                                {% endif %}
+
+                                {# Bouton supprimer #}
+                                {% set item_type = ligne.produit is defined ? 'produit' : 'box' %}
+                                <form method="POST" action="{{ path('app_panier_retirer', {type: item_type, id: ligne.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                    <button type="submit" class="btn-supprimer">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {# Panier Session (visiteur) #}
+                {% if panier.produits is defined %}
+                    {% for item in panier.produits %}
+                        <div class="panier-item">
+                            <img src="{{ asset('uploads/produits/' ~ item.produit.image) }}" 
+                                 alt="{{ item.produit.name }}"
+                                 class="panier-item-image"
+                                 onerror="this.src='/images/placeholder.jpg'">
+
+                            <div class="panier-item-info">
+                                <div class="panier-item-name">{{ item.produit.name }}</div>
+                                <div class="panier-item-type">Cookie</div>
+                                <div class="panier-item-price-mobile">
+                                    {{ item.produit.prix|number_format(2, ',', ' ') }} € × {{ item.quantite }}
+                                </div>
+                            </div>
+
+                            <div class="panier-item-actions">
+                                <div class="panier-item-price">
+                                    {{ (item.produit.prix * item.quantite)|number_format(2, ',', ' ') }} €
+                                </div>
+
+                                <form method="POST" action="{{ path('app_panier_modifier', {type: 'produit', id: item.produit.id}) }}">
+                                    <div class="quantity-controls">
+                                        <button type="button" class="btn-qty" onclick="updateQty('qty_prod_{{ item.produit.id }}', -1, 1, 99)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" 
+                                               id="qty_prod_{{ item.produit.id }}"
+                                               name="quantite" 
+                                               value="{{ item.quantite }}" 
+                                               min="1" 
+                                               class="input-quantity"
+                                               onchange="this.form.submit()">
+                                        <button type="button" class="btn-qty" onclick="updateQty('qty_prod_{{ item.produit.id }}', 1, 1, 99)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'produit', id: item.produit.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                    <button type="submit" class="btn-supprimer">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {# Boxes session #}
+                {% if panier.boxes is defined %}
+                    {% for item in panier.boxes %}
+                        <div class="panier-item">
+                            <img src="{{ asset('uploads/boxes/' ~ item.box.image) }}" 
+                                 alt="{{ item.box.nom }}"
+                                 class="panier-item-image"
+                                 onerror="this.src='/images/placeholder.jpg'">
+
+                            <div class="panier-item-info">
+                                <div class="panier-item-name">{{ item.box.nom }}</div>
+                                <div class="panier-item-type">Box {{ item.box.type|capitalize }}</div>
+                                <div class="panier-item-price-mobile">
+                                    {{ item.box.prix|number_format(2, ',', ' ') }} € × {{ item.quantite }}
+                                </div>
+                            </div>
+
+                            <div class="panier-item-actions">
+                                <div class="panier-item-price">
+                                    {{ (item.box.prix * item.quantite)|number_format(2, ',', ' ') }} €
+                                </div>
+
+                                <form method="POST" action="{{ path('app_panier_modifier', {type: 'box', id: item.box.id}) }}">
+                                    <div class="quantity-controls">
+                                        <button type="button" class="btn-qty" onclick="updateQty('qty_box_{{ item.box.id }}', -1, 1, 99)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" 
+                                               id="qty_box_{{ item.box.id }}"
+                                               name="quantite" 
+                                               value="{{ item.quantite }}" 
+                                               min="1" 
+                                               class="input-quantity"
+                                               onchange="this.form.submit()">
+                                        <button type="button" class="btn-qty" onclick="updateQty('qty_box_{{ item.box.id }}', 1, 1, 99)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'box', id: item.box.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                    <button type="submit" class="btn-supprimer">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {# Boxes perso session #}
+                {% if panier.boxes_perso is defined %}
+                    {% for item in panier.boxes_perso %}
+                        <div class="panier-item">
+                            <img src="{{ asset('uploads/boxes/' ~ item.box.image) }}" 
+                                 alt="Box Personnalisée"
+                                 class="panier-item-image"
+                                 onerror="this.src='/images/placeholder.jpg'">
+
+                            <div class="panier-item-info">
+                                <div class="panier-item-name">Box Personnalisée</div>
+                                <div class="panier-item-type">Box Personnalisée</div>
+
+                                <div class="panier-item-composition">
+                                    <h4>📦 Composition :</h4>
+                                    <div class="composition-list">
+                                        {% for produit_id, qty in item.composition %}
+                                            <span class="composition-item">
+                                                {{ qty }}x Produit #{{ produit_id }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="panier-item-price-mobile">
+                                    {{ item.box.prix|number_format(2, ',', ' ') }} €
+                                </div>
+                            </div>
+
+                            <div class="panier-item-actions">
+                                <div class="panier-item-price">
+                                    {{ item.box.prix|number_format(2, ',', ' ') }} €
+                                </div>
+
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    Quantité : 1
+                                </div>
+
+                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'box_perso', id: loop.index0}) }}" onsubmit="return confirm('Supprimer cette box ?')">
+                                    <button type="submit" class="btn-supprimer">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {# Résumé du panier #}
+            <div class="panier-resume">
+                <h3 class="resume-title">Résumé de la commande</h3>
+
+                <div class="resume-row">
+                    <span>Articles ({{ panier.nombre_articles ?? 0 }})</span>
+                    <span class="value">{{ panier.total|number_format(2, ',', ' ') }} €</span>
+                </div>
+
+                <div class="resume-row">
+                    <span>Livraison</span>
+                    <span class="value">Gratuite</span>
+                </div>
+
+                <div class="resume-row total">
+                    <span>Total</span>
+                    <span class="value">{{ panier.total|number_format(2, ',', ' ') }} €</span>
+                </div>
+
+                <button type="button" class="btn-commander" onclick="alert('Fonctionnalité de commande à venir !')">
+                    <i class="fas fa-check"></i> Valider la commande
+                </button>
+
+                <form method="POST" action="{{ path('app_panier_vider') }}" onsubmit="return confirm('Vider tout le panier ?')">
+                    <button type="submit" class="btn-vider-panier">
+                        <i class="fas fa-trash-alt"></i> Vider le panier
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function updateQty(inputId, delta, min, max) {
+    const input = document.getElementById(inputId);
+    let currentValue = parseInt(input.value) || min;
+    let newValue = currentValue + delta;
+    
+    if (newValue >= min && newValue <= max) {
+        input.value = newValue;
+        input.form.submit();
+    }
+}
+</script>
+{% endblock %}

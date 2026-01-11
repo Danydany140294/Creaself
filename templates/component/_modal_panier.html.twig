@@ -343,28 +343,20 @@ async function openModalPanier() {
     `;
     
     try {
-        // Appel AJAX pour récupérer le contenu du panier
-        const response = await fetch('{{ path('app_panier_index') }}', {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
+        // Appel AJAX pour récupérer le panier en JSON
+        const response = await fetch('/panier/api/panier');
         
         if (!response.ok) {
             throw new Error('Erreur lors du chargement du panier');
         }
         
-        const html = await response.text();
+        const data = await response.json();
         
-        // Parser le HTML pour extraire les données du panier
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
+        if (!data.success) {
+            throw new Error(data.message || 'Erreur inconnue');
+        }
         
-        // Extraire les informations nécessaires
-        // Note: Adaptez ces sélecteurs selon votre template panier/index.html.twig
-        const panierVide = doc.querySelector('.panier-vide');
-        
-        if (panierVide) {
+        if (data.is_empty || data.items.length === 0) {
             panierContent.innerHTML = `
                 <div class="panier-vide">
                     <i class="fa-solid fa-basket-shopping"></i>
@@ -373,8 +365,7 @@ async function openModalPanier() {
                 </div>
             `;
         } else {
-            // Construire le contenu du panier à partir des données
-            afficherPanier(doc);
+            afficherPanier(data);
         }
         
     } catch (error) {
@@ -390,42 +381,28 @@ async function openModalPanier() {
 }
 
 // Afficher le contenu du panier
-function afficherPanier(doc) {
+function afficherPanier(data) {
     const panierContent = document.getElementById('panierContent');
-    
-    // Récupérer les items (adaptez les sélecteurs selon votre template)
-    const items = doc.querySelectorAll('.panier-item, [data-panier-item]');
-    const total = doc.querySelector('[data-panier-total]')?.textContent || '0,00 €';
-    
-    if (items.length === 0) {
-        panierContent.innerHTML = `
-            <div class="panier-vide">
-                <i class="fa-solid fa-basket-shopping"></i>
-                <h3>Votre panier est vide</h3>
-                <p>Ajoutez des produits pour commencer !</p>
-            </div>
-        `;
-        return;
-    }
     
     let itemsHTML = '<div class="panier-items">';
     
-    items.forEach(item => {
-        const nom = item.querySelector('[data-item-nom]')?.textContent || 'Produit';
-        const type = item.querySelector('[data-item-type]')?.textContent || 'Cookie';
-        const quantite = item.querySelector('[data-item-quantite]')?.textContent || '1';
-        const prix = item.querySelector('[data-item-prix]')?.textContent || '0,00 €';
-        const image = item.querySelector('img')?.src || '';
+    data.items.forEach(item => {
+        const imageUrl = item.image ? `/uploads/${item.type === 'Cookie' ? 'produits' : 'boxes'}/${item.image}` : '';
         
         itemsHTML += `
             <div class="panier-item">
-                ${image ? `<img src="${image}" alt="${nom}" class="panier-item-image">` : ''}
+                ${imageUrl ? `<img src="${imageUrl}" alt="${item.nom}" class="panier-item-image" onerror="this.src='/images/placeholder.jpg'">` : ''}
                 <div class="panier-item-info">
-                    <div class="panier-item-name">${nom}</div>
-                    <div class="panier-item-type">${type}</div>
-                    <div class="panier-item-quantity">Quantité: ${quantite}</div>
+                    <div class="panier-item-name">${item.nom}</div>
+                    <div class="panier-item-type">${item.type}</div>
+                    <div class="panier-item-quantity">Quantité: ${item.quantite}</div>
+                    ${item.composition ? `
+                        <div class="panier-item-composition">
+                            <small>📦 ${item.composition.map(c => `${c.quantite}x ${c.nom}`).join(', ')}</small>
+                        </div>
+                    ` : ''}
                 </div>
-                <div class="panier-item-price">${prix}</div>
+                <div class="panier-item-price">${item.sous_total.toFixed(2).replace('.', ',')} €</div>
             </div>
         `;
     });
@@ -436,7 +413,7 @@ function afficherPanier(doc) {
         <div class="panier-total">
             <div class="panier-total-row">
                 <span class="panier-total-label">Total:</span>
-                <span class="panier-total-value">${total}</span>
+                <span class="panier-total-value">${data.total.toFixed(2).replace('.', ',')} €</span>
             </div>
         </div>
     `;
