@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Entity\Box;
+use App\Repository\PanierRepository;
 use App\Service\PanierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,11 +18,13 @@ class PanierController extends AbstractController
 {
     public function __construct(
         private PanierService $panierService,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private PanierRepository $panierRepository,
+        private Security $security
     ) {}
 
     /**
-     * Affiche le panier
+     * Affiche le panier complet
      */
     #[Route('', name: 'app_panier_index', methods: ['GET'])]
     public function index(): Response
@@ -79,22 +83,77 @@ class PanierController extends AbstractController
     public function getPanierApi(): Response
     {
         try {
-            $panier = $this->panierService->getPanier();
+            $user = $this->security->getUser();
             
-            // Si c'est un panier BDD (utilisateur connecté)
-            if (isset($panier['lignes'])) {
-                $items = $this->formatPanierBdd($panier['lignes']);
+            // Utilisateur connecté : récupérer directement l'entité Panier
+            if ($user instanceof \App\Entity\User) {
+                $panierEntity = $this->panierRepository->findByUser($user);
+                
+                if (!$panierEntity || $panierEntity->isEmpty()) {
+                    return $this->json([
+                        'success' => true,
+                        'items' => [],
+                        'total' => 0,
+                        'nombre_articles' => 0,
+                        'is_empty' => true
+                    ]);
+                }
+                
+                $items = [];
+                
+                foreach ($panierEntity->getLignesPanier() as $ligne) {
+                    $item = [
+                        'id' => $ligne->getId(),
+                        'nom' => $ligne->getNomArticle(),
+                        'quantite' => $ligne->getQuantite(),
+                        'prix_unitaire' => $ligne->getPrixUnitaire(),
+                        'sous_total' => $ligne->getSousTotal(),
+                        'image' => null,
+                        'type' => 'Cookie'
+                    ];
+                    
+                    // Produit simple
+                    if ($ligne->getProduit()) {
+                        $item['image'] = $ligne->getProduit()->getImage();
+                        $item['type'] = 'Cookie';
+                    }
+                    
+                    // Box
+                    if ($ligne->getBox()) {
+                        $item['image'] = $ligne->getBox()->getImage();
+                        
+                        // Box personnalisable
+                        if ($ligne->isBoxPersonnalisable()) {
+                            $item['type'] = 'Box Personnalisée';
+                            
+                            $composition = [];
+                            foreach ($ligne->getCompositionsPanier() as $compo) {
+                                $composition[] = [
+                                    'nom' => $compo->getProduit()->getName(),
+                                    'quantite' => $compo->getQuantite()
+                                ];
+                            }
+                            $item['composition'] = $composition;
+                        } else {
+                            // Box fixe
+                            $item['type'] = 'Box ' . ucfirst($ligne->getBox()->getType());
+                        }
+                    }
+                    
+                    $items[] = $item;
+                }
                 
                 return $this->json([
                     'success' => true,
                     'items' => $items,
-                    'total' => $panier['total'],
-                    'nombre_articles' => $panier['nombre_articles'],
-                    'is_empty' => $panier['is_empty']
+                    'total' => $panierEntity->getTotal(),
+                    'nombre_articles' => $panierEntity->getNombreArticles(),
+                    'is_empty' => false
                 ]);
             }
             
-            // Si c'est un panier session (visiteur)
+            // Visiteur non connecté : panier session
+            $panier = $this->panierService->getPanier();
             $result = $this->formatPanierSession($panier);
             
             return $this->json([
@@ -269,59 +328,6 @@ class PanierController extends AbstractController
         }
 
         return $this->redirectToRoute('app_panier_index');
-    }
-
-    /**
-     * Formate les lignes d'un panier BDD pour l'API
-     */
-    private function formatPanierBdd(array $lignes): array
-    {
-        $items = [];
-        
-        foreach ($lignes as $ligne) {
-            $item = [
-                'id' => $ligne['id'],
-                'nom' => $ligne['nom_article'],
-                'quantite' => $ligne['quantite'],
-                'prix_unitaire' => $ligne['prix_unitaire'],
-                'sous_total' => $ligne['sous_total'],
-                'image' => null,
-                'type' => 'Cookie'
-            ];
-            
-            // Produit simple
-            if (isset($ligne['produit'])) {
-                $item['image'] = $ligne['produit']['image'];
-                $item['type'] = 'Cookie';
-            }
-            
-            // Box fixe
-            if (isset($ligne['box']) && !$ligne['is_box_perso']) {
-                $item['image'] = $ligne['box']['image'];
-                $item['type'] = 'Box ' . ucfirst($ligne['box']['type']);
-            }
-            
-            // Box personnalisable
-            if ($ligne['is_box_perso']) {
-                $item['image'] = $ligne['box']['image'] ?? 'box-perso.jpg';
-                $item['type'] = 'Box Personnalisée';
-                
-                // Ajouter la composition
-                if (isset($ligne['compositions'])) {
-                    $item['composition'] = [];
-                    foreach ($ligne['compositions'] as $compo) {
-                        $item['composition'][] = [
-                            'nom' => $compo['produit']['name'],
-                            'quantite' => $compo['quantite']
-                        ];
-                    }
-                }
-            }
-            
-            $items[] = $item;
-        }
-        
-        return $items;
     }
 
     /**

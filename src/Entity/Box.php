@@ -42,8 +42,9 @@ class Box
 
     /**
      * @var Collection<int, Produit>
+     * EXTRA_LAZY empêche le chargement automatique des produits → évite la boucle infinie
      */
-    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'boxes')]
+    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'boxes', fetch: 'EXTRA_LAZY')]
     private Collection $produits;
 
     public function __construct()

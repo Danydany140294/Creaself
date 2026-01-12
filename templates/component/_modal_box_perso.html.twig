@@ -1,410 +1,101 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Nos Boxes - CreaSelf{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/box.css') }}">
-{% endblock %}
-
-{% block body %}
-
-{# ========== EN-TÊTE PAGE ========== #}
-<section class="page-header">
-    <div class="header-content">
-        <h1>Nos Boxes Gourmandes</h1>
-        <p class="subtitle">Des assortiments de cookies préparés avec amour</p>
-    </div>
-</section>
-
-{# ========== BOX PERSONNALISABLE EN VEDETTE ========== #}
-{% if box_personnalisable %}
-    <section class="box-perso-hero">
-        <div class="hero-container">
-            <div class="hero-image">
-                <img src="{{ asset('uploads/boxes/' ~ box_personnalisable.image) }}" 
-                     alt="{{ box_personnalisable.nom }}"
-                     class="box-hero-img">
-                <span class="badge-hero">Personnalisable</span>
-            </div>
-            
-            <div class="hero-content">
-                <h2 class="hero-title">{{ box_personnalisable.nom }}</h2>
-                <p class="hero-description">{{ box_personnalisable.description }}</p>
-                
-                <div class="hero-features">
-                    <div class="feature-item">
-                        <i class="fas fa-cookie-bite"></i>
-                        <span>12 cookies au choix</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-palette"></i>
-                        <span>{{ produits|length }} saveurs disponibles</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fas fa-gift"></i>
-                        <span>Parfait pour offrir</span>
-                    </div>
-                </div>
-                
-                <div class="hero-price">
-                    <span class="price-label">Seulement</span>
-                    <span class="price-value">{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</span>
-                </div>
-                
-                <button type="button" class="btn-composer-hero" onclick="openModalBoxPerso()">
-                    <i class="fas fa-magic"></i> Composer ma box personnalisée
-                </button>
-            </div>
+{# Modal Box Personnalisable #}
+<div id="modalBoxPerso" class="modal-overlay" style="display: none;">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-magic"></i> 
+                Compose ta box personnalisée
+            </h2>
+            <button type="button" class="btn-close-modal" onclick="closeModalBoxPerso()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-    </section>
-{% endif %}
 
-{# ========== BOXES FIXES ========== #}
-<section class="boxes-section">
-    <div class="section-header">
-        <h2>Nos Boxes Prêtes à Déguster</h2>
-        <p class="section-description">Sélections gourmandes pré-composées par nos soins</p>
-    </div>
+        <div class="modal-body">
+            {# Compteur de cookies sélectionnés #}
+            <div class="cookies-counter">
+                <div class="counter-info">
+                    <i class="fas fa-cookie-bite"></i>
+                    <span id="cookiesSelected">0</span> / 12 cookies sélectionnés
+                </div>
+                <div class="progress-bar">
+                    <div id="progressBar" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
 
-    <div class="boxes-container">
-        {% if boxes_fixes|length > 0 %}
-            <div class="boxes-grid">
-                {% for box in boxes_fixes %}
-                    <div class="box-card">
-                        {# Image de la box #}
-                        <div class="box-image-wrapper">
-                            <img src="{{ asset('uploads/boxes/' ~ box.image) }}" 
-                                 alt="{{ box.nom }}"
-                                 class="box-image">
-                            
-                            {# Badges #}
-                            {% if box.stock == 0 %}
-                                <span class="badge badge-rupture">Rupture</span>
-                            {% elseif box.stock < 3 %}
-                                <span class="badge badge-stock-faible">Dernières boxes !</span>
-                            {% endif %}
-                        </div>
-
-                        {# Informations box #}
-                        <div class="box-info">
-                            <h3 class="box-nom">{{ box.nom }}</h3>
-                            <p class="box-description">{{ box.description }}</p>
-
-                            {# Composition de la box #}
-                            {% if box.produits|length > 0 %}
-                                <div class="box-composition">
-                                    <h4 class="composition-title">
-                                        <i class="fas fa-cookie-bite"></i> Contient :
-                                    </h4>
-                                    <ul class="composition-list">
-                                        {% for produit in box.produits %}
-                                            <li class="composition-item">
-                                                <i class="fas fa-check"></i>
-                                                <span>{{ produit.name }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-
-                            {# Prix #}
-                            <div class="box-prix-wrapper">
-                                <span class="prix">{{ box.prix|number_format(2, ',', ' ') }} €</span>
-                            </div>
-
-                            {# Stock #}
-                            <div class="box-stock">
-                                {% if box.stock > 0 %}
-                                    <i class="fas fa-check-circle icon-success"></i>
-                                    <span class="stock-disponible">{{ box.stock }} box(es) disponible(s)</span>
-                                {% else %}
-                                    <i class="fas fa-times-circle icon-error"></i>
-                                    <span class="stock-rupture">Rupture de stock</span>
+            {# Liste des cookies disponibles #}
+            <div class="cookies-grid">
+                {% for produit in produits %}
+                    {# ✅ produits est maintenant un array simple, pas des objets Doctrine #}
+                    {% if produit.stock > 0 %}
+                        <div class="cookie-card" data-produit-id="{{ produit.id }}">
+                            <div class="cookie-image-wrapper">
+                                <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+                                     alt="{{ produit.name }}"
+                                     class="cookie-image">
+                                
+                                {% if produit.stock < 5 %}
+                                    <span class="badge-stock-faible">Stock limité</span>
                                 {% endif %}
                             </div>
 
-                            {# Formulaire ajout panier #}
-                            {% if box.stock > 0 %}
-                                <form method="POST" 
-                                      action="{{ path('app_panier_ajouter_box', {id: box.id}) }}" 
-                                      class="form-ajout-panier">
-                                    
-                                    <div class="quantity-selector">
-                                        <label for="quantite_box_{{ box.id }}">Quantité:</label>
-                                        <div class="quantity-controls">
-                                            <button type="button" 
-                                                    class="btn-qty btn-minus" 
-                                                    onclick="updateBoxQty('quantite_box_{{ box.id }}', -1, 1, {{ box.stock }})"
-                                                    aria-label="Diminuer la quantité">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            
-                                            <input type="number" 
-                                                   id="quantite_box_{{ box.id }}"
-                                                   name="quantite" 
-                                                   value="1" 
-                                                   min="1" 
-                                                   max="{{ box.stock }}"
-                                                   class="input-quantity"
-                                                   readonly>
-                                            
-                                            <button type="button" 
-                                                    class="btn-qty btn-plus" 
-                                                    onclick="updateBoxQty('quantite_box_{{ box.id }}', 1, 1, {{ box.stock }})"
-                                                    aria-label="Augmenter la quantité">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn-ajouter-panier">
-                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                                    </button>
-                                </form>
-                            {% else %}
-                                <button class="btn-rupture" disabled>
-                                    <i class="fas fa-ban"></i> Indisponible
+                            <div class="cookie-info">
+                                <h4 class="cookie-name">{{ produit.name }}</h4>
+                                <p class="cookie-price">{{ produit.prix|number_format(2, ',', ' ') }} €</p>
+                                <p class="cookie-stock">Stock: {{ produit.stock }}</p>
+                            </div>
+
+                            {# Sélecteur de quantité #}
+                            <div class="quantity-selector-modal">
+                                <button type="button" 
+                                        class="btn-qty-modal btn-minus-modal" 
+                                        onclick="updateCookieQty({{ produit.id }}, -1, {{ produit.stock }})"
+                                        disabled>
+                                    <i class="fas fa-minus"></i>
                                 </button>
-                            {% endif %}
+                                
+                                <input type="number" 
+                                       id="qty_{{ produit.id }}"
+                                       class="input-qty-modal"
+                                       value="0" 
+                                       min="0" 
+                                       max="{{ produit.stock }}"
+                                       readonly>
+                                
+                                <button type="button" 
+                                        class="btn-qty-modal btn-plus-modal" 
+                                        onclick="updateCookieQty({{ produit.id }}, 1, {{ produit.stock }})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             </div>
-        {% else %}
-            <div class="no-boxes">
-                <i class="fas fa-box-open fa-3x"></i>
-                <p>Aucune box fixe disponible pour le moment.</p>
-                <a href="{{ path('app_home') }}" class="btn-retour">
-                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
-                </a>
-            </div>
-        {% endif %}
-    </div>
-</section>
-
-{# ========== CTA BOX PERSO (bas de page) ========== #}
-{% if box_personnalisable %}
-    <section class="cta-box-perso">
-        <div class="cta-content">
-            <div class="cta-icon">
-                <i class="fas fa-magic"></i>
-            </div>
-            <div class="cta-text">
-                <h3>Tu veux une box unique ?</h3>
-                <p>Compose ta box personnalisée avec exactement les cookies que tu préfères !</p>
-            </div>
-            <button type="button" class="btn-cta" onclick="openModalBoxPerso()">
-                <i class="fas fa-cookie-bite"></i> Créer ma box maintenant
-            </button>
         </div>
-    </section>
-{% endif %}
 
-{# Inclure la modal box personnalisable #}
-{% if box_personnalisable %}
-    {% include 'component/_modal_box_perso.html.twig' %}
-{% endif %}
-
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    
-    <script>
-        // ========== GESTION DES QUANTITÉS BOXES ========== 
-        function updateBoxQty(inputId, delta, min, max) {
-            const input = document.getElementById(inputId);
-            let currentValue = parseInt(input.value) || min;
-            let newValue = currentValue + delta;
+        <div class="modal-footer">
+            <div class="footer-info">
+                <p class="prix-box">Prix total: <strong>{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</strong></p>
+                <p class="info-text">
+                    <i class="fas fa-info-circle"></i> 
+                    Sélectionnez exactement 12 cookies
+                </p>
+            </div>
             
-            if (newValue >= min && newValue <= max) {
-                input.value = newValue;
-            }
-        }
-
-        // ========== ANIMATION AU SCROLL ========== 
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.box-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-        });
-
-        // ========== GESTION MODAL BOX PERSO ========== 
-        let selectedCookies = {};
-
-        function openModalBoxPerso() {
-            const modal = document.getElementById('modalBoxPerso');
-            
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            } else {
-                console.error('Modal #modalBoxPerso introuvable !');
-            }
-        }
-
-        function closeModalBoxPerso() {
-            const modal = document.getElementById('modalBoxPerso');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-                resetSelection();
-            }
-        }
-
-        function resetSelection() {
-            selectedCookies = {};
-            
-            document.querySelectorAll('.input-qty-modal').forEach(input => {
-                input.value = 0;
-                const produitId = input.id.replace('qty_', '');
-                updateButtonStates(produitId, 0);
-            });
-            
-            updateCounter();
-        }
-
-        function updateCookieQty(produitId, delta, maxStock) {
-            const input = document.getElementById(`qty_${produitId}`);
-            if (!input) return;
-            
-            let currentQty = parseInt(input.value) || 0;
-            let newQty = currentQty + delta;
-            
-            // Calculer le total actuel (sans ce produit)
-            let totalCookies = getTotalCookies() - currentQty;
-            
-            // Vérifier les limites
-            if (newQty < 0) newQty = 0;
-            if (newQty > maxStock) newQty = maxStock;
-            if (totalCookies + newQty > 12) newQty = 12 - totalCookies;
-            
-            // Mettre à jour
-            input.value = newQty;
-            
-            if (newQty > 0) {
-                selectedCookies[`produit_${produitId}`] = newQty;
-            } else {
-                delete selectedCookies[`produit_${produitId}`];
-            }
-            
-            updateButtonStates(produitId, newQty);
-            updateCounter();
-        }
-
-        function updateButtonStates(produitId, qty) {
-            const card = document.querySelector(`[data-produit-id="${produitId}"]`);
-            if (!card) return;
-            
-            const minusBtn = card.querySelector('.btn-minus-modal');
-            const plusBtn = card.querySelector('.btn-plus-modal');
-            
-            if (minusBtn) {
-                minusBtn.disabled = qty === 0;
-            }
-            
-            if (plusBtn) {
-                const totalCookies = getTotalCookies();
-                plusBtn.disabled = totalCookies >= 12;
-            }
-        }
-
-        function getTotalCookies() {
-            return Object.values(selectedCookies).reduce((sum, qty) => sum + qty, 0);
-        }
-
-        function updateCounter() {
-            const total = getTotalCookies();
-            const counterElement = document.getElementById('cookiesSelected');
-            const progressBar = document.getElementById('progressBar');
-            const btnValider = document.getElementById('btnValiderBox');
-            
-            if (!counterElement || !progressBar || !btnValider) return;
-            
-            // Mettre à jour le compteur
-            counterElement.textContent = total;
-            
-            // Mettre à jour la barre de progression
-            const percentage = (total / 12) * 100;
-            progressBar.style.width = `${percentage}%`;
-            
-            // Changer la couleur selon le nombre
-            if (total === 12) {
-                progressBar.style.backgroundColor = '#10b981';
-                btnValider.disabled = false;
-            } else if (total > 12) {
-                progressBar.style.backgroundColor = '#ef4444';
-                btnValider.disabled = true;
-            } else {
-                progressBar.style.backgroundColor = '#3b82f6';
-                btnValider.disabled = true;
-            }
-            
-            // Mettre à jour l'état de tous les boutons +
-            document.querySelectorAll('.btn-plus-modal').forEach(btn => {
-                const card = btn.closest('.cookie-card');
-                if (!card) return;
-                const produitId = card.getAttribute('data-produit-id');
-                const currentQty = parseInt(document.getElementById(`qty_${produitId}`).value) || 0;
-                updateButtonStates(produitId, currentQty);
-            });
-        }
-
-        async function validerBoxPerso() {
-            const total = getTotalCookies();
-            
-            if (total !== 12) {
-                alert('Vous devez sélectionner exactement 12 cookies !');
-                return;
-            }
-            
-            const data = {
-                cookies: selectedCookies
-            };
-            
-            try {
-                const response = await fetch('/panier/ajouter-box-personnalisable', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    closeModalBoxPerso();
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert(result.message || 'Une erreur est survenue');
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'ajout au panier');
-            }
-        }
-
-        // Fermer la modal en cliquant en dehors
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('modalBoxPerso');
-            if (modal && event.target === modal) {
-                closeModalBoxPerso();
-            }
-        });
-    </script>
-{% endblock %}
+            <div class="footer-actions">
+                <button type="button" class="btn-annuler" onclick="closeModalBoxPerso()">
+                    Annuler
+                </button>
+                <button type="button" 
+                        id="btnValiderBox" 
+                        class="btn-valider-box" 
+                        onclick="validerBoxPerso()"
+                        disabled>
+                    <i class="fas fa-shopping-cart"></i> 
+                    Ajouter au panier
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
