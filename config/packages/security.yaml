@@ -18,13 +18,19 @@ security:
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
             entry_point: App\Security\LoginFormAuthenticator
+
+            stateless: false
+
             logout:
                 path: app_logout
+                target: app_home
+
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
                 path: /
 
+    session_fixation_strategy: migrate
+
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
