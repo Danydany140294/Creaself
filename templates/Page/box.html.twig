@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos Boxes - CreaSelf{% endblock %}
+{% block title %}{# Titre de la page #}Nos Boxes - CreaSelf{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -10,49 +10,48 @@
 {% block body %}
 
 {# ========== EN-TÊTE PAGE ========== #}
-<section class="page-header">
-    <div class="header-content">
-        <h1>Nos Boxes Gourmandes</h1>
-        <p class="subtitle">Des assortiments de cookies préparés avec amour</p>
+<section>
+    <div>
+        <h1>{# Titre principal #}Nos Boxes Gourmandes</h1>
+        <p>{# Sous-titre #}Des assortiments de cookies préparés avec amour</p>
     </div>
 </section>
 
 {# ========== BOX PERSONNALISABLE EN VEDETTE ========== #}
-{% if box_personnalisable %}
-    <section class="box-perso-hero">
-        <div class="hero-container">
-            <div class="hero-image">
+{% if box_personnalisable %}{# Affichage conditionnel si box perso existe #}
+    <section>
+        <div>
+            <div>
                 <img src="{{ asset('uploads/boxes/' ~ box_personnalisable.image) }}" 
-                     alt="{{ box_personnalisable.nom }}"
-                     class="box-hero-img">
-                <span class="badge-hero">Personnalisable</span>
+                     alt="{{ box_personnalisable.nom }}">
+                <span>Personnalisable</span>
             </div>
             
-            <div class="hero-content">
-                <h2 class="hero-title">{{ box_personnalisable.nom }}</h2>
-                <p class="hero-description">{{ box_personnalisable.description }}</p>
+            <div>
+                <h2>{# Nom de la box perso #}{{ box_personnalisable.nom }}</h2>
+                <p>{# Description de la box perso #}{{ box_personnalisable.description }}</p>
                 
-                <div class="hero-features">
-                    <div class="feature-item">
+                <div>
+                    <div>
                         <i class="fas fa-cookie-bite"></i>
                         <span>12 cookies au choix</span>
                     </div>
-                    <div class="feature-item">
+                    <div>
                         <i class="fas fa-palette"></i>
-                        <span>{{ produits|length }} saveurs disponibles</span>
+                        <span>{# Nombre de saveurs disponibles #}{{ produits|length }} saveurs disponibles</span>
                     </div>
-                    <div class="feature-item">
+                    <div>
                         <i class="fas fa-gift"></i>
                         <span>Parfait pour offrir</span>
                     </div>
                 </div>
                 
-                <div class="hero-price">
-                    <span class="price-label">Seulement</span>
-                    <span class="price-value">{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</span>
+                <div>
+                    <span>Seulement</span>
+                    <span>{# Prix de la box perso formaté #}{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</span>
                 </div>
                 
-                <button type="button" class="btn-composer-hero" onclick="openModalBoxPerso()">
+                <button type="button" onclick="openModalBoxPerso()">
                     <i class="fas fa-magic"></i> Composer ma box personnalisée
                 </button>
             </div>
@@ -61,47 +60,46 @@
 {% endif %}
 
 {# ========== BOXES FIXES ========== #}
-<section class="boxes-section">
-    <div class="section-header">
+<section>
+    <div>
         <h2>Nos Boxes Prêtes à Déguster</h2>
-        <p class="section-description">Sélections gourmandes pré-composées par nos soins</p>
+        <p>Sélections gourmandes pré-composées par nos soins</p>
     </div>
 
-    <div class="boxes-container">
-        {% if boxes_fixes|length > 0 %}
-            <div class="boxes-grid">
-                {% for box in boxes_fixes %}
-                    <div class="box-card">
+    <div>
+        {% if boxes_fixes|length > 0 %}{# Si des boxes fixes existent #}
+            <div>
+                {% for box in boxes_fixes %}{# Boucle sur toutes les boxes fixes #}
+                    <div>
                         {# Image de la box #}
-                        <div class="box-image-wrapper">
+                        <div>
                             <img src="{{ asset('uploads/boxes/' ~ box.image) }}" 
-                                 alt="{{ box.nom }}"
-                                 class="box-image">
+                                 alt="{{ box.nom }}">
                             
-                            {# Badges #}
-                            {% if box.stock == 0 %}
-                                <span class="badge badge-rupture">Rupture</span>
-                            {% elseif box.stock < 3 %}
-                                <span class="badge badge-stock-faible">Dernières boxes !</span>
+                            {# Badges de stock #}
+                            {% if box.stock == 0 %}{# Si rupture de stock #}
+                                <span>Rupture</span>
+                            {% elseif box.stock < 3 %}{# Si stock faible (moins de 3) #}
+                                <span>Dernières boxes !</span>
                             {% endif %}
                         </div>
 
                         {# Informations box #}
-                        <div class="box-info">
-                            <h3 class="box-nom">{{ box.nom }}</h3>
-                            <p class="box-description">{{ box.description }}</p>
+                        <div>
+                            <h3>{# Nom de la box #}{{ box.nom }}</h3>
+                            <p>{# Description de la box #}{{ box.description }}</p>
 
                             {# Composition de la box #}
-                            {% if box.produits|length > 0 %}
-                                <div class="box-composition">
-                                    <h4 class="composition-title">
+                            {% if box.produits|length > 0 %}{# Si la box contient des produits #}
+                                <div>
+                                    <h4>
                                         <i class="fas fa-cookie-bite"></i> Contient :
                                     </h4>
-                                    <ul class="composition-list">
-                                        {% for produit in box.produits %}
-                                            <li class="composition-item">
+                                    <ul>
+                                        {% for produit in box.produits %}{# Boucle sur les produits de la box #}
+                                            <li>
                                                 <i class="fas fa-check"></i>
-                                                <span>{{ produit.name }}</span>
+                                                <span>{# Nom du produit dans la box #}{{ produit.name }}</span>
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -109,32 +107,30 @@
                             {% endif %}
 
                             {# Prix #}
-                            <div class="box-prix-wrapper">
-                                <span class="prix">{{ box.prix|number_format(2, ',', ' ') }} €</span>
+                            <div>
+                                <span>{# Prix de la box formaté #}{{ box.prix|number_format(2, ',', ' ') }} €</span>
                             </div>
 
                             {# Stock #}
-                            <div class="box-stock">
-                                {% if box.stock > 0 %}
-                                    <i class="fas fa-check-circle icon-success"></i>
-                                    <span class="stock-disponible">{{ box.stock }} box(es) disponible(s)</span>
-                                {% else %}
-                                    <i class="fas fa-times-circle icon-error"></i>
-                                    <span class="stock-rupture">Rupture de stock</span>
+                            <div>
+                                {% if box.stock > 0 %}{# Si en stock #}
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>{# Quantité de boxes en stock #}{{ box.stock }} box(es) disponible(s)</span>
+                                {% else %}{# Si rupture #}
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>Rupture de stock</span>
                                 {% endif %}
                             </div>
 
                             {# Formulaire ajout panier #}
-                            {% if box.stock > 0 %}
+                            {% if box.stock > 0 %}{# Formulaire affiché uniquement si stock disponible #}
                                 <form method="POST" 
-                                      action="{{ path('app_panier_ajouter_box', {id: box.id}) }}" 
-                                      class="form-ajout-panier">
+                                      action="{{ path('app_panier_ajouter_box', {id: box.id}) }}">
                                     
-                                    <div class="quantity-selector">
+                                    <div>
                                         <label for="quantite_box_{{ box.id }}">Quantité:</label>
-                                        <div class="quantity-controls">
+                                        <div>
                                             <button type="button" 
-                                                    class="btn-qty btn-minus" 
                                                     onclick="updateBoxQty('quantite_box_{{ box.id }}', -1, 1, {{ box.stock }})"
                                                     aria-label="Diminuer la quantité">
                                                 <i class="fas fa-minus"></i>
@@ -146,11 +142,9 @@
                                                    value="1" 
                                                    min="1" 
                                                    max="{{ box.stock }}"
-                                                   class="input-quantity"
                                                    readonly>
                                             
                                             <button type="button" 
-                                                    class="btn-qty btn-plus" 
                                                     onclick="updateBoxQty('quantite_box_{{ box.id }}', 1, 1, {{ box.stock }})"
                                                     aria-label="Augmenter la quantité">
                                                 <i class="fas fa-plus"></i>
@@ -158,12 +152,12 @@
                                         </div>
                                     </div>
                                     
-                                    <button type="submit" class="btn-ajouter-panier">
+                                    <button type="submit">
                                         <i class="fas fa-shopping-cart"></i> Ajouter au panier
                                     </button>
                                 </form>
-                            {% else %}
-                                <button class="btn-rupture" disabled>
+                            {% else %}{# Bouton désactivé si rupture #}
+                                <button disabled>
                                     <i class="fas fa-ban"></i> Indisponible
                                 </button>
                             {% endif %}
@@ -171,11 +165,11 @@
                     </div>
                 {% endfor %}
             </div>
-        {% else %}
-            <div class="no-boxes">
+        {% else %}{# Si aucune box fixe disponible #}
+            <div>
                 <i class="fas fa-box-open fa-3x"></i>
                 <p>Aucune box fixe disponible pour le moment.</p>
-                <a href="{{ path('app_home') }}" class="btn-retour">
+                <a href="{{ path('app_home') }}">
                     <i class="fas fa-arrow-left"></i> Retour à l'accueil
                 </a>
             </div>
@@ -184,17 +178,17 @@
 </section>
 
 {# ========== CTA BOX PERSO (bas de page) ========== #}
-{% if box_personnalisable %}
-    <section class="cta-box-perso">
-        <div class="cta-content">
-            <div class="cta-icon">
+{% if box_personnalisable %}{# Call-to-action pour la box personnalisable #}
+    <section>
+        <div>
+            <div>
                 <i class="fas fa-magic"></i>
             </div>
-            <div class="cta-text">
+            <div>
                 <h3>Tu veux une box unique ?</h3>
                 <p>Compose ta box personnalisée avec exactement les cookies que tu préfères !</p>
             </div>
-            <button type="button" class="btn-cta" onclick="openModalBoxPerso()">
+            <button type="button" onclick="openModalBoxPerso()">
                 <i class="fas fa-cookie-bite"></i> Créer ma box maintenant
             </button>
         </div>
@@ -250,7 +244,6 @@
             const modal = document.getElementById('modalBoxPerso');
             
             if (modal) {
-                // Forcer l'affichage avec tous les styles inline
                 modal.style.cssText = `
                     display: block !important;
                     position: fixed !important;
@@ -298,15 +291,12 @@
             let currentQty = parseInt(input.value) || 0;
             let newQty = currentQty + delta;
             
-            // Calculer le total actuel (sans ce produit)
             let totalCookies = getTotalCookies() - currentQty;
             
-            // Vérifier les limites
             if (newQty < 0) newQty = 0;
             if (newQty > maxStock) newQty = maxStock;
             if (totalCookies + newQty > 12) newQty = 12 - totalCookies;
             
-            // Mettre à jour
             input.value = newQty;
             
             if (newQty > 0) {
@@ -348,14 +338,11 @@
             
             if (!counterElement || !progressBar || !btnValider) return;
             
-            // Mettre à jour le compteur
             counterElement.textContent = total;
             
-            // Mettre à jour la barre de progression
             const percentage = (total / 12) * 100;
             progressBar.style.width = `${percentage}%`;
             
-            // Changer la couleur selon le nombre
             if (total === 12) {
                 progressBar.style.backgroundColor = '#10b981';
                 btnValider.disabled = false;
@@ -367,7 +354,6 @@
                 btnValider.disabled = true;
             }
             
-            // Mettre à jour l'état de tous les boutons +
             document.querySelectorAll('.btn-plus-modal').forEach(btn => {
                 const card = btn.closest('.cookie-card');
                 if (!card) return;
@@ -413,7 +399,6 @@
             }
         }
 
-        // Fermer la modal en cliquant en dehors
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('modalBoxPerso');
             if (modal && event.target === modal) {
@@ -422,3 +407,4 @@
         });
     </script>
 {% endblock %}
+
