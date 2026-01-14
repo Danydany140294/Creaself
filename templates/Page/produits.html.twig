@@ -1,150 +1,190 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{# Titre de la page #}Nos Cookies - CreaSelf{% endblock %}
+{% block title %}Nos Cookies - Perline{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+    {# Swiper CSS #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    {# CSS personnalisé Perline #}
     <link rel="stylesheet" href="{{ asset('css/produits.css') }}">
 {% endblock %}
 
 {% block body %}
 
-{# ========== EN-TÊTE PAGE ========== #}
-<section>
-    <div>
-        <h1>{# Titre principal #}Nos Cookies Artisanaux</h1>
-        <p>{# Sous-titre #}Découvrez notre sélection de cookies faits maison avec amour</p>
+{# ========== SECTION HERO AVEC SWIPER ========== #}
+<div class="nc-hero-content">
+        <h1>Des cookies <span>d'exception</span> pour ton plaisir</h1>
+        <p>Recettes gourmandes, textures parfaites et saveurs artisanales.</p>
+        <a href="#cookies" class="nc-btn nc-btn-primary">Commander maintenant</a>
     </div>
-</section>
 
-{# ========== BANNIÈRE BOX PERSONNALISABLE ========== #}
-{% if box_personnalisable %}{# Affichage conditionnel si box perso existe #}
-    <section>
-        <div>
-            <div>
-                <i class="fas fa-magic"></i>
-            </div>
-            <div>
-                <h2>🍪 Compose ta box personnalisée !</h2>
-                <p>Choisis 12 cookies parmi nos {# Nombre total de produits #}{{ produits|length }} saveurs pour seulement {# Prix de la box perso formaté #}{{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</p>
-            </div>
-            <button type="button" onclick="openModalBoxPerso()">
-                <i class="fas fa-cookie-bite"></i> Composer ma box
-            </button>
-        </div>
-    </section>
-{% endif %}
+<section class="nc-hero">
+    
 
-{# ========== LISTE DES COOKIES ========== #}
-<section>
-    <div>
-        
-        {% if produits|length > 0 %}{# Si des produits existent #}
-            <div>
-                {% for produit in produits %}{# Boucle sur tous les produits #}
-                    <div>
-                        {# Image du cookie #}
-                        <div>
-                            <img src="{{ asset('uploads/produits/' ~ produit.image) }}" 
+    {# Swiper - Carrousel des produits vedettes #}
+    <div class="nc-hero-swiper">
+        <div class="swiper nc-swiper">
+            <div class="swiper-wrapper">
+                {% for produit in produits|slice(0, 3) %}
+                    <div class="swiper-slide">
+                        <div class="nc-slide-card">
+                            <img src="{{ asset('asset/images/produits/' ~ produit.image) }}"  
                                  alt="{{ produit.name }}">
+                            <h3>{{ produit.name }}</h3>
+                            <p>{{ produit.description ?? 'Cookie artisanal fait maison avec amour' }}</p>
                             
-                            {# Badges de stock #}
-                            {% if produit.stock == 0 %}{# Si rupture de stock #}
-                                <span>Rupture</span>
-                            {% elseif produit.stock < 5 %}{# Si stock faible (moins de 5) #}
-                                <span>Stock limité</span>
-                            {% endif %}
-                        </div>
-
-                        {# Informations cookie #}
-                        <div>
-                            <h3>{# Nom du produit #}{{ produit.name }}</h3>
-                            
-                            {# Prix #}
-                            <div>
-                                <span>{# Prix formaté en euros #}{{ produit.prix|number_format(2, ',', ' ') }} €</span>
-                                <span>/ pièce</span>
-                            </div>
-
-                            {# Stock #}
-                            <div>
-                                {% if produit.stock > 0 %}{# Si en stock #}
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>{# Quantité en stock #}{{ produit.stock }} en stock</span>
-                                {% else %}{# Si rupture #}
-                                    <i class="fas fa-times-circle"></i>
-                                    <span>Rupture de stock</span>
-                                {% endif %}
-                            </div>
-
-                            {# Formulaire ajout panier #}
-                            {% if produit.stock > 0 %}{# Formulaire affiché uniquement si stock disponible #}
-                                <form method="POST" 
-                                      action="{{ path('app_panier_ajouter_produit', {id: produit.id}) }}">
-                                    
-                                    <div>
-                                        <label for="quantite_{{ produit.id }}">Quantité:</label>
-                                        <div>
-                                            <button type="button" 
-                                                    onclick="updateQty('quantite_{{ produit.id }}', -1, 1, {{ produit.stock }})"
-                                                    aria-label="Diminuer la quantité">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            
-                                            <input type="number" 
-                                                   id="quantite_{{ produit.id }}"
-                                                   name="quantite" 
-                                                   value="1" 
-                                                   min="1" 
-                                                   max="{{ produit.stock }}"
-                                                   readonly>
-                                            
-                                            <button type="button" 
-                                                    onclick="updateQty('quantite_{{ produit.id }}', 1, 1, {{ produit.stock }})"
-                                                    aria-label="Augmenter la quantité">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <button type="submit">
-                                        <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                                    </button>
-                                </form>
-                            {% else %}{# Bouton désactivé si rupture #}
-                                <button disabled>
-                                    <i class="fas fa-ban"></i> Indisponible
+                            {% if produit.stock > 0 %}
+                                <button class="nc-btn nc-btn-primary" 
+                                        onclick="scrollToProduct({{ produit.id }})">
+                                    Voir le produit
+                                </button>
+                            {% else %}
+                                <button class="nc-btn nc-btn-primary" disabled>
+                                    Indisponible
                                 </button>
                             {% endif %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
-        {% else %}{# Si aucun produit disponible #}
-            <div>
-                <i class="fas fa-cookie-bite fa-3x"></i>
-                <p>Aucun cookie disponible pour le moment.</p>
-                <a href="{{ path('app_home') }}">
-                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
-                </a>
-            </div>
-        {% endif %}
 
+            {# Navigation et pagination du swiper #}
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
     </div>
 </section>
 
-{# ========== SECTION CTA BOX PERSO (bas de page) ========== #}
-{% if box_personnalisable %}{# Call-to-action pour la box personnalisable #}
-    <section>
-        <div>
-            <div>
+{# ========== BANNIÈRE BOX PERSONNALISABLE ========== #}
+{% if box_personnalisable %}
+    <section class="nc-box-banner">
+        <div class="nc-box-content">
+            <div class="nc-box-icon">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div class="nc-box-text">
+                <h2>🍪 Compose ta box personnalisée !</h2>
+                <p>Choisis 12 cookies parmi nos {{ produits|length }} saveurs pour seulement {{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</p>
+            </div>
+            <button type="button" class="nc-btn nc-btn-primary" onclick="openModalBoxPerso()">
+                <i class="fas fa-cookie-bite"></i> Composer ma box
+            </button>
+        </div>
+    </section>
+{% endif %}
+
+{# ========== GRILLE DES PRODUITS ========== #}
+<section id="cookies" class="nc-products">
+    <h2>Nos cookies stars</h2>
+
+    {% if produits|length > 0 %}
+        <div class="nc-product-grid">
+            {% for produit in produits %}
+                <article class="nc-product-card" id="product-{{ produit.id }}">
+                    
+                    {# Image du produit #}
+                    <div class="nc-product-image">
+                        <img src="{{ asset('asset/images/produits/' ~ produit.image) }}" 
+                             alt="{{ produit.name }}">
+                        
+                        {# Badges de disponibilité #}
+                        {% if produit.stock == 0 %}
+                            <span class="nc-badge nc-badge-out">Rupture</span>
+                        {% elseif produit.stock < 5 %}
+                            <span class="nc-badge nc-badge-limited">Stock limité</span>
+                        {% endif %}
+                    </div>
+
+                    {# Informations produit #}
+                    <h3>{{ produit.name }}</h3>
+                    
+                    {# Prix #}
+                    <p class="nc-product-price">{{ produit.prix|number_format(2, ',', ' ') }} €</p>
+                    
+                    {# Indicateur de stock #}
+                    <div class="nc-stock-info">
+                        {% if produit.stock > 0 %}
+                            <i class="fas fa-check-circle"></i>
+                            <span>{{ produit.stock }} en stock</span>
+                        {% else %}
+                            <i class="fas fa-times-circle"></i>
+                            <span>Rupture de stock</span>
+                        {% endif %}
+                    </div>
+
+                    {# Formulaire d'ajout au panier #}
+                    {% if produit.stock > 0 %}
+                        <form method="POST" 
+                              action="{{ path('app_panier_ajouter_produit', {id: produit.id}) }}"
+                              class="nc-add-to-cart-form">
+                            
+                            {# Sélecteur de quantité #}
+                            <div class="nc-quantity-selector">
+                                <label for="quantite_{{ produit.id }}">Quantité:</label>
+                                <div class="nc-quantity-controls">
+                                    <button type="button" 
+                                            class="nc-qty-btn"
+                                            onclick="updateQty('quantite_{{ produit.id }}', -1, 1, {{ produit.stock }})"
+                                            aria-label="Diminuer">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    
+                                    <input type="number" 
+                                           id="quantite_{{ produit.id }}"
+                                           name="quantite" 
+                                           value="1" 
+                                           min="1" 
+                                           max="{{ produit.stock }}"
+                                           readonly>
+                                    
+                                    <button type="button" 
+                                            class="nc-qty-btn"
+                                            onclick="updateQty('quantite_{{ produit.id }}', 1, 1, {{ produit.stock }})"
+                                            aria-label="Augmenter">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {# Bouton d'ajout #}
+                            <button type="submit" class="nc-btn nc-btn-secondary">
+                                <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="nc-btn nc-btn-secondary" disabled>
+                            <i class="fas fa-ban"></i> Indisponible
+                        </button>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        {# Message si aucun produit disponible #}
+        <div class="nc-no-products">
+            <i class="fas fa-cookie-bite fa-3x"></i>
+            <p>Aucun cookie disponible pour le moment.</p>
+            <a href="{{ path('app_home') }}" class="nc-btn nc-btn-outline">
+                <i class="fas fa-arrow-left"></i> Retour à l'accueil
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+{# ========== CTA BOX PERSONNALISABLE (bas de page) ========== #}
+{% if box_personnalisable %}
+    <section class="nc-box-cta">
+        <div class="nc-cta-content">
+            <div class="nc-cta-icon">
                 <i class="fas fa-gift"></i>
             </div>
-            <div>
+            <div class="nc-cta-text">
                 <h3>Envie d'un assortiment sur mesure ?</h3>
                 <p>Créez votre box personnalisée avec 12 cookies de votre choix !</p>
             </div>
-            <button type="button" onclick="openModalBoxPerso()">
+            <button type="button" class="nc-btn nc-btn-primary" onclick="openModalBoxPerso()">
                 <i class="fas fa-magic"></i> Créer ma box
             </button>
         </div>
@@ -156,41 +196,9 @@
 {% block javascripts %}
     {{ parent() }}
     
-    <script>
-        /**
-         * Gestion des quantités +/-
-         */
-        function updateQty(inputId, delta, min, max) {
-            const input = document.getElementById(inputId);
-            let currentValue = parseInt(input.value) || min;
-            let newValue = currentValue + delta;
-            
-            // Limiter entre min et max
-            if (newValue >= min && newValue <= max) {
-                input.value = newValue;
-            }
-        }
-
-        /**
-         * Animation au scroll
-         */
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.cookie-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-        });
-    </script>
+    {# Swiper JS - OBLIGATOIRE AVANT produits.js #}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    {# Script principal Perline - Contient TOUT : Swiper init, AJAX, animations #}
+    <script src="{{ asset('js/produits.js') }}"></script>
 {% endblock %}
-
