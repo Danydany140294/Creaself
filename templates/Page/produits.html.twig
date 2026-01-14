@@ -12,48 +12,68 @@
 
 {% block body %}
 
-{# ========== SECTION HERO AVEC SWIPER ========== #}
-<div class="nc-hero-content">
-        <h1>Des cookies <span>d'exception</span> pour ton plaisir</h1>
+{# ========== SECTION HERO CENTRÉE AVEC GRAND SWIPER ========== #}
+<section class="nc-hero">
+    <div class="nc-hero-content">
+        <h1>Des cookies <span>d'exception</span> </h1>
         <p>Recettes gourmandes, textures parfaites et saveurs artisanales.</p>
         <a href="#cookies" class="nc-btn nc-btn-primary">Commander maintenant</a>
     </div>
 
-<section class="nc-hero">
-    
-
-    {# Swiper - Carrousel des produits vedettes #}
+    {# Swiper - Grand carrousel style 3D #}
     <div class="nc-hero-swiper">
         <div class="swiper nc-swiper">
             <div class="swiper-wrapper">
-                {% for produit in produits|slice(0, 3) %}
+                {% for produit in produits|slice(0, 5) %}
                     <div class="swiper-slide">
                         <div class="nc-slide-card">
-                            <img src="{{ asset('asset/images/produits/' ~ produit.image) }}"  
-                                 alt="{{ produit.name }}">
-                            <h3>{{ produit.name }}</h3>
-                            <p>{{ produit.description ?? 'Cookie artisanal fait maison avec amour' }}</p>
-                            
-                            {% if produit.stock > 0 %}
-                                <button class="nc-btn nc-btn-primary" 
-                                        onclick="scrollToProduct({{ produit.id }})">
-                                    Voir le produit
-                                </button>
-                            {% else %}
-                                <button class="nc-btn nc-btn-primary" disabled>
-                                    Indisponible
-                                </button>
-                            {% endif %}
+                            <div class="nc-slide-image">
+                                <img src="{{ asset('asset/images/produits/' ~ produit.image) }}"  
+                                     alt="{{ produit.name }}">
+                            </div>
+                            <div class="nc-slide-content">
+                                <h3>{{ produit.name }}</h3>
+                                <p>{{ produit.description ?? 'Cookie artisanal fait maison avec amour' }}</p>
+                                
+                                {% if produit.stock > 0 %}
+                                    <button class="nc-btn nc-btn-primary" 
+                                            onclick="scrollToProduct({{ produit.id }})">
+                                        Commander
+                                    </button>
+                                {% else %}
+                                    <button class="nc-btn nc-btn-primary" disabled>
+                                        Indisponible
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
 
-            {# Navigation et pagination du swiper #}
-            <div class="swiper-pagination"></div>
+            {# Navigation du swiper #}
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
         </div>
+    </div>
+</section>
+
+{# ========== SECTION TAGS PRODUITS (sous le hero) ========== #}
+<section class="nc-product-tags">
+    <div class="nc-tag-item">
+        <span class="nc-tag-label">{{ produits|length }}</span>
+        <span class="nc-tag-text">Saveurs</span>
+    </div>
+    {% if box_personnalisable %}
+    <div class="nc-tag-item">
+        <span class="nc-tag-label">{{ box_personnalisable.prix|number_format(2, ',', ' ') }}€</span>
+        <span class="nc-tag-text">Box 12 cookies</span>
+    </div>
+    {% endif %}
+    <div class="nc-tag-item">
+        <span class="nc-tag-label">100%</span>
+        <span class="nc-tag-text">Artisanal</span>
     </div>
 </section>
 

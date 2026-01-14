@@ -13,7 +13,7 @@ const swiper = new Swiper(".nc-swiper", {
     loop: true,                    // Boucle infinie du carrousel
     centeredSlides: true,          // Slide central mis en avant
     slidesPerView: 1.2,            // Nombre de slides visibles (mobile)
-    spaceBetween: 24,              // Espace entre les slides (en px)
+    spaceBetween: 15,              // Espace entre les slides (en px)
     grabCursor: true,              // Curseur "main" au survol
     
     // Adaptation responsive
@@ -29,11 +29,11 @@ const swiper = new Swiper(".nc-swiper", {
     // Effet 3D type "coverflow"
     effect: "coverflow",
     coverflowEffect: {
-        rotate: 18,                // Rotation des slides latéraux
+        rotate: 12,                // Rotation des slides latéraux
         stretch: 0,                // Étirement horizontal
         depth: 180,                // Profondeur de l'effet 3D
         modifier: 1.4,             // Intensité de l'effet
-        slideShadows: true         // Ombres sur les slides
+        slideShadows: false         // Ombres sur les slides
     },
     
     // Pagination (points en bas)

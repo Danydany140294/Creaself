@@ -1,34 +1,42 @@
 /* ========================================
-   VARIABLES DE COULEURS - THÈME PERLINE
-   Basé sur le logo des Cookies d'exception
+   VARIABLES DE COULEURS - THÈME PERLINE NÉON
    ======================================== */
 
 :root {
-    /* Couleurs principales du logo Perline */
-    --perline-beige: #f5e6d3;           /* Beige crème de la bannière */
-    --perline-rose: #e07a93;            /* Rose du texte PERLINE */
-    --perline-marron: #8b5a3c;          /* Marron du cookie */
-    --perline-marron-fonce: #5d3a1a;    /* Marron foncé (chocolat/contours) */
-    --perline-dore: #d4af37;            /* Jaune doré (pépites) */
-    --perline-blanc: #faf8f5;           /* Blanc cassé (pépites claires) */
+    /* Couleurs principales avec effet néon rose */
+    --perline-beige: #f5e6d3;
+    --perline-rose: #ff4d7a;              /* Rose néon intensifié */
+    --perline-rose-neon: #ff2970;         /* Rose néon vif */
+    --perline-marron: #8b5a3c;
+    --perline-marron-fonce: #5d3a1a;
+    --perline-dore: #d4af37;
+    --perline-blanc: #faf8f5;
     
     /* Couleurs de fond */
-    --bg-principal: #faf6f0;            /* Fond beige très clair */
-    --bg-carte: #fff9f0;                /* Fond des cartes produits */
-    --bg-alt: #f0e6d6;                  /* Fond alternatif */
+    --bg-principal: #faf6f0;
+    --bg-carte: #fff9f0;
+    --bg-alt: #f0e6d6;
     
     /* Couleurs de texte */
-    --texte-principal: #3d2817;         /* Marron très foncé pour texte */
-    --texte-secondaire: #6d4c2f;        /* Marron moyen pour texte */
-    --texte-muted: #998675;             /* Texte atténué */
+    --texte-principal: #3d2817;
+    --texte-secondaire: #6d4c2f;
+    --texte-muted: #998675;
     
-    /* Effets et bordures */
+    /* Effets néon */
+    --neon-rose: 0 0 10px rgba(255, 77, 122, 0.5), 
+                 0 0 20px rgba(255, 77, 122, 0.3),
+                 0 0 30px rgba(255, 77, 122, 0.2);
+    --neon-rose-intense: 0 0 15px rgba(255, 41, 112, 0.8), 
+                         0 0 30px rgba(255, 41, 112, 0.5),
+                         0 0 45px rgba(255, 41, 112, 0.3);
+    
+    /* Ombres et bordures */
     --ombre-douce: 0 8px 24px rgba(141, 90, 60, 0.15);
     --ombre-forte: 0 12px 32px rgba(141, 90, 60, 0.25);
-    --bordure-rose: 2px solid rgba(224, 122, 147, 0.4);
-    --bordure-dore: 2px solid rgba(212, 175, 55, 0.5);
+    --bordure-rose: 2px solid rgba(255, 77, 122, 0.4);
+    --bordure-neon: 3px solid var(--perline-rose-neon);
     
-    /* Rayons de bordure */
+    /* Rayons */
     --radius-lg: 20px;
     --radius-md: 14px;
     --radius-full: 999px;
@@ -54,90 +62,39 @@ body {
 }
 
 /* ========================================
-   HEADER - Navigation principale
-   ======================================== */
-
-.nc-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 8vw;
-    background: linear-gradient(
-        to bottom,
-        rgba(250, 246, 240, 0.98),
-        rgba(250, 246, 240, 0.85)
-    );
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(139, 90, 60, 0.15);
-    box-shadow: 0 2px 12px rgba(139, 90, 60, 0.08);
-}
-
-.nc-logo {
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: 0.05em;
-    color: var(--perline-marron-fonce);
-    text-transform: uppercase;
-}
-
-.nc-logo span {
-    color: var(--perline-rose);
-}
-
-.nc-nav {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-}
-
-.nc-nav a {
-    text-decoration: none;
-    color: var(--texte-secondaire);
-    font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.nc-nav a:hover {
-    color: var(--perline-rose);
-    transform: translateY(-1px);
-}
-
-/* ========================================
-   BOUTONS - Styles principaux
+   BOUTONS - Avec effet néon
    ======================================== */
 
 .nc-btn {
     border: none;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.05em;
-    padding: 12px 24px;
+    padding: 14px 32px;
     border-radius: var(--radius-full);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    text-transform: uppercase;
 }
 
-/* Bouton principal (rose) */
+/* Bouton principal avec effet néon rose */
 .nc-btn-primary {
-    background: linear-gradient(135deg, var(--perline-rose), #c96981);
+    background: linear-gradient(135deg, var(--perline-rose), var(--perline-rose-neon));
     color: white;
-    box-shadow: 0 4px 14px rgba(224, 122, 147, 0.4);
+    box-shadow: var(--neon-rose);
+    border: 2px solid transparent;
 }
 
 .nc-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(224, 122, 147, 0.6);
+    transform: translateY(-3px);
+    box-shadow: var(--neon-rose-intense);
+    border-color: var(--perline-rose-neon);
 }
 
-/* Bouton secondaire (doré/beige) */
+/* Bouton secondaire (doré) */
 .nc-btn-secondary {
     background: linear-gradient(135deg, var(--perline-dore), #c49a2e);
     color: var(--texte-principal);
@@ -149,90 +106,113 @@ body {
     box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
 }
 
-/* Bouton contour (marron) */
-.nc-btn-outline {
-    background: transparent;
-    border: 2px solid var(--perline-marron);
-    color: var(--perline-marron);
-}
-
-.nc-btn-outline:hover {
-    background: var(--perline-marron);
-    color: white;
-}
-
 /* Bouton désactivé */
 .nc-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
+    box-shadow: none !important;
 }
 
 /* ========================================
-   HERO - Section principale avec Swiper
+   HERO - Section principale centrée
    ======================================== */
 
 .nc-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
-    padding: 60px 8vw 40px;
-    gap: 50px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    padding: 40px 5vw 40px;
+    gap: 50px;
+    text-align: center;
+    min-height: 85vh;
+    justify-content: center;
+}
+
+.nc-hero-content {
+    max-width: 800px;
 }
 
 .nc-hero-content h1 {
-    font-size: clamp(2.4rem, 4vw, 3.6rem);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
     line-height: 1.1;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     color: var(--perline-marron-fonce);
     font-family: 'Georgia', serif;
+    white-space: nowrap;
 }
 
 .nc-hero-content h1 span {
-    background: linear-gradient(120deg, var(--perline-rose), var(--perline-dore));
+    background: linear-gradient(120deg, var(--perline-rose), var(--perline-rose-neon));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: var(--neon-rose);
+    filter: drop-shadow(0 0 15px rgba(255, 77, 122, 0.3));
 }
 
 .nc-hero-content p {
-    max-width: 480px;
     color: var(--texte-secondaire);
-    font-size: 1.1rem;
-    margin-bottom: 28px;
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+    line-height: 1.6;
 }
 
 /* ========================================
-   SWIPER - Carrousel hero
+   GRAND SWIPER - Style carrousel 3D
    ======================================== */
 
 .nc-hero-swiper {
+    width: 100%;
+    max-width: 1400px;
     position: relative;
-    padding: 10px;
+    padding: 10px 20px 10px;
 }
 
 .nc-swiper {
     width: 100%;
-    padding: 30px 10px 50px;
+    padding: 20px 60px 60px;
 }
 
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+}
+
+/* Effet 3D : slides latérales plus petites */
+.swiper-slide:not(.swiper-slide-active) {
+    opacity: 0.4;
+    transform: scale(0.75);
+}
+
+.swiper-slide-active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 10;
+}
+
+/* Carte du slide - Design compact et large */
 .nc-slide-card {
     background: linear-gradient(145deg, var(--bg-carte), var(--perline-blanc));
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     padding: 20px;
-    box-shadow: var(--ombre-douce);
-    border: var(--bordure-rose);
+    box-shadow: var(--ombre-forte);
+    border: var(--bordure-neon);
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: all 0.4s ease;
+    width: 100%;
+    max-width: 600px;
+    height: 550px;
 }
 
-.nc-slide-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--ombre-forte);
+.swiper-slide-active .nc-slide-card {
+    box-shadow: var(--neon-rose-intense), var(--ombre-forte);
 }
 
-/* Effet de brillance sur les slides */
+/* Effet de brillance néon sur les slides actives */
 .nc-slide-card::before {
     content: "";
     position: absolute;
@@ -242,47 +222,122 @@ body {
     height: 200%;
     background: radial-gradient(
         circle at center,
-        rgba(212, 175, 55, 0.1),
+        rgba(255, 77, 122, 0.15),
         transparent 60%
     );
-    opacity: 0.6;
+    opacity: 0;
+    transition: opacity 0.4s ease;
     pointer-events: none;
 }
 
-.nc-slide-card img {
+.swiper-slide-active .nc-slide-card::before {
+    opacity: 1;
+}
+
+/* Image du slide - Plus compacte et large */
+.nc-slide-image {
     width: 100%;
-    height: 280px;
+    height: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    position: relative;
+    border: 3px solid var(--perline-rose);
+    box-shadow: var(--neon-rose);
+}
+
+.nc-slide-image img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: var(--radius-md);
-    margin-bottom: 14px;
-    border: 2px solid var(--perline-beige);
+}
+
+/* Contenu du slide */
+.nc-slide-content {
+    text-align: center;
 }
 
 .nc-slide-card h3 {
-    margin: 8px 0 6px;
+    margin: 0 0 12px;
     color: var(--perline-marron-fonce);
-    font-size: 1.4rem;
+    font-size: 1.8rem;
+    font-family: 'Georgia', serif;
 }
 
 .nc-slide-card p {
-    margin: 0 0 16px;
+    margin: 0 0 20px;
     color: var(--texte-secondaire);
-    font-size: 0.95rem;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
-/* Contrôles Swiper personnalisés */
+/* Contrôles Swiper - Style néon */
 .swiper-button-prev,
 .swiper-button-next {
-    color: var(--perline-rose);
-    filter: drop-shadow(0 2px 8px rgba(224, 122, 147, 0.3));
+    color: var(--perline-rose-neon);
+    filter: drop-shadow(var(--neon-rose));
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: 2px solid var(--perline-rose);
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+    background: var(--perline-rose);
+    color: white;
+    box-shadow: var(--neon-rose-intense);
+}
+
+.swiper-button-prev:after,
+.swiper-button-next:after {
+    font-size: 20px;
+    font-weight: 900;
 }
 
 .swiper-pagination-bullet {
-    background: rgba(139, 90, 60, 0.4);
+    width: 12px;
+    height: 12px;
+    background: rgba(139, 90, 60, 0.3);
 }
 
 .swiper-pagination-bullet-active {
-    background: var(--perline-rose);
+    background: var(--perline-rose-neon);
+    box-shadow: var(--neon-rose);
+}
+
+/* ========================================
+   TAGS PRODUITS - Section sous hero
+   ======================================== */
+
+.nc-product-tags {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    padding: 5px 8vw 5px;
+    flex-wrap: wrap;
+}
+
+.nc-tag-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.nc-tag-label {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--perline-rose);
+    text-shadow: var(--neon-rose);
+}
+
+.nc-tag-text {
+    font-size: 0.9rem;
+    color: var(--texte-secondaire);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 /* ========================================
@@ -290,10 +345,11 @@ body {
    ======================================== */
 
 .nc-box-banner {
-    padding: 30px 8vw;
+    padding: 10px 8vw;
     background: linear-gradient(135deg, var(--perline-beige), var(--bg-carte));
-    border-top: 3px solid var(--perline-dore);
-    border-bottom: 3px solid var(--perline-dore);
+    border-top: 3px solid var(--perline-rose);
+    border-bottom: 3px solid var(--perline-rose);
+    box-shadow: inset 0 0 30px rgba(255, 77, 122, 0.1);
 }
 
 .nc-box-content {
@@ -307,6 +363,7 @@ body {
 .nc-box-icon {
     font-size: 3rem;
     color: var(--perline-rose);
+    filter: drop-shadow(var(--neon-rose));
 }
 
 .nc-box-text h2 {
@@ -329,8 +386,8 @@ body {
 }
 
 .nc-products h2 {
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
     color: var(--perline-marron-fonce);
     text-align: center;
     font-family: 'Georgia', serif;
@@ -338,18 +395,18 @@ body {
 
 .nc-product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
 }
 
 /* ========================================
-   CARTE PRODUIT - Design individuel
+   CARTE PRODUIT
    ======================================== */
 
 .nc-product-card {
     background: var(--bg-carte);
     border-radius: var(--radius-lg);
-    padding: 20px;
+    padding: 24px;
     text-align: center;
     box-shadow: var(--ombre-douce);
     border: var(--bordure-rose);
@@ -360,41 +417,19 @@ body {
 
 .nc-product-card:hover {
     transform: translateY(-8px);
-    box-shadow: var(--ombre-forte);
-    border-color: var(--perline-dore);
+    box-shadow: var(--neon-rose), var(--ombre-forte);
+    border-color: var(--perline-rose-neon);
 }
 
-/* Effet de texture cookie en arrière-plan */
-.nc-product-card::before {
-    content: "";
-    position: absolute;
-    top: -30%;
-    left: -30%;
-    width: 160%;
-    height: 160%;
-    background: radial-gradient(
-        circle at center,
-        rgba(212, 175, 55, 0.08),
-        transparent 65%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-.nc-product-card:hover::before {
-    opacity: 1;
-}
-
-/* Image produit avec effet cookie */
+/* Image produit */
 .nc-product-image {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 16px;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 20px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid var(--perline-dore);
-    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+    border: 3px solid var(--perline-rose);
+    box-shadow: var(--neon-rose);
     position: relative;
 }
 
@@ -405,11 +440,15 @@ body {
     transition: transform 0.3s ease;
 }
 
-.nc-product-card:hover .nc-product-image img {
-    transform: scale(1.08);
+.nc-product-card:hover .nc-product-image {
+    box-shadow: var(--neon-rose-intense);
 }
 
-/* Badges de stock */
+.nc-product-card:hover .nc-product-image img {
+    transform: scale(1.1);
+}
+
+/* Badges */
 .nc-badge {
     position: absolute;
     top: 10px;
@@ -437,18 +476,19 @@ body {
 .nc-product-card h3 {
     margin: 10px 0 8px;
     color: var(--perline-marron-fonce);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-family: 'Georgia', serif;
 }
 
 .nc-product-price {
     margin: 8px 0 12px;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     color: var(--perline-rose);
+    text-shadow: var(--neon-rose);
 }
 
-/* Indicateur de stock */
+/* Stock info */
 .nc-stock-info {
     display: flex;
     align-items: center;
@@ -471,7 +511,6 @@ body {
     margin-top: 16px;
 }
 
-/* Sélecteur de quantité */
 .nc-quantity-selector {
     margin-bottom: 14px;
 }
@@ -524,33 +563,14 @@ body {
 }
 
 /* ========================================
-   MESSAGE AUCUN PRODUIT
-   ======================================== */
-
-.nc-no-products {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--texte-secondaire);
-}
-
-.nc-no-products i {
-    color: var(--perline-rose);
-    margin-bottom: 20px;
-}
-
-.nc-no-products p {
-    font-size: 1.2rem;
-    margin-bottom: 24px;
-}
-
-/* ========================================
-   CTA BOX PERSONNALISABLE (bas de page)
+   CTA BOX PERSONNALISABLE
    ======================================== */
 
 .nc-box-cta {
     padding: 40px 8vw;
-    background: linear-gradient(135deg, var(--perline-rose), #c96981);
+    background: linear-gradient(135deg, var(--perline-rose), var(--perline-rose-neon));
     color: white;
+    box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.1);
 }
 
 .nc-cta-content {
@@ -563,6 +583,7 @@ body {
 
 .nc-cta-icon {
     font-size: 3.5rem;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
 }
 
 .nc-cta-text h3 {
@@ -576,65 +597,28 @@ body {
 }
 
 /* ========================================
-   FOOTER
-   ======================================== */
-
-.nc-footer {
-    padding: 24px 8vw 28px;
-    border-top: 2px solid var(--perline-beige);
-    background: var(--bg-alt);
-    text-align: center;
-    color: var(--texte-secondaire);
-    font-size: 0.9rem;
-}
-
-.nc-footer p {
-    margin: 6px 0;
-}
-
-/* ========================================
-   ANIMATIONS
-   ======================================== */
-
-/* Animation d'apparition au scroll */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* ========================================
-   RESPONSIVE - Tablettes et mobiles
+   RESPONSIVE
    ======================================== */
 
 @media (max-width: 900px) {
-    /* Hero en colonne sur mobile */
     .nc-hero {
-        grid-template-columns: 1fr;
-        padding-top: 30px;
-        gap: 30px;
+        padding: 50px 5vw 30px;
+        min-height: auto;
     }
 
-    .nc-hero-swiper {
-        order: -1;
+    .nc-hero-content h1 {
+        font-size: 2.5rem;
     }
 
-    /* Grille produits plus compacte */
+    .nc-swiper {
+        padding: 20px 40px 50px;
+    }
+
     .nc-product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
     }
 
-    /* Box personnalisable en colonne */
     .nc-box-content,
     .nc-cta-content {
         flex-direction: column;
@@ -643,23 +627,20 @@ body {
 }
 
 @media (max-width: 600px) {
-    /* Navigation cachée (prévoir menu burger) */
-    .nc-nav {
-        display: none;
-    }
-
-    /* Typographie plus petite */
     .nc-hero-content h1 {
         font-size: 2rem;
     }
 
-    .nc-products h2 {
-        font-size: 1.6rem;
+    .nc-product-tags {
+        gap: 20px;
     }
 
-    /* Images produits plus petites */
+    .nc-slide-image {
+        height: 250px;
+    }
+
     .nc-product-image {
-        width: 120px;
-        height: 120px;
+        width: 140px;
+        height: 140px;
     }
 }
