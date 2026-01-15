@@ -171,7 +171,7 @@ body {
 
 .nc-swiper {
     width: 100%;
-    padding: 20px 60px 60px;
+    padding: 2px 2px 2px 2px;  /* Réduit de tous les côtés */
 }
 
 .swiper-slide {
@@ -183,8 +183,8 @@ body {
 
 /* Effet 3D : slides latérales plus petites */
 .swiper-slide:not(.swiper-slide-active) {
-    opacity: 0.4;
-    transform: scale(0.75);
+    opacity: 0.7;
+    transform: scale(0.25);
 }
 
 .swiper-slide-active {
@@ -209,7 +209,7 @@ body {
 }
 
 .swiper-slide-active .nc-slide-card {
-    box-shadow: var(--neon-rose-intense), var(--ombre-forte);
+    box-shadow: var(--ombre-forte);
 }
 
 /* Effet de brillance néon sur les slides actives */
