@@ -1,0 +1,356 @@
+/* ========================================
+   HOME PAGE - Cookie Shop avec palette MIX
+   ======================================== */
+
+/* Variables CSS - Palette MIX */
+:root {
+    /* Couleurs principales */
+    --mix-champagne: #F6ECD8;
+    --mix-cream: #FAF7F2;
+    --mix-cocoa: #B08070;
+    --mix-cocoa-dark: #9A6B58;
+    --mix-gold: #CCA748;
+    --mix-gold-light: #D9B857;
+    --mix-rose: #FF6B8F;
+    --mix-rose-soft: #FF8BA5;
+    
+    /* Couleurs de fond */
+    --mix-bg-main: #F9F4EE;
+    --mix-bg-card: #FFF9F2;
+    --mix-accent: #E6D8C8;
+    
+    /* Couleurs de texte */
+    --mix-text-main: #3F2A1F;
+    --mix-text-secondary: #6E503D;
+    --mix-text-muted: #988977;
+    
+    /* Effets d'ombre */
+    --mix-shadow-soft: 0 6px 20px rgba(103, 62, 48, 0.12);
+    --mix-shadow-medium: 0 8px 28px rgba(103, 62, 48, 0.18);
+    --mix-shadow-strong: 0 12px 40px rgba(103, 62, 48, 0.25);
+    
+    /* Effets de glow */
+    --mix-glow-soft: 0 0 8px rgba(255, 107, 143, 0.3), 
+                     0 0 15px rgba(255, 107, 143, 0.2),
+                     0 0 25px rgba(204, 167, 72, 0.15);
+                     
+    --mix-glow-intense: 0 0 12px rgba(255, 107, 143, 0.5), 
+                        0 0 24px rgba(255, 107, 143, 0.3),
+                        0 0 35px rgba(204, 167, 72, 0.25);
+    
+    /* Rayons */
+    --mix-radius-lg: 18px;
+    --mix-radius-md: 12px;
+    --mix-radius-full: 9999px;
+}
+
+/* Configuration de base */
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--mix-bg-main);
+    color: var(--mix-text-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .serif {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+}
+
+/* Hero Overlay */
+.hero-overlay {
+    background: linear-gradient(
+        to bottom, 
+        rgba(63, 42, 31, 0.7) 0%, 
+        rgba(63, 42, 31, 0.4) 50%, 
+        rgba(63, 42, 31, 0.9) 100%
+    );
+}
+
+/* Kraft Texture Background - Style nc-btn-primary */
+.kraft-texture {
+    background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
+    box-shadow: var(--mix-shadow-soft), var(--mix-glow-soft);
+    position: relative;
+}
+
+.kraft-texture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
+                      linear-gradient(225deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
+                      linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
+                      linear-gradient(315deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+.bg-beige-clair {
+    background-color: #F9F4EE;
+}
+
+/* Glass Card Effect - Adapté pour fond clair */
+.glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border: 2px solid var(--mix-rose-soft);
+}
+
+/* Isometric Box 3D Effect */
+.isometric-box {
+    transform: perspective(1000px) rotateX(25deg) rotateY(-15deg) rotateZ(5deg);
+    box-shadow: var(--mix-shadow-strong);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.isometric-box.haptic-shake {
+    animation: hapticShake 0.4s ease-in-out;
+}
+
+@keyframes hapticShake {
+    0%, 100% { 
+        transform: perspective(1000px) rotateX(25deg) rotateY(-15deg) rotateZ(5deg) scale(1); 
+    }
+    25% { 
+        transform: perspective(1000px) rotateX(28deg) rotateY(-12deg) rotateZ(7deg) scale(1.02); 
+    }
+    75% { 
+        transform: perspective(1000px) rotateX(22deg) rotateY(-18deg) rotateZ(3deg) scale(0.98); 
+    }
+}
+
+/* Glow Effects */
+.glow-gold {
+    box-shadow: var(--mix-glow-soft);
+}
+
+.glow-gold:hover {
+    box-shadow: var(--mix-glow-intense);
+}
+
+/* Cookie Shadow */
+.cookie-shadow {
+    filter: drop-shadow(0 10px 15px rgba(63, 42, 31, 0.2));
+}
+
+/* Micro Interactions */
+.micro-interaction {
+    transition: all 0.5s ease-out;
+}
+
+.micro-interaction:hover {
+    transform: scale(1.02);
+}
+
+/* Loupe Effect (Zoom on hover) */
+.loupe-effect {
+    cursor: zoom-in;
+    overflow: hidden;
+}
+
+.loupe-effect img {
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.loupe-effect:hover img {
+    transform: scale(1.4);
+}
+
+/* Crumb Particles */
+.crumb {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 2px;
+}
+
+/* Toast Notification Animation */
+.toast-notification {
+    animation: toastIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes toastIn {
+    from { 
+        transform: translateX(100%) scale(0.5); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0) scale(1); 
+        opacity: 1; 
+    }
+}
+
+/* Magnetic Button Wrapper */
+.magnetic-wrap {
+    display: inline-block;
+    transition: transform 0.2s ease-out;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--mix-rose-soft);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Filling Slot Animation */
+.filling-slot {
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+}
+
+.filling-slot.active {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+}
+
+/* Classes utilitaires pour les couleurs - Palette MIX */
+.bg-chocolat {
+    background-color: var(--mix-cocoa-dark);
+}
+
+.bg-or {
+    background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
+}
+
+.bg-creme {
+    background-color: var(--mix-cream);
+}
+
+.text-chocolat {
+    color: var(--mix-cocoa-dark);
+}
+
+.text-or {
+    color: var(--mix-gold);
+}
+
+/* Texte crème adapté pour fond clair */
+.text-creme {
+    color: var(--mix-text-main);
+}
+
+.border-or {
+    border-color: var(--mix-rose-soft);
+}
+
+/* Effets de hover */
+.hover\:text-or:hover {
+    color: var(--mix-rose);
+}
+
+.hover\:border-or:hover {
+    border-color: var(--mix-rose);
+}
+
+.hover\:bg-or:hover {
+    background: linear-gradient(135deg, var(--mix-gold-light), var(--mix-rose));
+}
+
+/* Animations au survol */
+.group:hover .group-hover\:bg-or {
+    background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
+}
+
+.group:hover .group-hover\:text-chocolat {
+    color: white;
+}
+
+.group:hover .group-hover\:border-or {
+    border-color: var(--mix-rose);
+}
+
+/* Opacités personnalisées */
+.text-chocolat\/80 {
+    color: rgba(154, 107, 88, 0.8);
+}
+
+.text-chocolat\/60 {
+    color: rgba(154, 107, 88, 0.6);
+}
+
+.text-chocolat\/50 {
+    color: rgba(110, 80, 61, 0.5);
+}
+
+/* Textes crème adaptés pour fond clair */
+.text-creme\/90 {
+    color: rgba(63, 42, 31, 0.9);
+}
+
+.text-creme\/40 {
+    color: rgba(110, 80, 61, 0.6);
+}
+
+.border-chocolat\/10 {
+    border-color: rgba(154, 107, 88, 0.1);
+}
+
+.bg-chocolat\/40 {
+    background-color: rgba(154, 107, 88, 0.4);
+}
+
+.bg-or\/20 {
+    background-color: rgba(255, 107, 143, 0.2);
+}
+
+.bg-or\/10 {
+    background-color: rgba(255, 107, 143, 0.1);
+}
+
+.bg-or\/5 {
+    background-color: rgba(255, 107, 143, 0.05);
+}
+
+.border-or\/40 {
+    border-color: rgba(255, 107, 143, 0.4);
+}
+
+.border-or\/20 {
+    border-color: rgba(255, 107, 143, 0.2);
+}
+
+.border-or\/10 {
+    border-color: rgba(255, 107, 143, 0.1);
+}
+
+.border-white\/20 {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Fond crème adapté pour fond clair */
+.bg-creme\/5 {
+    background-color: rgba(176, 128, 112, 0.08);
+}
+
+/* Bordures personnalisées */
+.border-l-or {
+    border-left-color: var(--mix-rose);
+}
+
+.border-l-4 {
+    border-left-width: 4px;
+}
+
+/* Notifications avec couleur rose */
+.toast-notification {
+    border-color: var(--mix-rose);
+}
+
+.toast-notification .bg-or\/20 {
+    background-color: rgba(255, 107, 143, 0.2);
+}
+
+.toast-notification .text-or {
+    color: var(--mix-rose);
+}

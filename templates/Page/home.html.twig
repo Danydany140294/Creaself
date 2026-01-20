@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Premium Cookie Shop - L'Expérience Food-Porn{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+    <!-- TAILWIND CSS - OBLIGATOIRE -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Configuration Tailwind pour tes couleurs personnalisées -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chocolat: "#9A6B58",
+                        or: "#CCA748",
+                        creme: "#FAF7F2",
+                    }
+                },
+            },
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Ton CSS personnalisé cookie-shop -->
+    <link rel="stylesheet" href="{{ asset('css/cookie-shop.css') }}">
+{% endblock %}
+
+{% block body %}
+<main class="relative">
+    <!-- HERO SECTION -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Cookie HD Background" class="w-full h-full object-cover scale-105" src="{{ asset('asset/images/home/img2.jpg') }}"/>
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+        <div class="relative z-10 text-center px-4 max-w-6xl">
+            <div class="inline-block mb-6 px-6 py-2 border border-or/40 rounded-full bg-chocolat/40 backdrop-blur-md">
+                <span class="text-or text-xs font-bold tracking-[0.4em] uppercase">Maison d'Artisanat Sucré</span>
+            </div>
+            <h1 class="text-white text-7xl md:text-[10rem] leading-[0.85] mb-8 drop-shadow-2xl">
+                L'Infinie <br/>
+                <span class="text-or italic">Gourmandise</span>
+            </h1>
+            <p class="text-creme/90 text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+                Chaque bouchée est une promesse. Façonnés à la main, cuits avec passion, dégustés avec émotion.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-8 justify-center items-center">
+                <div class="magnetic-btn-container">
+                    <a class="js-magnetic-btn group relative bg-or text-chocolat px-12 py-6 rounded-full font-extrabold text-xl glow-gold transition-all duration-300 block" href="#compose">
+                        <span class="flex items-center gap-3">
+                            DESSINER MA BOX <span class="material-symbols-outlined">auto_fix</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="magnetic-btn-container">
+                    <a class="js-magnetic-btn group flex items-center gap-4 text-white text-xl font-bold hover:text-or transition-colors" href="#shop">
+                        VOIR LE CATALOGUE 
+                        <span class="w-12 h-12 flex items-center justify-center rounded-full border border-white/20 group-hover:border-or group-hover:bg-or/10 transition-all">
+                            <span class="material-symbols-outlined">arrow_downward</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
+            <span class="text-[10px] text-white uppercase tracking-widest">Scroll</span>
+            <div class="w-[1px] h-16 bg-gradient-to-b from-or to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- CUSTOM BOX COMPOSER SECTION -->
+    <section class="py-32 bg-beige-clair overflow-hidden" id="compose">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24">
+                <h2 class="text-5xl md:text-7xl text-creme mb-6">Votre Coffret <span class="text-or italic">Sur-Mesure</span></h2>
+                <p class="text-creme/40 max-w-2xl mx-auto text-lg">Sélectionnez 6 pépites pour créer l'équilibre parfait. Un emballage luxueux offert.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <!-- Isometric Box Display -->
+                <div class="relative py-20 flex justify-center">
+                    <div class="isometric-box bg-creme/5 w-full max-w-[500px] aspect-square rounded-[3rem] border-4 border-or/20 flex items-center justify-center p-8" id="isometric-box">
+                        <div class="grid grid-cols-2 gap-8 w-full h-full" id="box-grid">
+                            {% for i in 1..6 %}
+                            <div class="box-slot bg-chocolat/40 rounded-3xl border-2 border-dashed border-or/20 flex items-center justify-center overflow-hidden {{ i > 4 ? 'hidden lg:flex' : '' }}">
+                                <span class="material-symbols-outlined text-or/20 text-5xl">add</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="absolute top-10 right-0 md:right-10 bg-or p-6 rounded-full w-28 h-28 flex flex-col items-center justify-center shadow-2xl -rotate-12 transition-transform duration-300" id="counter-badge">
+                        <span class="text-3xl font-black text-chocolat leading-none" id="cookie-count">0/6</span>
+                        <span class="text-[9px] uppercase font-bold text-chocolat/70 mt-1">Cookies</span>
+                    </div>
+                </div>
+
+                <!-- Cookie Selection List -->
+                <div class="space-y-6">
+                    <h3 class="text-creme text-2xl flex items-center gap-4 mb-8">
+                        <span class="w-10 h-px bg-or"></span> Nos Créations Disponibles
+                    </h3>
+                    <div class="space-y-4 max-h-[500px] overflow-y-auto pr-4 custom-scrollbar">
+                        {% if produits is defined and produits|length > 0 %}
+                            {% for produit in produits|slice(0, 6) %}
+                            <div class="js-cookie-item glass-card p-5 rounded-3xl flex items-center gap-6 group cursor-pointer hover:bg-or/20 transition-all border-none" 
+                                 data-img="{{ asset('asset/images/produits/' ~ produit.image) }}" 
+                                 data-name="{{ produit.name }}"
+                                 data-id="{{ produit.id }}">
+                                <img alt="{{ produit.name }}" class="w-20 h-20 rounded-full object-cover shadow-lg group-hover:rotate-45 transition-transform duration-500" src="{{ asset('asset/images/produits/' ~ produit.image) }}"/>
+                                <div class="flex-1">
+                                    <p class="text-creme font-bold text-lg">{{ produit.name }}</p>
+                                    <p class="text-creme/40 text-sm italic">{{ produit.description|default('Cookie artisanal fait maison') }}</p>
+                                </div>
+                                <button class="bg-or text-chocolat w-12 h-12 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined font-black">add</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="magnetic-btn-container w-full">
+                        <button class="js-magnetic-btn w-full bg-or text-chocolat py-6 rounded-2xl font-black text-xl tracking-widest mt-10 glow-gold micro-interaction" id="order-box-btn">
+                            COMMANDER LE COFFRET
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SHOP SECTION -->
+    <section class="py-32 bg-creme" id="shop">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                <div>
+                    <span class="text-or font-bold uppercase tracking-[0.4em] text-sm mb-4 block">Les Incontournables</span>
+                    <h2 class="text-6xl md:text-7xl text-chocolat leading-tight">Nos <span class="italic text-or">Légendes</span></h2>
+                </div>
+                <a class="group text-chocolat font-bold flex items-center gap-3 text-lg border-b-2 border-or/20 pb-2 hover:border-or transition-all" href="{{ path('app_produits') }}">
+                    Explorer la Boutique
+                    <span class="material-symbols-outlined group-hover:translate-x-2 transition-transform">east</span>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {% if produits is defined and produits|length > 0 %}
+                    {% for produit in produits|slice(0, 3) %}
+                    <div class="glass-card rounded-[3.5rem] p-10 group micro-interaction shadow-[0_30px_60px_-15px_rgba(62,39,35,0.1)] relative overflow-hidden">
+                        {% if produit.stock < 5 and produit.stock > 0 %}
+                        <div class="absolute -top-4 -right-4 bg-or text-chocolat px-8 py-6 rounded-bl-[2rem] font-black uppercase text-xs tracking-widest z-20">
+                            Stock limité
+                        </div>
+                        {% endif %}
+                        <div class="relative mb-12 h-64 flex items-center justify-center">
+                            <div class="absolute inset-0 bg-or/5 rounded-full scale-90 group-hover:scale-110 transition-transform duration-700"></div>
+                            <img alt="{{ produit.name }}" class="w-56 h-56 object-cover rounded-full shadow-2xl relative z-10 group-hover:{{ loop.index is odd ? '-rotate-12' : 'rotate-12' }} transition-transform duration-500" src="{{ asset('asset/images/produits/' ~ produit.image) }}"/>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="text-3xl text-chocolat mb-3">{{ produit.name }}</h3>
+                            <p class="text-chocolat/60 text-sm mb-8 leading-relaxed italic">{{ produit.description|default('Cookie artisanal fait maison avec amour') }}</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="text-3xl font-black text-or">€{{ produit.prix|number_format(2, ',', ' ') }}</span>
+                                <div class="magnetic-btn-container">
+                                    {% if produit.stock > 0 %}
+                                    <button class="js-magnetic-btn js-add-to-cart bg-chocolat text-creme w-16 h-16 rounded-3xl flex items-center justify-center group-hover:bg-or group-hover:text-chocolat transition-all duration-300" 
+                                            data-name="{{ produit.name }}"
+                                            data-id="{{ produit.id }}">
+                                        <span class="material-symbols-outlined">add_shopping_cart</span>
+                                    </button>
+                                    {% else %}
+                                    <button class="bg-chocolat/30 text-creme/50 w-16 h-16 rounded-3xl flex items-center justify-center cursor-not-allowed" disabled>
+                                        <span class="material-symbols-outlined">close</span>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- TOAST CONTAINER -->
+    <div class="fixed top-24 right-8 z-[60] flex flex-col gap-4 pointer-events-none" id="toast-container"></div>
+
+    <!-- TIMER WIDGET -->
+    <div class="fixed bottom-8 right-8 z-50 flex items-center gap-6 glass-card p-6 rounded-[2.5rem] shadow-2xl border-or/10 micro-interaction">
+        <div class="relative">
+            <div class="w-16 h-16 rounded-2xl bg-or flex items-center justify-center text-chocolat shadow-inner">
+                <span class="material-symbols-outlined text-4xl animate-pulse">oven_gen</span>
+            </div>
+            <span class="absolute -top-2 -right-2 flex h-4 w-4">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-or opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-or border-2 border-chocolat"></span>
+            </span>
+        </div>
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-chocolat/50 mb-1 leading-none">Fournée en cours</p>
+            <div class="flex gap-2 font-black text-2xl text-chocolat tabular-nums leading-none">
+                <span>00</span><span class="text-or">:</span><span>42</span><span class="text-or">:</span><span class="text-or">18</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEXTURE OVERLAY -->
+    <div class="fixed inset-0 pointer-events-none opacity-10 mix-blend-overlay z-0">
+        <div class="w-full h-full kraft-texture"></div>
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/home.js') }}"></script>
+{% endblock %}

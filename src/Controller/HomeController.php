@@ -32,7 +32,7 @@ class HomeController extends AbstractController
         // Récupérer la box personnalisable
         $boxPersonnalisable = $boxRepository->findOneBy(['type' => 'personnalisable']);
 
-        return $this->render('base.html.twig', [
+        return $this->render('Page/home.html.twig', [
             'produits' => $produits,
             'boxes' => $boxes,
             'box_personnalisable' => $boxPersonnalisable,

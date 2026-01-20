@@ -264,7 +264,7 @@
                     {% for produit in produits %}
                     <div class="cookie-card" data-produit-id="{{ produit.id }}">
                         <div class="cookie-image">
-                            <img src="{{ asset('uploads/produits/' ~ produit.image) }}" alt="{{ produit.name }}">
+                            <img src="{{ asset('asset/images/produits/' ~ produit.image) }}" alt="{{ produit.name }}">
                             {% if produit.stock < 5 %}
                                 <span class="cookie-badge">Stock limité</span>
                             {% endif %}

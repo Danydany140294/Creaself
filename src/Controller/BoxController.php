@@ -22,10 +22,9 @@ final class BoxController extends AbstractController
     ): Response
     {
         // ========== RÉCUPÉRER LES BOXES FIXES ==========
-        // On utilise leftJoin + addSelect pour charger les produits EN UNE SEULE REQUÊTE
         $boxesFixes = $boxRepository->createQueryBuilder('b')
             ->leftJoin('b.produits', 'p')
-            ->addSelect('p') // Charge tous les champs des produits
+            ->addSelect('p')
             ->where('b.type = :type')
             ->andWhere('b.createur IS NULL')
             ->setParameter('type', 'fixe')
@@ -33,7 +32,7 @@ final class BoxController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // ========== RÉCUPÉRER LA BOX PERSONNALISABLE (SANS produits) ==========
+        // ========== RÉCUPÉRER LA BOX PERSONNALISABLE ==========
         $boxPersonnalisable = $boxRepository->createQueryBuilder('b')
             ->where('b.type = :type')
             ->andWhere('b.createur IS NULL')
@@ -43,20 +42,18 @@ final class BoxController extends AbstractController
             ->getOneOrNullResult();
 
         // ========== RÉCUPÉRER LES PRODUITS DISPONIBLES ==========
-        // ⚠️ CRITIQUE : On retourne un ARRAY au lieu d'objets Produit complets
-        // Ça évite que Twig charge les relations boxes → produits → boxes...
+        // ✅ On retourne des OBJETS Produit pour que Twig fonctionne
         $produits = $produitRepository->createQueryBuilder('p')
-            ->select('p.id', 'p.name', 'p.prix', 'p.image', 'p.stock', 'p.description')
             ->where('p.disponible = :disponible')
             ->setParameter('disponible', true)
             ->orderBy('p.name', 'ASC')
             ->getQuery()
-            ->getArrayResult(); // ← ARRAY au lieu d'objets !
+            ->getResult(); // ← OBJETS Produit au lieu d'array !
 
         return $this->render('Page/box.html.twig', [
             'boxes_fixes' => $boxesFixes,
             'box_personnalisable' => $boxPersonnalisable,
-            'produits' => $produits, // Tableau simple, pas d'entités Doctrine
+            'produits' => $produits,
         ]);
     }
 }
