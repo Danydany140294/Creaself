@@ -76,24 +76,24 @@
 
     <!-- CUSTOM BOX COMPOSER SECTION -->
     <section class="py-32 bg-beige-clair overflow-hidden" id="compose">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-[1600px] mx-auto px-6">
             <div class="text-center mb-24">
-                <h2 class="text-5xl md:text-7xl text-creme mb-6">Votre Coffret <span class="text-or italic">Sur-Mesure</span></h2>
-                <p class="text-creme/40 max-w-2xl mx-auto text-lg">Sélectionnez 6 pépites pour créer l'équilibre parfait. Un emballage luxueux offert.</p>
+                <h2 class="text-5xl md:text-7xl text-white mb-6">Votre Coffret <span class="text-or italic">Sur-Mesure</span></h2>
+                <p class="text-white/80 max-w-2xl mx-auto text-lg">Sélectionnez 6 pépites pour créer l'équilibre parfait. Un emballage luxueux offert.</p>
             </div>
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <div class="grid lg:grid-cols-2 gap-20 items-center bg-white/20 backdrop-blur-lg p-16 rounded-[3rem] border-2 border-white/30 shadow-[0_20px_50px_-10px_rgba(255,255,255,0.3)]">
                 <!-- Isometric Box Display -->
                 <div class="relative py-20 flex justify-center">
-                    <div class="isometric-box bg-creme/5 w-full max-w-[500px] aspect-square rounded-[3rem] border-4 border-or/20 flex items-center justify-center p-8" id="isometric-box">
+                    <div class="isometric-box compose-glass-card w-full max-w-[500px] aspect-square rounded-[2rem] flex items-center justify-center p-8 shadow-[0_8px_20px_-4px_rgba(255,255,255,0.2)]" id="isometric-box">
                         <div class="grid grid-cols-2 gap-8 w-full h-full" id="box-grid">
                             {% for i in 1..6 %}
-                            <div class="box-slot bg-chocolat/40 rounded-3xl border-2 border-dashed border-or/20 flex items-center justify-center overflow-hidden {{ i > 4 ? 'hidden lg:flex' : '' }}">
-                                <span class="material-symbols-outlined text-or/20 text-5xl">add</span>
+                            <div class="box-slot compose-glass-card rounded-[2rem] border-4 border-dashed border-white/80 flex items-center justify-center overflow-hidden backdrop-blur-sm {{ i > 4 ? 'hidden lg:flex' : '' }}">
+                                <span class="material-symbols-outlined text-white/40 text-5xl">add</span>
                             </div>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="absolute top-10 right-0 md:right-10 bg-or p-6 rounded-full w-28 h-28 flex flex-col items-center justify-center shadow-2xl -rotate-12 transition-transform duration-300" id="counter-badge">
+                    <div class="absolute top-10 right-0 md:right-10 bg-white text-chocolat p-6 rounded-full w-28 h-28 flex flex-col items-center justify-center shadow-lg -rotate-12 transition-transform duration-300" id="counter-badge">
                         <span class="text-3xl font-black text-chocolat leading-none" id="cookie-count">0/6</span>
                         <span class="text-[9px] uppercase font-bold text-chocolat/70 mt-1">Cookies</span>
                     </div>
@@ -101,22 +101,24 @@
 
                 <!-- Cookie Selection List -->
                 <div class="space-y-6">
-                    <h3 class="text-creme text-2xl flex items-center gap-4 mb-8">
-                        <span class="w-10 h-px bg-or"></span> Nos Créations Disponibles
+                    <h3 class="text-white text-2xl flex items-center gap-4 mb-8">
+                        <span class="w-10 h-px bg-white/60"></span> Nos Créations Disponibles
                     </h3>
                     <div class="space-y-4 max-h-[500px] overflow-y-auto pr-4 custom-scrollbar">
                         {% if produits is defined and produits|length > 0 %}
                             {% for produit in produits|slice(0, 6) %}
-                            <div class="js-cookie-item glass-card p-5 rounded-3xl flex items-center gap-6 group cursor-pointer hover:bg-or/20 transition-all border-none" 
+                            <div class="js-cookie-item compose-glass-card p-6 rounded-[2rem] flex items-center gap-6 group cursor-pointer hover:bg-white/40 transition-all shadow-[0_8px_20px_-4px_rgba(255,255,255,0.2)]" 
                                  data-img="{{ asset('asset/images/produits/' ~ produit.image) }}" 
                                  data-name="{{ produit.name }}"
                                  data-id="{{ produit.id }}">
-                                <img alt="{{ produit.name }}" class="w-20 h-20 rounded-full object-cover shadow-lg group-hover:rotate-45 transition-transform duration-500" src="{{ asset('asset/images/produits/' ~ produit.image) }}"/>
-                                <div class="flex-1">
-                                    <p class="text-creme font-bold text-lg">{{ produit.name }}</p>
-                                    <p class="text-creme/40 text-sm italic">{{ produit.description|default('Cookie artisanal fait maison') }}</p>
+                                <div class="w-20 h-20 rounded-full bg-white/40 p-1 shadow-lg">
+                                    <img alt="{{ produit.name }}" class="w-full h-full rounded-full object-cover group-hover:rotate-45 transition-transform duration-500" src="{{ asset('asset/images/produits/' ~ produit.image) }}"/>
                                 </div>
-                                <button class="bg-or text-chocolat w-12 h-12 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div class="flex-1">
+                                    <p class="text-white font-bold text-lg">{{ produit.name }}</p>
+                                    <p class="text-white/70 text-sm italic">{{ produit.description|default('Cookie artisanal fait maison') }}</p>
+                                </div>
+                                <button class="bg-white text-chocolat w-12 h-12 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                                     <span class="material-symbols-outlined font-black">add</span>
                                 </button>
                             </div>
@@ -124,7 +126,7 @@
                         {% endif %}
                     </div>
                     <div class="magnetic-btn-container w-full">
-                        <button class="js-magnetic-btn w-full bg-or text-chocolat py-6 rounded-2xl font-black text-xl tracking-widest mt-10 glow-gold micro-interaction" id="order-box-btn">
+                        <button class="js-magnetic-btn w-full bg-white text-chocolat py-6 rounded-[2rem] font-black text-xl tracking-widest mt-10 shadow-[0_15px_35px_-5px_rgba(255,255,255,0.4)] hover:shadow-[0_20px_45px_-5px_rgba(255,255,255,0.6)] transition-all micro-interaction" id="order-box-btn">
                             COMMANDER LE COFFRET
                         </button>
                     </div>
