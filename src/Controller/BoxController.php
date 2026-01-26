@@ -15,13 +15,21 @@ final class BoxController extends AbstractController
         private EntityManagerInterface $entityManager
     ) {}
 
+    /**
+     * Affiche la page des boxes avec :
+     * - La box personnalisable en vedette
+     * - Les boxes fixes disponibles
+     * - Les produits pour composer la box personnalisable
+     */
     #[Route('/box', name: 'app_box')]
     public function index(
         BoxRepository $boxRepository,
         ProduitRepository $produitRepository
     ): Response
     {
-        // ========== RÉCUPÉRER LES BOXES FIXES ==========
+        // ========== BOXES FIXES ==========
+        // Récupère toutes les boxes fixes (non personnalisables)
+        // avec leurs produits associés (jointure pour éviter N+1)
         $boxesFixes = $boxRepository->createQueryBuilder('b')
             ->leftJoin('b.produits', 'p')
             ->addSelect('p')
@@ -32,7 +40,9 @@ final class BoxController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // ========== RÉCUPÉRER LA BOX PERSONNALISABLE ==========
+        // ========== BOX PERSONNALISABLE ==========
+        // Récupère le template de box personnalisable
+        // (une seule box personnalisable par site)
         $boxPersonnalisable = $boxRepository->createQueryBuilder('b')
             ->where('b.type = :type')
             ->andWhere('b.createur IS NULL')
@@ -41,14 +51,15 @@ final class BoxController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        // ========== RÉCUPÉRER LES PRODUITS DISPONIBLES ==========
-        // ✅ On retourne des OBJETS Produit pour que Twig fonctionne
+        // ========== PRODUITS DISPONIBLES ==========
+        // Récupère tous les produits disponibles pour composer la box
+        // Retourne des objets Produit (pas d'array) pour Twig
         $produits = $produitRepository->createQueryBuilder('p')
             ->where('p.disponible = :disponible')
             ->setParameter('disponible', true)
             ->orderBy('p.name', 'ASC')
             ->getQuery()
-            ->getResult(); // ← OBJETS Produit au lieu d'array !
+            ->getResult();
 
         return $this->render('Page/box.html.twig', [
             'boxes_fixes' => $boxesFixes,
