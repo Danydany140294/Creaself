@@ -9,8 +9,73 @@
 
 {% block body %}
 
-    <h2>Qui sommes-nous ?</h2>
+    <main class="about-page">
+        <!-- Hero Section -->
+        <section class="hero fade-in">
+            <div class="hero-card glass">
+                <span class="eyebrow">Cookies d'exception</span>
+                <h1><span class="gradient-text">Perline Cook</span></h1>
+                <p>Quand l'élégance du design rencontre la rigueur de l'innovation culinaire. Découvrez l'esprit derrière chaque création.</p>
+            </div>
+        </section>
 
+        <!-- Section 1: L'Âme de Perline -->
+        <section class="content-row" data-aos="fade-right">
+            <div class="content-image">
+                <div class="image-wrap pink-glow">
+                    <img src="{{ asset('asset/images/quisommesnous/EJUR3114.JPG') }}" alt="Portrait de Perline">
+                </div>
+            </div>
+            <div class="content-text glass">
+                <span class="label">LA CRÉATRICE</span>
+                <h2>L'Âme de <em>Perline</em></h2>
+                <p>Architecte de formation, Perline a troqué ses plans pour des recettes millimétrées. Son parcours est une quête perpétuelle d'équilibre entre esthétique pure et émotion gustative.</p>
+                <p>Chaque biscuit est pensé comme une pièce de design unique. Sa philosophie ? Le beau ne doit jamais compromettre le bon, il doit le transcender.</p>
+                <div class="signature">FONDATRICE & DESIGNER CULINAIRE</div>
+            </div>
+        </section>
+
+        <!-- Section 2: Le Labo (Inversée) -->
+        <section class="content-row reverse" data-aos="fade-left">
+            <div class="content-image">
+                <div class="image-wrap gold-glow">
+                    <img src="{{ asset('asset/images/quisommesnous/IMG_1161.JPG') }}" alt="Le laboratoire de cuisine">
+                </div>
+            </div>
+            <div class="content-text glass">
+                <span class="label">INNOVATION & RIGUEUR</span>
+                <h2>Le Labo <br><span class="gold-text">Futuriste</span></h2>
+                <p>Ici, la technologie est au service de l'artisanat. Notre atelier est un sanctuaire de lumière où le tempérage se fait par laser et où les textures sont sculptées avec une précision millimétrique.</p>
+                <p>C'est dans ce laboratoire de verre et d'acier que naît le futur du cookie.</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Expérience Service -->
+        <section class="content-row" data-aos="fade-up">
+            <div class="content-image">
+                <div class="image-wrap purple-glow">
+                    <img src="{{ asset('asset/images/quisommesnous/IMG_1163.JPG') }}" alt="Service Premium">
+                </div>
+            </div>
+            <div class="content-text glass">
+                <span class="label">LOGISTIQUE D'EXCELLENCE</span>
+                <h2>L'Expérience <br><span class="pink-text">Service Premium</span></h2>
+                <ul class="features-list">
+                    <li><strong>Qualité Sans Compromis :</strong> Chaque envoi est vérifié par nos soins.</li>
+                    <li><strong>Écrin de Protection :</strong> Emballages isothermes et anti-chocs haute technicité.</li>
+                    <li><strong>Suivi Haute Précision :</strong> Trajectoire de votre coffret suivie en temps réel.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta">
+            <div class="cta-box glass-iridescent">
+                <h2>Entrez dans <br><span class="pink-text">la Légende.</span></h2>
+                <a href="{{ path('app_produits') }}" class="btn-primary">DÉCOUVRIR L'EXPÉRIENCE</a>
+            </div>
+        </section>
+    </main>
 
 {% endblock %}
 
@@ -18,5 +83,40 @@
     {{ parent() }}
     <script>
         // JS spécifique à la page Qui sommes-nous
+
+        const observerOptions = {
+    threshold: 0.1
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0) scale(1)";
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('[data-aos]').forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(50px) scale(0.95)";
+    el.style.transition = "all 1s cubic-bezier(0.2, 1, 0.3, 1)";
+    observer.observe(el);
+});
+
+// Interaction magnétique sur les images
+document.querySelectorAll('.image-wrap').forEach(container => {
+    container.addEventListener('mousemove', (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = (e.clientX - left - width / 2) / 20;
+        const y = (e.clientY - top - height / 2) / 20;
+        container.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg)`;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        container.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    });
+});
     </script>
 {% endblock %}
