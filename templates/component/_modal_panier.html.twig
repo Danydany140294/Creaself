@@ -1,161 +1,90 @@
 {# templates/panier/_modal_panier.html.twig #}
 
+{# ========== STYLES CSS ========== #}
+<link rel="stylesheet" href="{{ asset('css/modal_panier.css') }}">
+
 {# Modal Panier #}
-<div id="modalPanier" style="display: none;">
-    <div onclick="closeModalPanier()"></div>
-    
-    <div>
-        {# En-tête #}
-        <div>
-            <h2>
-                <i class="fa-solid fa-basket-shopping"></i>
-                Mon Panier
-            </h2>
-            <button onclick="closeModalPanier()" aria-label="Fermer">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+<div id="modalPanier" class="cart-overlay" style="display: none;">
+    <div class="cart-modal-container glass-premium">
+        
+        <!-- Section Gauche : Articles -->
+        <section class="cart-items-panel">
+            <header class="panel-header">
+                <div class="title-group">
+                    <h2>
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        Mon <span class="pink-text italic">Panier</span>
+                    </h2>
+                    <span class="items-count" id="itemsCount">● 0 Articles</span>
+                </div>
+                <a href="#" class="back-shop" onclick="closeModalPanier(); return false;">
+                    ← CONTINUER MES ACHATS
+                </a>
+            </header>
 
-        {# Corps de la modal avec le contenu du panier #}
-        <div id="panierContent">
-            <div>
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Chargement du panier...</p>
+            <div class="items-scroll-list" id="panierContent">
+                <div class="loading-panier">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Chargement du panier...</p>
+                </div>
             </div>
-        </div>
+        </section>
 
-        {# Pied de modal #}
-        <div>
-            <button type="button" onclick="closeModalPanier()">
-                <i class="fas fa-times"></i> Continuer mes achats
-            </button>
-            <a href="{{ path('app_panier_index') }}">
-                <i class="fas fa-shopping-cart"></i> Voir le panier complet
+        <!-- Section Droite : Résumé -->
+        <aside class="cart-summary-panel">
+            <button class="close-modal-btn" onclick="closeModalPanier()">✕</button>
+            
+            <h3>RÉSUMÉ</h3>
+            
+            <div class="shipping-card glass" id="shippingProgress" style="display: none;">
+                <p>Livraison Gratuite <span class="remaining-cost" id="remainingCost">0,00 € restant</span></p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+                <span class="reward-tag">LIVRAISON OFFERTE DÈS 50,00 €</span>
+            </div>
+
+            <div class="bill-details" id="billDetails">
+                <div class="bill-line">
+                    <span>Sous-total</span>
+                    <span id="subtotalValue">0,00 €</span>
+                </div>
+                <div class="bill-line">
+                    <span>Livraison</span>
+                    <span id="shippingValue">4,90 €</span>
+                </div>
+                <div class="bill-line">
+                    <span>TVA estimée</span>
+                    <span id="taxValue">0,00 €</span>
+                </div>
+            </div>
+
+            <div class="total-section">
+                <span class="total-label">TOTAL</span>
+                <span class="total-value" id="totalValue">0,00 €</span>
+            </div>
+
+            <a href="{{ path('app_panier_index') }}" class="checkout-btn-neon">
+                VOIR LE PANIER COMPLET
+                <span class="arrow">→</span>
             </a>
-        </div>
+
+            <div class="payment-icons">
+                <span>💳</span><span>📱</span><span>🅿️</span><span>🔒</span>
+            </div>
+        </aside>
     </div>
 </div>
 
-{# ========== STYLES CSS ========== #}
-<link rel="stylesheet" href="{{ asset('css/modal-panier.css') }}">
-
 {# ========== JAVASCRIPT ========== #}
 <script>
-// Ouvrir la modal et charger le panier
-async function openModalPanier() {
-    const modal = document.getElementById('modalPanier');
-    const panierContent = document.getElementById('panierContent');
+    // ⚠️ Configuration des chemins corrigée
+    window.PANIER_PATHS = {
+        uploadsBase: '{{ asset('asset/images/') }}',  // ← CHANGÉ ICI
+        imagesBase: '{{ asset('images/') }}',
+        apiBase: '{{ path('app_panier_api') }}'.replace('/api/panier', '')
+    };
     
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Afficher le loading
-    panierContent.innerHTML = `
-        <div class="loading-panier">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Chargement du panier...</p>
-        </div>
-    `;
-    
-    try {
-        // Appel AJAX pour récupérer le panier en JSON
-        const response = await fetch('/panier/api/panier');
-        
-        if (!response.ok) {
-            throw new Error('Erreur lors du chargement du panier');
-        }
-        
-        const data = await response.json();
-        
-        if (!data.success) {
-            throw new Error(data.message || 'Erreur inconnue');
-        }
-        
-        if (data.is_empty || data.items.length === 0) {
-            panierContent.innerHTML = `
-                <div class="panier-vide">
-                    <i class="fa-solid fa-basket-shopping"></i>
-                    <h3>Votre panier est vide</h3>
-                    <p>Ajoutez des produits pour commencer !</p>
-                </div>
-            `;
-        } else {
-            afficherPanier(data);
-        }
-        
-    } catch (error) {
-        console.error('Erreur:', error);
-        panierContent.innerHTML = `
-            <div class="panier-vide">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Erreur de chargement</h3>
-                <p>Impossible de charger le panier. Veuillez réessayer.</p>
-            </div>
-        `;
-    }
-}
-
-// Afficher le contenu du panier
-function afficherPanier(data) {
-    const panierContent = document.getElementById('panierContent');
-    
-    let itemsHTML = '<div class="panier-items">';
-    
-    data.items.forEach(item => {
-        const imageUrl = item.image ? `/uploads/${item.type === 'Cookie' ? 'produits' : 'boxes'}/${item.image}` : '';
-        
-        itemsHTML += `
-            <div class="panier-item">
-                ${imageUrl ? `<img src="${imageUrl}" alt="${item.nom}" class="panier-item-image" onerror="this.src='/images/placeholder.jpg'">` : ''}
-                <div class="panier-item-info">
-                    <div class="panier-item-name">${item.nom}</div>
-                    <div class="panier-item-type">${item.type}</div>
-                    <div class="panier-item-quantity">Quantité: ${item.quantite}</div>
-                    ${item.composition ? `
-                        <div class="panier-item-composition">
-                            <small>📦 ${item.composition.map(c => `${c.quantite}x ${c.nom}`).join(', ')}</small>
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="panier-item-price">${item.sous_total.toFixed(2).replace('.', ',')} €</div>
-            </div>
-        `;
-    });
-    
-    itemsHTML += '</div>';
-    
-    itemsHTML += `
-        <div class="panier-total">
-            <div class="panier-total-row">
-                <span class="panier-total-label">Total:</span>
-                <span class="panier-total-value">${data.total.toFixed(2).replace('.', ',')} €</span>
-            </div>
-        </div>
-    `;
-    
-    panierContent.innerHTML = itemsHTML;
-}
-
-// Fermer la modal
-function closeModalPanier() {
-    document.getElementById('modalPanier').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// Fermer en cliquant sur Échap
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModalPanier();
-    }
-});
-
-// Empêcher la fermeture en cliquant dans la modal
-document.addEventListener('DOMContentLoaded', function() {
-    const modalContent = document.querySelector('.modal-content-panier');
-    if (modalContent) {
-        modalContent.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-    }
-});
+    console.log('🔧 Configuration PANIER_PATHS:', window.PANIER_PATHS);
 </script>
+<script src="{{ asset('js/modal_panier.js') }}"></script>

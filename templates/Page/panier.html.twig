@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{# Titre de la page #}Mon Panier - CreaSelf{% endblock %}
+{% block title %}Mon Panier - CreaSelf{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -8,307 +8,295 @@
 {% endblock %}
 
 {% block body %}
-<div>
-    <div>
-        <h1>
-            <i class="fas fa-shopping-cart"></i>
-            Mon Panier
-        </h1>
-    </div>
+<main class="cart-experience">
+    <div class="cart-container">
+        <!-- En-tête de page -->
+        <header class="cart-header">
+            <h1 class="fade-in">
+                Votre <span class="pink-neon-text italic">Sélection</span>
+            </h1>
+            <p class="cart-subtitle">
+                {{ panier.nombre_articles ?? 0 }} Trésors prêts à être dégustés
+            </p>
+        </header>
 
-    {% if panier.is_empty is defined and panier.is_empty %}{# Si le panier est vide #}
-        {# Panier vide #}
-        <div>
-            <i class="fa-solid fa-basket-shopping"></i>
-            <h2>Votre panier est vide</h2>
-            <p>Découvrez nos délicieux cookies et boxes gourmandes !</p>
-            <a href="{{ path('app_home') }}">
-                <i class="fas fa-arrow-left"></i>
-                Retour à la boutique
-            </a>
-        </div>
-    {% else %}{# Si le panier contient des articles #}
-        {# Panier avec articles #}
-        <div>
-            {# Liste des articles #}
-            <div>
-                {# Panier BDD (utilisateur connecté) #}
-                {% if panier.lignes is defined %}{# Si panier depuis base de données #}
-                    {% for ligne in panier.lignes %}{# Boucle sur les lignes du panier BDD #}
-                        <div>
-                            {% if ligne.produit is defined %}{# Si ligne contient un produit simple #}
-                                {% set image_path = ligne.produit.image %}
-                                {% set folder = 'produits' %}
-                            {% else %}{# Si ligne contient une box #}
-                                {% set image_path = ligne.box.image %}
-                                {% set folder = 'boxes' %}
-                            {% endif %}
-                            
-                            <img src="{{ asset('uploads/' ~ folder ~ '/' ~ image_path) }}" 
-                                 alt="{{ ligne.nom_article }}"
-                                 onerror="this.src='/images/placeholder.jpg'">
+        {% if panier.is_empty is defined and panier.is_empty %}
+            <!-- Panier vide -->
+            <div class="empty-cart glass-premium">
+                <i class="fa-solid fa-basket-shopping empty-icon"></i>
+                <h2>Votre panier est vide</h2>
+                <p>Découvrez nos délicieux cookies et boxes gourmandes !</p>
+                <a href="{{ path('app_home') }}" class="btn-back-shop">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour à la boutique
+                </a>
+            </div>
+        {% else %}
+            <!-- Panier avec articles -->
+            <div class="cart-layout">
+                <!-- Liste des produits -->
+                <section class="cart-items-wrapper">
+                    
+                    {# ========== PANIER BDD (Utilisateur connecté) ========== #}
+                    {% if panier.lignes is defined %}
+                        {% for ligne in panier.lignes %}
+                            <div class="cart-row glass-premium" data-id="{{ ligne.id }}" data-type="{{ ligne.produit is defined ? 'Cookie' : (ligne.is_box_perso ? 'Box Personnalisée' : 'Box') }}">
+                                
+                                <!-- Image du produit -->
+                                <div class="product-preview">
+                                    <div class="img-glow-wrap">
+                                        {% if ligne.produit is defined %}
+                                            <img src="{{ asset('asset/images/produits/' ~ ligne.produit.image) }}" 
+                                                 alt="{{ ligne.nom_article }}"
+                                                 onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Cookie'">
+                                        {% else %}
+                                            <img src="{{ asset('asset/images/boxs/' ~ ligne.box.image) }}" 
+                                                 alt="{{ ligne.nom_article }}"
+                                                 onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
+                                        {% endif %}
+                                    </div>
+                                </div>
 
-                            <div>
-                                <div>{# Nom de l'article #}{{ ligne.nom_article }}</div>
-                                <div>
-                                    {% if ligne.produit is defined %}{# Type: Cookie #}
-                                        Cookie
-                                    {% elseif ligne.is_box_perso %}{# Type: Box personnalisée #}
-                                        Box Personnalisée
-                                    {% else %}{# Type: Box fixe #}
-                                        Box {{ ligne.box.type|capitalize }}
+                                <!-- Détails du produit -->
+                                <div class="product-details">
+                                    <span class="product-category">
+                                        {% if ligne.produit is defined %}
+                                            COOKIE ARTISANAL
+                                        {% elseif ligne.is_box_perso %}
+                                            BOX PERSONNALISÉE
+                                        {% else %}
+                                            BOX {{ ligne.box.type|upper }}
+                                        {% endif %}
+                                    </span>
+                                    <h3>{{ ligne.nom_article }}</h3>
+                                    
+                                    <!-- Composition box perso -->
+                                    {% if ligne.is_box_perso and ligne.compositions is defined %}
+                                        <div class="box-composition">
+                                            <p class="flavor-notes">📦 Composition :</p>
+                                            <div class="composition-list">
+                                                {% for compo in ligne.compositions %}
+                                                    <span class="composition-item">
+                                                        {{ compo.quantite }}x {{ compo.produit.name }}
+                                                    </span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <p class="flavor-notes">Prix unitaire : {{ ligne.prix_unitaire|number_format(2, ',', ' ') }} €</p>
                                     {% endif %}
                                 </div>
 
-                                {# Composition pour box perso #}
-                                {% if ligne.is_box_perso and ligne.compositions is defined %}{# Si box perso avec composition #}
-                                    <div>
-                                        <h4>📦 Composition :</h4>
-                                        <div>
-                                            {% for compo in ligne.compositions %}{# Boucle sur les cookies de la box perso #}
-                                                <span>
-                                                    {# Quantité et nom du cookie #}{{ compo.quantite }}x {{ compo.produit.name }}
+                                <!-- Quantité -->
+                                <div class="product-qty">
+                                    {% if not ligne.is_box_perso %}
+                                        <div class="qty-stepper">
+                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}', -1)">−</button>
+                                            <input type="text" value="{{ ligne.quantite }}" readonly>
+                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}', 1)">+</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="qty-display">
+                                            Quantité : {{ ligne.quantite }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Prix et suppression -->
+                                <div class="product-price">
+                                    <span class="total-item-price">{{ ligne.sous_total|number_format(2, ',', ' ') }} €</span>
+                                    <button class="btn-remove" onclick="removeItemDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}')">
+                                        SUPPRIMER
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {# ========== PANIER SESSION (Visiteur) - PRODUITS ========== #}
+                    {% if panier.produits is defined %}
+                        {% for item in panier.produits %}
+                            <div class="cart-row glass-premium" data-id="{{ item.produit.id }}" data-type="Cookie">
+                                
+                                <div class="product-preview">
+                                    <div class="img-glow-wrap">
+                                        <img src="{{ asset('asset/images/produits/' ~ item.produit.image) }}" 
+                                             alt="{{ item.produit.name }}"
+                                             onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Cookie'">
+                                    </div>
+                                </div>
+
+                                <div class="product-details">
+                                    <span class="product-category">COOKIE ARTISANAL</span>
+                                    <h3>{{ item.produit.name }}</h3>
+                                    <p class="flavor-notes">Prix unitaire : {{ item.produit.prix|number_format(2, ',', ' ') }} €</p>
+                                </div>
+
+                                <div class="product-qty">
+                                    <div class="qty-stepper">
+                                        <button onclick="changeQtySession({{ item.produit.id }}, 'Cookie', -1)">−</button>
+                                        <input type="text" value="{{ item.quantite }}" readonly>
+                                        <button onclick="changeQtySession({{ item.produit.id }}, 'Cookie', 1)">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="product-price">
+                                    <span class="total-item-price">{{ (item.produit.prix * item.quantite)|number_format(2, ',', ' ') }} €</span>
+                                    <button class="btn-remove" onclick="removeItemSession({{ item.produit.id }}, 'Cookie')">
+                                        SUPPRIMER
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {# ========== PANIER SESSION - BOXES FIXES ========== #}
+                    {% if panier.boxes is defined %}
+                        {% for item in panier.boxes %}
+                            <div class="cart-row glass-premium" data-id="{{ item.box.id }}" data-type="Box">
+                                
+                                <div class="product-preview">
+                                    <div class="img-glow-wrap">
+                                        <img src="{{ asset('asset/images/boxs/' ~ item.box.image) }}" 
+                                             alt="{{ item.box.nom }}"
+                                             onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
+                                    </div>
+                                </div>
+
+                                <div class="product-details">
+                                    <span class="product-category">BOX {{ item.box.type|upper }}</span>
+                                    <h3>{{ item.box.nom }}</h3>
+                                    <p class="flavor-notes">Prix unitaire : {{ item.box.prix|number_format(2, ',', ' ') }} €</p>
+                                </div>
+
+                                <div class="product-qty">
+                                    <div class="qty-stepper">
+                                        <button onclick="changeQtySession({{ item.box.id }}, 'Box', -1)">−</button>
+                                        <input type="text" value="{{ item.quantite }}" readonly>
+                                        <button onclick="changeQtySession({{ item.box.id }}, 'Box', 1)">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="product-price">
+                                    <span class="total-item-price">{{ (item.box.prix * item.quantite)|number_format(2, ',', ' ') }} €</span>
+                                    <button class="btn-remove" onclick="removeItemSession({{ item.box.id }}, 'Box')">
+                                        SUPPRIMER
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {# ========== PANIER SESSION - BOXES PERSO ========== #}
+                    {% if panier.boxes_perso is defined %}
+                        {% for key, item in panier.boxes_perso %}
+                            <div class="cart-row glass-premium" data-id="{{ key }}" data-type="BoxPerso">
+                                
+                                <div class="product-preview">
+                                    <div class="img-glow-wrap">
+                                        <img src="{{ asset('asset/images/boxs/' ~ item.box.image) }}" 
+                                             alt="Box Personnalisée"
+                                             onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
+                                    </div>
+                                </div>
+
+                                <div class="product-details">
+                                    <span class="product-category">BOX PERSONNALISÉE</span>
+                                    <h3>Ma Box Sur-Mesure</h3>
+                                    <div class="box-composition">
+                                        <p class="flavor-notes">📦 Composition :</p>
+                                        <div class="composition-list">
+                                            {% for produit_id, qty in item.composition %}
+                                                <span class="composition-item">
+                                                    {{ qty }}x Cookie #{{ produit_id }}
                                                 </span>
                                             {% endfor %}
                                         </div>
                                     </div>
-                                {% endif %}
-
-                                <div>
-                                    {# Prix unitaire × quantité #}{{ ligne.prix_unitaire|number_format(2, ',', ' ') }} € × {{ ligne.quantite }}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div>
-                                    {# Sous-total de la ligne #}{{ ligne.sous_total|number_format(2, ',', ' ') }} €
                                 </div>
 
-                                {% if not ligne.is_box_perso %}{# Contrôles de quantité (sauf box perso) #}
-                                    {# Contrôles de quantité #}
-                                    {% set item_type = ligne.produit is defined ? 'produit' : 'box' %}
-                                    <form method="POST" action="{{ path('app_panier_modifier', {type: item_type, id: ligne.id}) }}">
-                                        <div>
-                                            <button type="button" onclick="updateQty('qty_{{ ligne.id }}', -1, 1, 99)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <input type="number" 
-                                                   id="qty_{{ ligne.id }}"
-                                                   name="quantite" 
-                                                   value="{{ ligne.quantite }}" 
-                                                   min="1" 
-                                                   onchange="this.form.submit()">
-                                            <button type="button" onclick="updateQty('qty_{{ ligne.id }}', 1, 1, 99)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                {% else %}{# Affichage quantité simple pour box perso #}
-                                    <div>
-                                        Quantité : {{ ligne.quantite }}
-                                    </div>
-                                {% endif %}
-
-                                {# Bouton supprimer #}
-                                {% set item_type = ligne.produit is defined ? 'produit' : 'box' %}
-                                <form method="POST" action="{{ path('app_panier_retirer', {type: item_type, id: ligne.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
-                                    <button type="submit">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                {# Panier Session (visiteur) - Produits #}
-                {% if panier.produits is defined %}{# Si produits en session #}
-                    {% for item in panier.produits %}{# Boucle sur les produits session #}
-                        <div>
-                            <img src="{{ asset('uploads/produits/' ~ item.produit.image) }}" 
-                                 alt="{{ item.produit.name }}"
-                                 onerror="this.src='/images/placeholder.jpg'">
-
-                            <div>
-                                <div>{# Nom du produit #}{{ item.produit.name }}</div>
-                                <div>Cookie</div>
-                                <div>
-                                    {# Prix × quantité #}{{ item.produit.prix|number_format(2, ',', ' ') }} € × {{ item.quantite }}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div>
-                                    {# Sous-total calculé #}{{ (item.produit.prix * item.quantite)|number_format(2, ',', ' ') }} €
-                                </div>
-
-                                <form method="POST" action="{{ path('app_panier_modifier', {type: 'produit', id: item.produit.id}) }}">
-                                    <div>
-                                        <button type="button" onclick="updateQty('qty_prod_{{ item.produit.id }}', -1, 1, 99)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" 
-                                               id="qty_prod_{{ item.produit.id }}"
-                                               name="quantite" 
-                                               value="{{ item.quantite }}" 
-                                               min="1" 
-                                               onchange="this.form.submit()">
-                                        <button type="button" onclick="updateQty('qty_prod_{{ item.produit.id }}', 1, 1, 99)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </form>
-
-                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'produit', id: item.produit.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
-                                    <button type="submit">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                {# Panier Session - Boxes fixes #}
-                {% if panier.boxes is defined %}{# Si boxes fixes en session #}
-                    {% for item in panier.boxes %}{# Boucle sur les boxes session #}
-                        <div>
-                            <img src="{{ asset('uploads/boxes/' ~ item.box.image) }}" 
-                                 alt="{{ item.box.nom }}"
-                                 onerror="this.src='/images/placeholder.jpg'">
-
-                            <div>
-                                <div>{# Nom de la box #}{{ item.box.nom }}</div>
-                                <div>{# Type de box capitalisé #}Box {{ item.box.type|capitalize }}</div>
-                                <div>
-                                    {# Prix × quantité #}{{ item.box.prix|number_format(2, ',', ' ') }} € × {{ item.quantite }}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div>
-                                    {# Sous-total calculé #}{{ (item.box.prix * item.quantite)|number_format(2, ',', ' ') }} €
-                                </div>
-
-                                <form method="POST" action="{{ path('app_panier_modifier', {type: 'box', id: item.box.id}) }}">
-                                    <div>
-                                        <button type="button" onclick="updateQty('qty_box_{{ item.box.id }}', -1, 1, 99)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" 
-                                               id="qty_box_{{ item.box.id }}"
-                                               name="quantite" 
-                                               value="{{ item.quantite }}" 
-                                               min="1" 
-                                               onchange="this.form.submit()">
-                                        <button type="button" onclick="updateQty('qty_box_{{ item.box.id }}', 1, 1, 99)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </form>
-
-                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'box', id: item.box.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
-                                    <button type="submit">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                {# Panier Session - Boxes perso #}
-                {% if panier.boxes_perso is defined %}{# Si boxes perso en session #}
-                    {% for item in panier.boxes_perso %}{# Boucle sur les boxes perso session #}
-                        <div>
-                            <img src="{{ asset('uploads/boxes/' ~ item.box.image) }}" 
-                                 alt="Box Personnalisée"
-                                 onerror="this.src='/images/placeholder.jpg'">
-
-                            <div>
-                                <div>Box Personnalisée</div>
-                                <div>Box Personnalisée</div>
-
-                                <div>
-                                    <h4>📦 Composition :</h4>
-                                    <div>
-                                        {% for produit_id, qty in item.composition %}{# Boucle sur la composition de la box perso #}
-                                            <span>
-                                                {# Quantité × ID produit #}{{ qty }}x Produit #{{ produit_id }}
-                                            </span>
-                                        {% endfor %}
+                                <div class="product-qty">
+                                    <div class="qty-display">
+                                        Quantité : 1
                                     </div>
                                 </div>
 
-                                <div>
-                                    {# Prix de la box perso #}{{ item.box.prix|number_format(2, ',', ' ') }} €
+                                <div class="product-price">
+                                    <span class="total-item-price">{{ item.box.prix|number_format(2, ',', ' ') }} €</span>
+                                    <button class="btn-remove" onclick="removeItemSession({{ key }}, 'BoxPerso')">
+                                        SUPPRIMER
+                                    </button>
                                 </div>
                             </div>
+                        {% endfor %}
+                    {% endif %}
 
-                            <div>
-                                <div>
-                                    {# Prix de la box perso #}{{ item.box.prix|number_format(2, ',', ' ') }} €
+                </section>
+
+                <!-- Sidebar de résumé -->
+                <aside class="cart-sidebar">
+                    <div class="summary-card glass-premium sticky-summary">
+                        <h2>Résumé de la <span>Commande</span></h2>
+
+                        <!-- Barre de progression pour livraison gratuite -->
+                        <div class="shipping-info">
+                            {% set seuil_gratuit = 50 %}
+                            {% set reste = seuil_gratuit - panier.total %}
+                            {% if reste > 0 %}
+                                <p>Livraison offerte : <span class="remaining">Plus que {{ reste|number_format(2, ',', ' ') }} €</span></p>
+                                <div class="progress-container">
+                                    <div class="progress-bar-fill" style="width: {{ (panier.total / seuil_gratuit * 100)|round }}%;"></div>
                                 </div>
+                            {% else %}
+                                <p class="free-shipping">🎉 Livraison offerte !</p>
+                            {% endif %}
+                        </div>
 
-                                <div>
-                                    Quantité : 1
-                                </div>
-
-                                <form method="POST" action="{{ path('app_panier_retirer', {type: 'box_perso', id: loop.index0}) }}" onsubmit="return confirm('Supprimer cette box ?')">
-                                    <button type="submit">
-                                        <i class="fas fa-trash"></i> Supprimer
-                                    </button>
-                                </form>
+                        <!-- Détails du résumé -->
+                        <div class="summary-details">
+                            <div class="detail-line">
+                                <span>Sous-total</span>
+                                <span>{{ panier.total|number_format(2, ',', ' ') }} €</span>
+                            </div>
+                            <div class="detail-line">
+                                <span>Livraison</span>
+                                <span>{{ reste > 0 ? '4,50 €' : 'Gratuite' }}</span>
+                            </div>
+                            <div class="detail-line total">
+                                <span>TOTAL</span>
+                                <span class="final-amount">
+                                    {{ (reste > 0 ? panier.total + 4.50 : panier.total)|number_format(2, ',', ' ') }} €
+                                </span>
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
+
+                        <!-- Bouton de commande -->
+                        <a href="{{ path('app_propos') }}" class="btn-checkout-neon">
+                            PASSER AU PAIEMENT
+                            <span class="btn-sparkle">✨</span>
+                        </a>
+
+                        <!-- Bouton vider le panier -->
+                        <form method="POST" action="{{ path('app_panier_vider') }}" onsubmit="return confirm('Vider tout le panier ?')" style="margin-top: 15px;">
+                            <button type="submit" class="btn-clear-cart">
+                                <i class="fas fa-trash-alt"></i> Vider le panier
+                            </button>
+                        </form>
+
+                        <!-- Trust badges -->
+                        <div class="trust-badges">
+                            <span>🛡️ Paiement 100% Sécurisé</span>
+                            <span>🚀 Expédition sous 24h</span>
+                        </div>
+                    </div>
+                </aside>
             </div>
-
-            {# Résumé du panier #}
-            <div>
-                <h3>Résumé de la commande</h3>
-
-                <div>
-                    <span>Articles ({# Nombre total d'articles #}{{ panier.nombre_articles ?? 0 }})</span>
-                    <span>{# Total du panier #}{{ panier.total|number_format(2, ',', ' ') }} €</span>
-                </div>
-
-                <div>
-                    <span>Livraison</span>
-                    <span>Gratuite</span>
-                </div>
-
-                <div>
-                    <span>Total</span>
-                    <span>{# Total final du panier #}{{ panier.total|number_format(2, ',', ' ') }} €</span>
-                </div>
-
-                <button type="button" onclick="alert('Fonctionnalité de commande à venir !')">
-                    <i class="fas fa-check"></i> Valider la commande
-                </button>
-
-                <form method="POST" action="{{ path('app_panier_vider') }}" onsubmit="return confirm('Vider tout le panier ?')">
-                    <button type="submit">
-                        <i class="fas fa-trash-alt"></i> Vider le panier
-                    </button>
-                </form>
-            </div>
-        </div>
-    {% endif %}
-</div>
-
-<script>
-function updateQty(inputId, delta, min, max) {
-    const input = document.getElementById(inputId);
-    let currentValue = parseInt(input.value) || min;
-    let newValue = currentValue + delta;
-    
-    if (newValue >= min && newValue <= max) {
-        input.value = newValue;
-        input.form.submit();
-    }
-}
-</script>
+        {% endif %}
+    </div>
+</main>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/panier.js') }}"></script>
+{% endblock %}
