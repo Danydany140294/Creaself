@@ -271,10 +271,10 @@
                         </div>
 
                         <!-- Bouton de commande -->
-                        <a href="{{ path('app_propos') }}" class="btn-checkout-neon">
+                        <button id="checkout-button" class="btn-checkout-neon">
                             PASSER AU PAIEMENT
                             <span class="btn-sparkle">✨</span>
-                        </a>
+                        </button>
 
                         <!-- Bouton vider le panier -->
                         <form method="POST" action="{{ path('app_panier_vider') }}" onsubmit="return confirm('Vider tout le panier ?')" style="margin-top: 15px;">
@@ -297,6 +297,11 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
+      {{ parent() }}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Passer la clé publique Stripe au JavaScript
+        const STRIPE_PUBLIC_KEY = '{{ stripe_public_key }}';
+    </script>
     <script src="{{ asset('js/panier.js') }}"></script>
 {% endblock %}

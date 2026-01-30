@@ -33,7 +33,7 @@ class PanierController extends AbstractController
     /**
      * Affiche le panier complet
      */
-   #[Route('', name: 'app_panier_index', methods: ['GET'])]
+#[Route('', name: 'app_panier_index', methods: ['GET'])]
 public function index(): Response
 {
     $user = $this->security->getUser();
@@ -60,7 +60,10 @@ public function index(): Response
             ];
         }
         
-        return $this->render('Page/panier.html.twig', ['panier' => $panier]);
+        return $this->render('Page/panier.html.twig', [
+            'panier' => $panier,
+            'stripe_public_key' => $this->getParameter('stripe_public_key')
+        ]);
     }
     
     // Visiteur : récupérer depuis la session
@@ -71,7 +74,10 @@ public function index(): Response
     $panier['nombre_articles'] = $this->calculerNombreArticles($panier);
     $panier['is_empty'] = $panier['nombre_articles'] === 0;
     
-    return $this->render('Page/panier.html.twig', ['panier' => $panier]);
+    return $this->render('Page/panier.html.twig', [
+        'panier' => $panier,
+        'stripe_public_key' => $this->getParameter('stripe_public_key')
+    ]);
 }
 
 

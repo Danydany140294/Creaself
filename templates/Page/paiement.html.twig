@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi - CreaSelf{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/paiement.css') }}">
+{% endblock %}
+
+{% block body %}
+    <!-- MODAL DE CONFIRMATION (s'affiche automatiquement au chargement) -->
+    <div class="modal-overlay" id="successModal">
+        <!-- Confettis -->
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+
+        <div class="modal-container">
+            <!-- Icône de succès -->
+            <div class="success-icon-wrapper">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+            </div>
+
+            <!-- Contenu -->
+            <div class="modal-content">
+                <h2>Merci <span>beaucoup</span> !</h2>
+                
+                <div class="order-number">
+                    <span class="order-number-label">Votre commande</span>
+                    <span class="order-number-value" id="orderNumberDisplay">
+                        {{ commande.numeroCommande }}
+                    </span>
+                </div>
+
+                <p class="confirmation-message">
+                    <i class="fas fa-circle-check"></i>
+                    Votre commande d'un montant de <strong>{{ commande.totalTTC|number_format(2, ',', ' ') }} €</strong> a été validée avec succès
+                </p>
+
+                <div class="email-notice">
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        Un email de confirmation vous a été envoyé à <strong>{{ commande.user.email }}</strong>
+                    </p>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="modal-actions">
+                    <a href="{{ path('app_home') }}" class="nc-btn nc-btn-primary">
+                        <i class="fas fa-home"></i>
+                        Retour à l'accueil
+                    </a>
+                    <a href="{{ path('app_produits') }}" class="nc-btn nc-btn-secondary">
+                        <i class="fas fa-cookie-bite"></i>
+                        Continuer mes achats
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/paiement.js') }}"></script>
+    
+    <script>
+        // Afficher automatiquement la modal au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                // S'assurer que la modal est visible
+                modal.style.display = 'flex';
+            }
+        });
+    </script>
+{% endblock %}

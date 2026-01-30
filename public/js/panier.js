@@ -1,4 +1,53 @@
 // ========================================
+// GESTION DU PANIER - STRIPE CHECKOUT
+// ========================================
+
+// Initialiser Stripe avec la clé publique définie dans le template
+const stripe = Stripe(STRIPE_PUBLIC_KEY);
+
+document.getElementById('checkout-button')?.addEventListener('click', async function() {
+    try {
+        // Afficher un loading
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirection...';
+
+        // Créer la session Stripe
+        const response = await fetch('/paiement/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const session = await response.json();
+
+        if (session.error) {
+            alert('Erreur : ' + session.error);
+            this.disabled = false;
+            this.innerHTML = 'PASSER AU PAIEMENT <span class="btn-sparkle">✨</span>';
+            return;
+        }
+
+        // Rediriger vers Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: session.sessionId
+        });
+
+        if (result.error) {
+            alert(result.error.message);
+            this.disabled = false;
+            this.innerHTML = 'PASSER AU PAIEMENT <span class="btn-sparkle">✨</span>';
+        }
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue');
+        this.disabled = false;
+        this.innerHTML = 'PASSER AU PAIEMENT <span class="btn-sparkle">✨</span>';
+    }
+});
+
+// ========================================
 // GESTION DU PANIER - UTILISATEUR CONNECTÉ (BDD)
 // ========================================
 
