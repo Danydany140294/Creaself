@@ -1,415 +1,377 @@
 :root {
-            /* Couleurs principales */
-            --mix-champagne: #F6ECD8;
-            --mix-cream: #FAF7F2;
-            --mix-cocoa: #B08070;
-            --mix-cocoa-dark: #9A6B58;
-            --mix-gold: #CCA748;
-            --mix-gold-light: #D9B857;
-            --mix-rose: #FF6B8F;
-            --mix-rose-soft: #FF8BA5;
-            
-            /* Couleurs de fond */
-            --mix-bg-main: #FAF6F3;
-            --mix-bg-card: #FFF9F2;
-            --mix-accent: #E6D8C8;
-            
-            /* Couleurs de texte */
-            --mix-text-main: #3F2A1F;
-            --mix-text-secondary: #6E503D;
-            --mix-text-muted: #988977;
-            
-            /* Effets d'ombre */
-            --mix-shadow-soft: 0 6px 20px rgba(103, 62, 48, 0.12);
-            --mix-shadow-medium: 0 8px 28px rgba(103, 62, 48, 0.18);
-            --mix-shadow-strong: 0 12px 40px rgba(103, 62, 48, 0.25);
-            
-            /* Effets de glow */
-            --mix-glow-soft: 0 0 8px rgba(255, 107, 143, 0.3), 
-                             0 0 15px rgba(255, 107, 143, 0.2),
-                             0 0 25px rgba(204, 167, 72, 0.15);
-                             
-            --mix-glow-intense: 0 0 12px rgba(255, 107, 143, 0.5), 
-                                0 0 24px rgba(255, 107, 143, 0.3),
-                                0 0 35px rgba(204, 167, 72, 0.25);
-            
-            /* Rayons */
-            --mix-radius-lg: 18px;
-            --mix-radius-md: 12px;
-            --mix-radius-full: 9999px;
-        }
+    /* Couleurs principales */
+    --mix-champagne: #F6ECD8;
+    --mix-cream: #FAF7F2;
+    --mix-cocoa: #B08070;
+    --mix-cocoa-dark: #9A6B58;
+    --mix-gold: #CCA748;
+    --mix-gold-light: #D9B857;
+    --mix-rose: #FF6B8F;
+    --mix-rose-soft: #FF8BA5;
+    
+    /* Couleurs de fond */
+    --mix-bg-main: #FAF6F3;
+    --mix-bg-card: #FFF9F2;
+    --mix-accent: #E6D8C8;
+    
+    /* Couleurs de texte */
+    --mix-text-main: #3F2A1F;
+    --mix-text-secondary: #6E503D;
+    --mix-text-muted: #988977;
+    
+    /* Effets d'ombre */
+    --mix-shadow-soft: 0 6px 20px rgba(103, 62, 48, 0.12);
+    --mix-shadow-medium: 0 8px 28px rgba(103, 62, 48, 0.18);
+    --mix-shadow-strong: 0 12px 40px rgba(103, 62, 48, 0.25);
+    
+    /* Effets de glow */
+    --mix-glow-soft: 0 0 8px rgba(255, 107, 143, 0.3), 
+                     0 0 15px rgba(255, 107, 143, 0.2),
+                     0 0 25px rgba(204, 167, 72, 0.15);
+                     
+    --mix-glow-intense: 0 0 12px rgba(255, 107, 143, 0.5), 
+                        0 0 24px rgba(255, 107, 143, 0.3),
+                        0 0 35px rgba(204, 167, 72, 0.25);
+    
+    /* Rayons */
+    --mix-radius-lg: 18px;
+    --mix-radius-md: 12px;
+    --mix-radius-full: 9999px;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
 
-        body {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            background: linear-gradient(to bottom, var(--mix-bg-main), var(--mix-accent));
-            color: var(--mix-text-main);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(63, 42, 31, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* Très haut pour passer au-dessus de tout */
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+}
 
-        /* ========================================
-           MODAL OVERLAY
-           ======================================== */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(63, 42, 31, 0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            animation: fadeIn 0.4s ease forwards;
-        }
+/* ========================================
+   MODAL CONTAINER
+   ======================================== */
 
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
+.modal-container {
+    background: linear-gradient(145deg, var(--mix-bg-card), var(--mix-cream));
+    border-radius: var(--mix-radius-lg);
+    max-width: 550px;
+    width: 100%;
+    padding: 40px 35px;
+    box-shadow: var(--mix-shadow-strong), var(--mix-glow-intense);
+    border: 3px solid var(--mix-rose);
+    position: relative;
+    overflow: hidden;
+    transform: scale(0.7) translateY(50px);
+    opacity: 0;
+    animation: modalSlideIn 0.5s ease 0.2s forwards;
+}
 
-        /* ========================================
-           MODAL CONTAINER
-           ======================================== */
+@keyframes modalSlideIn {
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
 
-        .modal-container {
-            background: linear-gradient(145deg, var(--mix-bg-card), var(--mix-cream));
-            border-radius: var(--mix-radius-lg);
-            max-width: 550px;
-            width: 100%;
-            padding: 40px 35px;
-            box-shadow: var(--mix-shadow-strong), var(--mix-glow-intense);
-            border: 3px solid var(--mix-rose);
-            position: relative;
-            overflow: hidden;
-            transform: scale(0.7) translateY(50px);
-            opacity: 0;
-            animation: modalSlideIn 0.5s ease 0.2s forwards;
-        }
+/* Effet glow de fond */
+.modal-container::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle at center,
+        rgba(255, 107, 143, 0.12),
+        transparent 60%
+    );
+    pointer-events: none;
+    animation: glowPulse 3s ease-in-out infinite;
+}
 
-        @keyframes modalSlideIn {
-            to {
-                transform: scale(1) translateY(0);
-                opacity: 1;
-            }
-        }
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
 
-        /* Effet glow de fond */
-        .modal-container::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(
-                circle at center,
-                rgba(255, 107, 143, 0.12),
-                transparent 60%
-            );
-            pointer-events: none;
-            animation: glowPulse 3s ease-in-out infinite;
-        }
+/* ========================================
+   ICÔNE DE SUCCÈS
+   ======================================== */
 
-        @keyframes glowPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
+.success-icon-wrapper {
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 1;
+}
 
-        /* ========================================
-           ICÔNE DE SUCCÈS
-           ======================================== */
+.success-icon {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--mix-glow-intense), var(--mix-shadow-medium);
+    animation: iconBounce 0.6s ease 0.5s;
+    border: 3px solid white;
+}
 
-        .success-icon-wrapper {
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
+.success-icon i {
+    font-size: 45px;
+    color: white;
+    animation: checkmark 0.4s ease 0.7s both;
+}
 
-        .success-icon {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--mix-glow-intense), var(--mix-shadow-medium);
-            animation: iconBounce 0.6s ease 0.5s;
-            border: 3px solid white;
-        }
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
 
-        .success-icon i {
-            font-size: 45px;
-            color: white;
-            animation: checkmark 0.4s ease 0.7s both;
-        }
+@keyframes checkmark {
+    0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
 
-        @keyframes iconBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
+/* ========================================
+   CONFETTIS ANIMATION
+   ======================================== */
 
-        @keyframes checkmark {
-            0% {
-                transform: scale(0) rotate(-45deg);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-        }
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--mix-rose);
+    opacity: 0;
+    animation: confettiFall 2s ease-out forwards;
+}
 
-        /* ========================================
-           CONFETTIS ANIMATION
-           ======================================== */
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(300px) rotate(360deg);
+    }
+}
 
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: var(--mix-rose);
-            opacity: 0;
-            animation: confettiFall 2s ease-out forwards;
-        }
+.confetti:nth-child(1) { left: 10%; background: var(--mix-rose); animation-delay: 0.1s; }
+.confetti:nth-child(2) { left: 20%; background: var(--mix-gold); animation-delay: 0.2s; }
+.confetti:nth-child(3) { left: 30%; background: var(--mix-rose-soft); animation-delay: 0.3s; }
+.confetti:nth-child(4) { left: 40%; background: var(--mix-gold-light); animation-delay: 0.1s; }
+.confetti:nth-child(5) { left: 50%; background: var(--mix-rose); animation-delay: 0.4s; }
+.confetti:nth-child(6) { left: 60%; background: var(--mix-gold); animation-delay: 0.2s; }
+.confetti:nth-child(7) { left: 70%; background: var(--mix-rose-soft); animation-delay: 0.3s; }
+.confetti:nth-child(8) { left: 80%; background: var(--mix-gold-light); animation-delay: 0.1s; }
+.confetti:nth-child(9) { left: 90%; background: var(--mix-rose); animation-delay: 0.2s; }
 
-        @keyframes confettiFall {
-            0% {
-                opacity: 1;
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(300px) rotate(360deg);
-            }
-        }
+/* ========================================
+   CONTENU MODAL
+   ======================================== */
 
-        .confetti:nth-child(1) { left: 10%; background: var(--mix-rose); animation-delay: 0.1s; }
-        .confetti:nth-child(2) { left: 20%; background: var(--mix-gold); animation-delay: 0.2s; }
-        .confetti:nth-child(3) { left: 30%; background: var(--mix-rose-soft); animation-delay: 0.3s; }
-        .confetti:nth-child(4) { left: 40%; background: var(--mix-gold-light); animation-delay: 0.1s; }
-        .confetti:nth-child(5) { left: 50%; background: var(--mix-rose); animation-delay: 0.4s; }
-        .confetti:nth-child(6) { left: 60%; background: var(--mix-gold); animation-delay: 0.2s; }
-        .confetti:nth-child(7) { left: 70%; background: var(--mix-rose-soft); animation-delay: 0.3s; }
-        .confetti:nth-child(8) { left: 80%; background: var(--mix-gold-light); animation-delay: 0.1s; }
-        .confetti:nth-child(9) { left: 90%; background: var(--mix-rose); animation-delay: 0.2s; }
+.modal-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
 
-        /* ========================================
-           CONTENU MODAL
-           ======================================== */
+.modal-content h2 {
+    font-size: 2rem;
+    color: var(--mix-cocoa-dark);
+    margin-bottom: 12px;
+    font-family: 'Georgia', serif;
+}
 
-        .modal-content {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
+.modal-content h2 span {
+    background: linear-gradient(120deg, var(--mix-rose), var(--mix-rose-soft));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(var(--mix-glow-soft));
+}
 
-        .modal-content h2 {
-            font-size: 2rem;
-            color: var(--mix-cocoa-dark);
-            margin-bottom: 12px;
-            font-family: 'Georgia', serif;
-        }
+/* Numéro de commande */
+.order-number {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--mix-champagne), white);
+    padding: 12px 24px;
+    border-radius: var(--mix-radius-full);
+    margin: 18px 0;
+    border: 2px solid var(--mix-gold);
+    box-shadow: var(--mix-shadow-soft);
+}
 
-        .modal-content h2 span {
-            background: linear-gradient(120deg, var(--mix-rose), var(--mix-rose-soft));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(var(--mix-glow-soft));
-        }
+.order-number-label {
+    font-size: 0.85rem;
+    color: var(--mix-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+}
 
-        /* Numéro de commande */
-        .order-number {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--mix-champagne), white);
-            padding: 12px 24px;
-            border-radius: var(--mix-radius-full);
-            margin: 18px 0;
-            border: 2px solid var(--mix-gold);
-            box-shadow: var(--mix-shadow-soft);
-        }
+.order-number-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--mix-cocoa-dark);
+    font-family: 'Courier New', monospace;
+}
 
-        .order-number-label {
-            font-size: 0.85rem;
-            color: var(--mix-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            display: block;
-            margin-bottom: 4px;
-        }
+/* Message de confirmation */
+.confirmation-message {
+    margin: 20px 0;
+    color: var(--mix-text-secondary);
+    line-height: 1.6;
+}
 
-        .order-number-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--mix-cocoa-dark);
-            font-family: 'Courier New', monospace;
-        }
+.confirmation-message i {
+    color: var(--mix-rose);
+    margin-right: 8px;
+}
 
-        /* Message de confirmation */
-        .confirmation-message {
-            margin: 20px 0;
-            color: var(--mix-text-secondary);
-            line-height: 1.6;
-        }
+.email-notice {
+    background: rgba(204, 167, 72, 0.1);
+    padding: 14px 20px;
+    border-radius: var(--mix-radius-md);
+    margin: 20px 0;
+    border-left: 4px solid var(--mix-gold);
+}
 
-        .confirmation-message i {
-            color: var(--mix-rose);
-            margin-right: 8px;
-        }
+.email-notice p {
+    font-size: 0.95rem;
+    color: var(--mix-text-secondary);
+    margin: 0;
+}
 
-        .email-notice {
-            background: rgba(204, 167, 72, 0.1);
-            padding: 14px 20px;
-            border-radius: var(--mix-radius-md);
-            margin: 20px 0;
-            border-left: 4px solid var(--mix-gold);
-        }
+/* ========================================
+   BOUTONS - Style MIX
+   ======================================== */
 
-        .email-notice p {
-            font-size: 0.95rem;
-            color: var(--mix-text-secondary);
-            margin: 0;
-        }
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
 
-        /* ========================================
-           BOUTONS - Style MIX
-           ======================================== */
+.nc-btn {
+    border: none;
+    cursor: pointer;
+    font-size: 0.925rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 12px 28px;
+    border-radius: var(--mix-radius-full);
+    transition: all 0.35s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: uppercase;
+    font-family: 'Inter', 'Georgia', sans-serif;
+    flex: 1;
+    min-width: 180px;
+    text-decoration: none;
+}
 
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
+/* Bouton principal - Retour accueil */
+.nc-btn-primary {
+    background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
+    color: white;
+    box-shadow: var(--mix-shadow-soft), var(--mix-glow-soft);
+    border: 2px solid transparent;
+}
 
-        .nc-btn {
-            border: none;
-            cursor: pointer;
-            font-size: 0.925rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            padding: 12px 28px;
-            border-radius: var(--mix-radius-full);
-            transition: all 0.35s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-transform: uppercase;
-            font-family: 'Inter', 'Georgia', sans-serif;
-            flex: 1;
-            min-width: 180px;
-            text-decoration: none;
-        }
+.nc-btn-primary:hover {
+    background: linear-gradient(135deg, var(--mix-gold-light), var(--mix-rose));
+    transform: translateY(-2.5px);
+    box-shadow: var(--mix-shadow-medium), var(--mix-glow-intense);
+    border-color: var(--mix-rose-soft);
+    color: white;
+    text-decoration: none;
+}
 
-        /* Bouton principal - Retour accueil */
-        .nc-btn-primary {
-            background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
-            color: white;
-            box-shadow: var(--mix-shadow-soft), var(--mix-glow-soft);
-            border: 2px solid transparent;
-        }
+.nc-btn-primary:active {
+    transform: translateY(-1px);
+}
 
-        .nc-btn-primary:hover {
-            background: linear-gradient(135deg, var(--mix-gold-light), var(--mix-rose));
-            transform: translateY(-2.5px);
-            box-shadow: var(--mix-shadow-medium), var(--mix-glow-intense);
-            border-color: var(--mix-rose-soft);
-        }
+/* Bouton secondaire - Continuer achats */
+.nc-btn-secondary {
+    background: var(--mix-cocoa);
+    color: white;
+    box-shadow: var(--mix-shadow-soft);
+    border: 2px solid var(--mix-cocoa);
+}
 
-        .nc-btn-primary:active {
-            transform: translateY(-1px);
-        }
+.nc-btn-secondary:hover {
+    background: var(--mix-gold);
+    border-color: var(--mix-gold);
+    box-shadow: var(--mix-shadow-medium), 0 0 20px rgba(204, 167, 72, 0.4);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+}
 
-        /* Bouton secondaire - Continuer achats */
-        .nc-btn-secondary {
-            background: var(--mix-cocoa);
-            color: white;
-            box-shadow: var(--mix-shadow-soft);
-            border: 2px solid var(--mix-cocoa);
-        }
+/* ========================================
+   RESPONSIVE
+   ======================================== */
 
-        .nc-btn-secondary:hover {
-            background: var(--mix-gold);
-            border-color: var(--mix-gold);
-            box-shadow: var(--mix-shadow-medium), 0 0 20px rgba(204, 167, 72, 0.4);
-            transform: translateY(-2px);
-        }
+@media (max-width: 600px) {
+    .modal-container {
+        padding: 30px 25px;
+        margin: 15px;
+    }
 
-        /* ========================================
-           RESPONSIVE
-           ======================================== */
+    .modal-content h2 {
+        font-size: 1.6rem;
+    }
 
-        @media (max-width: 600px) {
-            .modal-container {
-                padding: 30px 25px;
-                margin: 15px;
-            }
+    .success-icon {
+        width: 75px;
+        height: 75px;
+    }
 
-            .modal-content h2 {
-                font-size: 1.6rem;
-            }
+    .success-icon i {
+        font-size: 38px;
+    }
 
-            .success-icon {
-                width: 75px;
-                height: 75px;
-            }
+    .order-number-value {
+        font-size: 1.2rem;
+    }
 
-            .success-icon i {
-                font-size: 38px;
-            }
+    .modal-actions {
+        flex-direction: column;
+    }
 
-            .order-number-value {
-                font-size: 1.2rem;
-            }
-
-            .modal-actions {
-                flex-direction: column;
-            }
-
-            .nc-btn {
-                min-width: 100%;
-            }
-        }
-
-        /* ========================================
-           DEMO TRIGGER BUTTON
-           ======================================== */
-
-        .demo-trigger {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 26px;
-            background: linear-gradient(135deg, var(--mix-gold), var(--mix-rose-soft));
-            color: white;
-            border: none;
-            border-radius: var(--mix-radius-full);
-            cursor: pointer;
-            font-weight: 700;
-            box-shadow: var(--mix-shadow-medium), var(--mix-glow-soft);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .demo-trigger:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--mix-shadow-strong), var(--mix-glow-intense);
-        }
+    .nc-btn {
+        min-width: 100%;
+    }
+}

@@ -32,6 +32,29 @@ final class PaiementController extends AbstractController
         LignePanierRepository $lignePanierRepo
     ): Response
     {
+        // Vérifier si on vient de valider un paiement
+        $session = $this->container->get('request_stack')->getSession();
+        $commandeSuccess = $session->get('commande_success');
+        
+        // Si on a une commande validée, afficher la modal de succès
+        if ($commandeSuccess) {
+            // ✅ NE PAS supprimer la session maintenant, on en a besoin
+            
+            return $this->render('Page/paiement.html.twig', [
+                'show_success_modal' => true,
+                'commande' => $commandeSuccess,
+                'panier' => [
+                    'is_empty' => true,
+                    'total' => 0,
+                    'nombre_articles' => 0
+                ],
+                'frais_livraison' => 0,
+                'total_final' => 0,
+                'stripe_public_key' => $_ENV['STRIPE_PUBLIC_KEY'] ?? '',
+            ]);
+        }
+
+        // Sinon, afficher la page de paiement normale
         $user = $this->getUser();
         $panier = null;
         $panierData = [
@@ -65,7 +88,6 @@ final class PaiementController extends AbstractController
         } 
         // ========== VISITEUR (SESSION) ==========
         else {
-            $session = $this->container->get('request_stack')->getSession();
             $panierSession = $session->get('panier', [
                 'produits' => [],
                 'boxes' => [],
@@ -117,6 +139,7 @@ final class PaiementController extends AbstractController
         $stripePublicKey = $_ENV['STRIPE_PUBLIC_KEY'] ?? '';
 
         return $this->render('Page/paiement.html.twig', [
+            'show_success_modal' => false,
             'panier' => $panierData,
             'frais_livraison' => $fraisLivraison,
             'total_final' => $totalFinal,
@@ -288,7 +311,7 @@ final class PaiementController extends AbstractController
         $sessionId = $request->query->get('session_id');
         
         if (!$sessionId) {
-            $this->addFlash('error', 'Session invalide');
+            $this->addFlash('error', 'Session de paiement invalide');
             return $this->redirectToRoute('app_home');
         }
 
@@ -297,7 +320,7 @@ final class PaiementController extends AbstractController
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
 
             if ($session->payment_status !== 'paid') {
-                $this->addFlash('error', 'Paiement non validé');
+                $this->addFlash('error', 'Le paiement n\'a pas été validé');
                 return $this->redirectToRoute('app_panier_index');
             }
 
@@ -305,21 +328,22 @@ final class PaiementController extends AbstractController
             
             // Créer la commande
             $commande = new Commande();
-            $commande->setUser($user);
+            $commande->setUser($user); // Peut être null pour visiteur
             
             // Générer un numéro de commande unique
             $numeroCommande = 'CMD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
             $commande->setNumeroCommande($numeroCommande);
             
             $commande->setDateCommande(new \DateTime());
-            $commande->setStatut(CommandeStatut::PAYEE); // ✅ Maintenant disponible dans l'enum
+            $commande->setStatut(CommandeStatut::PAYEE);
             $commande->setTotalTTC($session->amount_total / 100); // Convertir centimes en euros
             
             $em->persist($commande);
 
-            // Ajouter les lignes de commande depuis le panier
+            // ========== UTILISATEUR CONNECTÉ ==========
             if ($user) {
                 $panier = $panierRepo->findOneBy(['user' => $user]);
+                
                 if ($panier) {
                     $lignesPanier = $lignePanierRepo->findBy(['panier' => $panier]);
                     
@@ -353,21 +377,71 @@ final class PaiementController extends AbstractController
                     }
                     $em->remove($panier);
                 }
-            } else {
-                // Vider le panier session pour visiteur
+            } 
+            // ========== VISITEUR (SESSION) ==========
+            else {
                 $sessionCart = $this->container->get('request_stack')->getSession();
+                $panierSession = $sessionCart->get('panier', []);
+                
+                // Créer les lignes de commande depuis la session
+                // Produits
+                foreach ($panierSession['produits'] ?? [] as $item) {
+                    $ligneCommande = new LigneCommande();
+                    $ligneCommande->setCommande($commande);
+                    $ligneCommande->setProduit($item['produit']);
+                    $ligneCommande->setPrixUnitaire($item['produit']->getPrix());
+                    $ligneCommande->setQuantite($item['quantite']);
+                    $em->persist($ligneCommande);
+                }
+                
+                // Boxes
+                foreach ($panierSession['boxes'] ?? [] as $item) {
+                    $ligneCommande = new LigneCommande();
+                    $ligneCommande->setCommande($commande);
+                    $ligneCommande->setBox($item['box']);
+                    $ligneCommande->setPrixUnitaire($item['box']->getPrix());
+                    $ligneCommande->setQuantite($item['quantite']);
+                    $em->persist($ligneCommande);
+                }
+                
+                // Boxes perso
+                foreach ($panierSession['boxes_perso'] ?? [] as $item) {
+                    $ligneCommande = new LigneCommande();
+                    $ligneCommande->setCommande($commande);
+                    $ligneCommande->setBox($item['box']);
+                    $ligneCommande->setPrixUnitaire($item['box']->getPrix());
+                    $ligneCommande->setQuantite(1);
+                    
+                    // Ajouter les compositions
+                    if (isset($item['compositions'])) {
+                        foreach ($item['compositions'] as $compo) {
+                            $ligneCommande->addCompositionBox($compo);
+                        }
+                    }
+                    
+                    $em->persist($ligneCommande);
+                }
+                
+                // Vider le panier session
                 $sessionCart->remove('panier');
             }
 
             $em->flush();
 
-            // Afficher la page de succès
-            return $this->render('paiement/success.html.twig', [
-                'commande' => $commande
+            // Stocker la commande en session pour l'affichage dans Page/paiement.html.twig
+            $sessionCart = $this->container->get('request_stack')->getSession();
+            $sessionCart->set('commande_success', [
+                'numero' => $commande->getNumeroCommande(),
+                'total' => $commande->getTotalTTC(),
+                'date' => $commande->getDateCommande(),
+                'email' => $user ? $user->getEmail() : null
             ]);
 
+            // ✅ Rediriger vers Page/paiement.html.twig qui affichera la modal
+            return $this->redirectToRoute('app_paiement');
+
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+            $this->addFlash('error', 'Une erreur est survenue : ' . $e->getMessage());
             return $this->redirectToRoute('app_panier_index');
         }
     }
@@ -382,9 +456,16 @@ final class PaiementController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('paiement/success.html.twig', [
-            'commande' => $commande
+        // Stocker en session pour affichage
+        $session = $this->container->get('request_stack')->getSession();
+        $session->set('commande_success', [
+            'numero' => $commande->getNumeroCommande(),
+            'total' => $commande->getTotalTTC(),
+            'date' => $commande->getDateCommande(),
+            'email' => $commande->getUser() ? $commande->getUser()->getEmail() : null
         ]);
+
+        return $this->redirectToRoute('app_paiement');
     }
 
     #[Route('/paiement/cancel', name: 'app_paiement_cancel')]
