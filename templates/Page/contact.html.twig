@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - CreaSelf{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/contact.css') }}">
+{% endblock %}
+
+{% block body %}
+    <main class="contact-universe">
+        <section class="contact-hero fade-in">
+            <h1 class="gradient-text">Parle <span>Nous</span></h1>
+            <p>Une question ? Une envie particulière ? Un devis ? L'équipe vous répondra...</p>
+        </section>
+
+        <section class="contact-container">
+            <!-- Infos de contact -->
+            <div class="contact-info glass" data-aos="fade-right">
+                <div class="info-item">
+                    <span class="neon-icon">✉️</span>
+                    <h3>Perline Cookies</h3>
+                    <p>Perlecook@perline-cookies.com</p>
+                </div>
+                <div class="info-item">
+                    <span class="neon-icon">📍</span>
+                    <h3>L'Atelier</h3>
+                    <p>12 Rue du Sucre Holographique<br>34000 Montpellier</p>
+                </div>
+                <div class="social-links">
+    <a href="#" class="social-icon">
+        <i class="fab fa-instagram"></i>
+        <span>Instagram</span>
+    </a>
+    <a href="#" class="social-icon">
+        <i class="fab fa-tiktok"></i>
+        <span>TikTok</span>
+    </a>
+</div>
+            </div>
+
+            <!-- Formulaire Futuriste -->
+            <div class="contact-form-wrapper glass" data-aos="fade-left">
+                <form id="future-form">
+                    <div class="input-group">
+                        <input type="text" required>
+                        <label>Votre Nom</label>
+                        <div class="bar"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" required>
+                        <label>Votre Email</label>
+                        <div class="bar"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <select required>
+                            <option value="" disabled selected></option>
+                            <option value="question">Question sur une Box</option>
+                            <option value="pro">Partenariat Pro</option>
+                            <option value="autre">Autre Douceur</option>
+                        </select>
+                        <label>Sujet</label>
+                        <div class="bar"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <textarea required rows="4"></textarea>
+                        <label>Votre Message</label>
+                        <div class="bar"></div>
+                    </div>
+
+                    <button type="submit" class="btn-send">
+                        <span>ENVOYER L'ÉTINCELLE</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+  <script src="{{ asset('js/contact.js') }}"></script>
+    
+{% endblock %}
