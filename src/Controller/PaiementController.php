@@ -321,7 +321,7 @@ final class PaiementController extends AbstractController
             $em->persist($commande);
 
             // ========== UTILISATEUR CONNECTÉ ==========
-            if ($user) {
+           if ($user) {
                 $panier = $panierRepo->findOneBy(['user' => $user]);
                 
                 if ($panier) {
@@ -342,8 +342,8 @@ final class PaiementController extends AbstractController
                         $ligneCommande->setPrixUnitaire($lignePanier->getPrixUnitaire());
                         $ligneCommande->setQuantite($lignePanier->getQuantite());
                         
-                        if ($lignePanier->isBoxPerso() && !$lignePanier->getCompositionsBox()->isEmpty()) {
-                            foreach ($lignePanier->getCompositionsBox() as $compo) {
+                        if ($lignePanier->isBoxPersonnalisable() && !$lignePanier->getCompositionsPanier()->isEmpty()) {
+                            foreach ($lignePanier->getCompositionsPanier() as $compo) {
                                 $ligneCommande->addCompositionBox($compo);
                             }
                         }
@@ -357,7 +357,7 @@ final class PaiementController extends AbstractController
                     }
                     $em->remove($panier);
                 }
-            } 
+            }
             // ========== VISITEUR (SESSION) ==========
             else {
                 $panierSession = $session->get('panier', []);

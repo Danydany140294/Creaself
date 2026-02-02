@@ -40,19 +40,22 @@
                     {# ========== PANIER BDD (Utilisateur connecté) ========== #}
                     {% if panier.lignes is defined %}
                         {% for ligne in panier.lignes %}
-                            <div class="cart-row glass-premium" data-id="{{ ligne.id }}" data-type="{{ ligne.produit is defined ? 'Cookie' : (ligne.is_box_perso ? 'Box Personnalisée' : 'Box') }}">
+                            <div class="cart-row glass-premium" data-id="{{ ligne.id }}" data-type="{{ ligne.produit is not null ? 'Cookie' : (ligne.isBoxPersonnalisable ? 'Box Personnalisée' : 'Box') }}">
                                 
                                 <!-- Image du produit -->
                                 <div class="product-preview">
                                     <div class="img-glow-wrap">
-                                        {% if ligne.produit is defined %}
+                                        {% if ligne.produit is not null %}
                                             <img src="{{ asset('asset/images/produits/' ~ ligne.produit.image) }}" 
-                                                 alt="{{ ligne.nom_article }}"
+                                                 alt="{{ ligne.nomArticle }}"
                                                  onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Cookie'">
-                                        {% else %}
+                                        {% elseif ligne.box is not null %}
                                             <img src="{{ asset('asset/images/boxs/' ~ ligne.box.image) }}" 
-                                                 alt="{{ ligne.nom_article }}"
+                                                 alt="{{ ligne.nomArticle }}"
                                                  onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
+                                        {% else %}
+                                            <img src="https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Article" 
+                                                 alt="{{ ligne.nomArticle }}">
                                         {% endif %}
                                     </div>
                                 </div>
@@ -60,22 +63,24 @@
                                 <!-- Détails du produit -->
                                 <div class="product-details">
                                     <span class="product-category">
-                                        {% if ligne.produit is defined %}
+                                        {% if ligne.produit is not null %}
                                             COOKIE ARTISANAL
-                                        {% elseif ligne.is_box_perso %}
+                                        {% elseif ligne.isBoxPersonnalisable %}
                                             BOX PERSONNALISÉE
-                                        {% else %}
+                                        {% elseif ligne.box is not null %}
                                             BOX {{ ligne.box.type|upper }}
+                                        {% else %}
+                                            ARTICLE
                                         {% endif %}
                                     </span>
-                                    <h3>{{ ligne.nom_article }}</h3>
+                                    <h3>{{ ligne.nomArticle }}</h3>
                                     
                                     <!-- Composition box perso -->
-                                    {% if ligne.is_box_perso and ligne.compositions is defined %}
+                                    {% if ligne.isBoxPersonnalisable and ligne.compositionsPanier is not empty %}
                                         <div class="box-composition">
                                             <p class="flavor-notes">📦 Composition :</p>
                                             <div class="composition-list">
-                                                {% for compo in ligne.compositions %}
+                                                {% for compo in ligne.compositionsPanier %}
                                                     <span class="composition-item">
                                                         {{ compo.quantite }}x {{ compo.produit.name }}
                                                     </span>
@@ -83,17 +88,17 @@
                                             </div>
                                         </div>
                                     {% else %}
-                                        <p class="flavor-notes">Prix unitaire : {{ ligne.prix_unitaire|number_format(2, ',', ' ') }} €</p>
+                                        <p class="flavor-notes">Prix unitaire : {{ ligne.prixUnitaire|number_format(2, ',', ' ') }} €</p>
                                     {% endif %}
                                 </div>
 
                                 <!-- Quantité -->
                                 <div class="product-qty">
-                                    {% if not ligne.is_box_perso %}
+                                    {% if not ligne.isBoxPersonnalisable %}
                                         <div class="qty-stepper">
-                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}', -1)">−</button>
+                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is not null ? 'Cookie' : 'Box' }}', -1)">−</button>
                                             <input type="text" value="{{ ligne.quantite }}" readonly>
-                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}', 1)">+</button>
+                                            <button onclick="changeQtyDB({{ ligne.id }}, '{{ ligne.produit is not null ? 'Cookie' : 'Box' }}', 1)">+</button>
                                         </div>
                                     {% else %}
                                         <div class="qty-display">
@@ -104,8 +109,8 @@
 
                                 <!-- Prix et suppression -->
                                 <div class="product-price">
-                                    <span class="total-item-price">{{ ligne.sous_total|number_format(2, ',', ' ') }} €</span>
-                                    <button class="btn-remove" onclick="removeItemDB({{ ligne.id }}, '{{ ligne.produit is defined ? 'Cookie' : 'Box' }}')">
+                                    <span class="total-item-price">{{ ligne.sousTotal|number_format(2, ',', ' ') }} €</span>
+                                    <button class="btn-remove" onclick="removeItemDB({{ ligne.id }}, '{{ ligne.produit is not null ? 'Cookie' : 'Box' }}')">
                                         SUPPRIMER
                                     </button>
                                 </div>
