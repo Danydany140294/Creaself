@@ -215,6 +215,107 @@
         <div class="w-full h-full kraft-texture"></div>
     </div>
 </main>
+
+<!-- TEXTURE OVERLAY -->
+    <div class="fixed inset-0 pointer-events-none opacity-10 mix-blend-overlay z-0">
+        <div class="w-full h-full kraft-texture"></div>
+    </div>
+</main>
+
+{# ===== MODAL DE FÉLICITATION APRÈS PAIEMENT ===== #}
+{% if app.session.get('commande_success') %}
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-chocolat/80 backdrop-blur-md animate-fadeIn" id="success-modal">
+    <div class="relative bg-creme rounded-[3rem] p-12 max-w-2xl w-full mx-4 shadow-2xl animate-slideUp">
+        <!-- Icône de succès -->
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 bg-or rounded-full flex items-center justify-center shadow-2xl">
+            <span class="material-symbols-outlined text-white text-6xl">check_circle</span>
+        </div>
+        
+        <!-- Contenu -->
+        <div class="text-center pt-20">
+            <h2 class="text-5xl md:text-6xl text-chocolat mb-6">
+                Félicitations !
+            </h2>
+            <p class="text-chocolat/80 text-xl mb-8 leading-relaxed">
+                Votre commande a été confirmée avec succès 🎉
+            </p>
+            
+            <!-- Détails de la commande -->
+            <div class="bg-white/50 rounded-[2rem] p-8 mb-8 space-y-4">
+                <div class="flex justify-between items-center border-b border-chocolat/10 pb-4">
+                    <span class="text-chocolat/70 font-semibold">Numéro de commande</span>
+                    <span class="text-chocolat font-black text-lg">{{ app.session.get('commande_success').numero }}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-chocolat/10 pb-4">
+                    <span class="text-chocolat/70 font-semibold">Montant total</span>
+                    <span class="text-or font-black text-2xl">{{ app.session.get('commande_success').total|number_format(2, ',', ' ') }} €</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-chocolat/70 font-semibold">Date</span>
+                    <span class="text-chocolat font-bold">{{ app.session.get('commande_success').date|date('d/m/Y à H:i') }}</span>
+                </div>
+            </div>
+            
+            <!-- Message de confirmation -->
+            <p class="text-chocolat/70 text-sm mb-10 italic">
+                {% if app.session.get('commande_success').email %}
+                    Un email de confirmation a été envoyé à <strong class="text-chocolat">{{ app.session.get('commande_success').email }}</strong>
+                {% else %}
+                    Merci pour votre confiance ! Vos cookies seront préparés avec amour.
+                {% endif %}
+            </p>
+            
+            <!-- Bouton de fermeture -->
+            <div class="magnetic-btn-container">
+                <button onclick="closeSuccessModal()" class="js-magnetic-btn w-full bg-or text-chocolat py-6 rounded-[2rem] font-black text-xl tracking-widest shadow-[0_15px_35px_-5px_rgba(204,167,72,0.4)] hover:shadow-[0_20px_45px_-5px_rgba(204,167,72,0.6)] transition-all">
+                    CONTINUER MES ACHATS
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Supprimer la session après affichage #}
+<script>
+    function closeSuccessModal() {
+        document.getElementById('success-modal').classList.add('animate-fadeOut');
+        setTimeout(() => {
+            // Supprimer la session via AJAX
+            fetch('{{ path('app_clear_commande_session') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(() => {
+                document.getElementById('success-modal').remove();
+            });
+        }, 300);
+    }
+    
+    // Animations CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        .animate-slideUp { animation: slideUp 0.4s ease-out; }
+        .animate-fadeOut { animation: fadeOut 0.3s ease-out; }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endif %}
+
+
 {% endblock %}
 
 {% block javascripts %}
