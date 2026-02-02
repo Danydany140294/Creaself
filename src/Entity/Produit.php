@@ -34,6 +34,9 @@ class Produit
     #[ORM\Column]
     private ?bool $disponible = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $isActive = true;
+
     /**
      * @var Collection<int, Box>
      * EXTRA_LAZY empêche le chargement automatique des boxes → évite la boucle infinie
@@ -59,7 +62,6 @@ class Produit
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -71,7 +73,6 @@ class Produit
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
-
         return $this;
     }
 
@@ -83,7 +84,6 @@ class Produit
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -95,7 +95,6 @@ class Produit
     public function setStock(int $stock): static
     {
         $this->stock = $stock;
-
         return $this;
     }
 
@@ -107,7 +106,6 @@ class Produit
     public function setImage(string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -119,7 +117,17 @@ class Produit
     public function setDisponible(bool $disponible): static
     {
         $this->disponible = $disponible;
+        return $this;
+    }
 
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
         return $this;
     }
 
@@ -137,7 +145,6 @@ class Produit
             $this->boxes->add($box);
             $box->addProduit($this);
         }
-
         return $this;
     }
 
@@ -146,7 +153,14 @@ class Produit
         if ($this->boxes->removeElement($box)) {
             $box->removeProduit($this);
         }
-
         return $this;
+    }
+
+    /**
+     * Pour l'affichage dans EasyAdmin
+     */
+    public function __toString(): string
+    {
+        return $this->name ?? 'Produit #' . $this->id;
     }
 }

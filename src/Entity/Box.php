@@ -33,6 +33,9 @@ class Box
     #[ORM\Column(length: 50)]
     private ?string $type = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $isActive = true;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?User $createur = null;
@@ -123,6 +126,17 @@ class Box
         return $this;
     }
 
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
+        return $this;
+    }
+
     public function getCreateur(): ?User
     {
         return $this->createur;
@@ -181,5 +195,13 @@ class Box
     public function estBoxPersoUser(): bool
     {
         return $this->createur !== null;
+    }
+
+    /**
+     * Pour l'affichage dans EasyAdmin
+     */
+    public function __toString(): string
+    {
+        return $this->nom ?? 'Box #' . $this->id;
     }
 }

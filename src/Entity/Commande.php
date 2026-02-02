@@ -57,7 +57,6 @@ class Commande
     public function setNumeroCommande(string $numeroCommande): static
     {
         $this->numeroCommande = $numeroCommande;
-
         return $this;
     }
 
@@ -69,7 +68,6 @@ class Commande
     public function setDateCommande(\DateTime $dateCommande): static
     {
         $this->dateCommande = $dateCommande;
-
         return $this;
     }
 
@@ -81,7 +79,6 @@ class Commande
     public function setStatut(CommandeStatut $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -93,8 +90,15 @@ class Commande
     public function setTotalTTC(float $totalTTC): static
     {
         $this->totalTTC = $totalTTC;
-
         return $this;
+    }
+
+    /**
+     * Alias pour compatibilité avec DashboardController
+     */
+    public function getMontantTotal(): ?float
+    {
+        return $this->totalTTC;
     }
 
     public function getUser(): ?User
@@ -105,7 +109,6 @@ class Commande
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -123,7 +126,6 @@ class Commande
             $this->lignesCommande->add($ligneCommande);
             $ligneCommande->setCommande($this);
         }
-
         return $this;
     }
 
@@ -134,7 +136,6 @@ class Commande
                 $ligneCommande->setCommande(null);
             }
         }
-
         return $this;
     }
 
@@ -145,5 +146,13 @@ class Commande
             $total += $ligne->getSousTotal();
         }
         return $total;
+    }
+
+    /**
+     * Pour l'affichage dans EasyAdmin
+     */
+    public function __toString(): string
+    {
+        return $this->numeroCommande ?? 'Commande #' . $this->id;
     }
 }
