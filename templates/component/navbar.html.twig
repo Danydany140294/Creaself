@@ -319,32 +319,37 @@
                     <i class="fas fa-chevron-down"></i>
                 </button>
 
-                <div class="dropdown-menu">
-                    <div class="dropdown-header">
-                        <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
-                        <div class="user-email">{{ app.user.email }}</div>
-                    </div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-user-cog"></i>
-                        Mon profil
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Mes adresses
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-credit-card"></i>
-                        Moyens de paiement
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="fas fa-box"></i>
-                        Mes commandes
-                    </a>
-                    <a href="{{ path('app_logout') }}" class="dropdown-item logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Déconnexion
-                    </a>
-                </div>
+               <div class="dropdown-menu">
+    <div class="dropdown-header">
+        <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
+        <div class="user-email">{{ app.user.email }}</div>
+    </div>
+    
+    <a href="{{ path('app_user_dashboard') }}" class="dropdown-item">
+        <i class="fas fa-user-cog"></i>
+        Mon profil
+    </a>
+    
+    <a href="{{ path('app_user_dashboard') }}#adresses" class="dropdown-item">
+        <i class="fas fa-map-marker-alt"></i>
+        Mes adresses
+    </a>
+    
+    <a href="{{ path('app_user_dashboard') }}#paiement" class="dropdown-item">
+        <i class="fas fa-credit-card"></i>
+        Moyens de paiement
+    </a>
+    
+    <a href="{{ path('app_user_dashboard') }}#commandes" class="dropdown-item">
+        <i class="fas fa-box"></i>
+        Mes commandes
+    </a>
+    
+    <a href="{{ path('app_logout') }}" class="dropdown-item logout">
+        <i class="fas fa-sign-out-alt"></i>
+        Déconnexion
+    </a>
+</div>
             </div>
         {% else %}
             <!-- SI NON CONNECTÉ : Bouton Login simple -->

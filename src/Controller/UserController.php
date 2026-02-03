@@ -10,10 +10,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
+    /**
+     * Liste tous les utilisateurs (admin)
+     */
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -22,6 +26,9 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Créer un nouvel utilisateur
+     */
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -42,6 +49,28 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Dashboard de l'utilisateur connecté
+     * ⚠️ IMPORTANT : Cette route doit être AVANT /{id} pour éviter les conflits
+     */
+    #[Route('/mon-compte', name: 'app_user_dashboard', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function dashboard(): Response
+    {
+        $user = $this->getUser();
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        return $this->render('user/mon_compte.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Afficher un utilisateur spécifique
+     */
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
@@ -50,6 +79,9 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Éditer un utilisateur
+     */
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
@@ -68,11 +100,13 @@ final class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprimer un utilisateur
+     */
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }

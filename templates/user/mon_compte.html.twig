@@ -1,0 +1,309 @@
+{# templates/user/mon_compte.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Compte - Perline{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/perline-dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-wrapper">
+    <div class="dashboard-container">
+        <main class="dashboard-main">
+            {# SIDEBAR - Menu de navigation #}
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-content">
+                    {# En-tête utilisateur #}
+                    <div class="user-header">
+                        <div class="user-avatar-wrapper">
+                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ?? asset('images/default-avatar.jpg') }}');"></div>
+                            <div class="user-badge">
+                                <span class="material-symbols-outlined">verified</span>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <h1 class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</h1>
+                            <p class="user-title">Client Perline</p>
+                        </div>
+                    </div>
+
+                    {# Navigation #}
+                    <nav class="sidebar-nav">
+                        <a href="#profil" class="nav-item active" data-tab="profil">
+                            <span class="material-symbols-outlined">dashboard</span>
+                            <span class="nav-text">Mon Profil</span>
+                        </a>
+                        <a href="#commandes" class="nav-item" data-tab="commandes">
+                            <span class="material-symbols-outlined">shopping_bag</span>
+                            <span class="nav-text">Mes Commandes</span>
+                        </a>
+                        <a href="#informations" class="nav-item" data-tab="informations">
+                            <span class="material-symbols-outlined">badge</span>
+                            <span class="nav-text">Mes Informations</span>
+                        </a>
+                        <a href="#adresses" class="nav-item" data-tab="adresses">
+                            <span class="material-symbols-outlined">location_on</span>
+                            <span class="nav-text">Mes Adresses</span>
+                        </a>
+                        <a href="#paiement" class="nav-item" data-tab="paiement">
+                            <span class="material-symbols-outlined">credit_card</span>
+                            <span class="nav-text">Moyens de Paiement</span>
+                        </a>
+                        <a href="#favoris" class="nav-item" data-tab="favoris">
+                            <span class="material-symbols-outlined">favorite</span>
+                            <span class="nav-text">Mes Favoris</span>
+                        </a>
+                        <a href="#avis" class="nav-item" data-tab="avis">
+                            <span class="material-symbols-outlined">star_rate</span>
+                            <span class="nav-text">Avis & Notes</span>
+                        </a>
+                        
+                        <div class="nav-divider"></div>
+                        
+                        <a href="{{ path('app_logout') }}" class="nav-item logout-item">
+                            <span class="material-symbols-outlined">logout</span>
+                            <span class="nav-text">Déconnexion</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            {# CONTENU PRINCIPAL #}
+            <div class="dashboard-content">
+                {# En-tête de bienvenue #}
+                <header class="content-header">
+                    <h2 class="welcome-title">Bonjour {{ app.user.prenom }} !</h2>
+                    <p class="welcome-subtitle">Heureux de vous revoir. Vos cookies vous attendent.</p>
+                </header>
+
+                {# ONGLET 1 : Mon Profil (Dashboard principal) #}
+                <div id="tab-profil" class="tab-content active">
+                    <div class="cards-grid">
+                        {# Carte Dernière commande #}
+                        <div class="card card-order">
+                            <div class="card-body">
+                                <div class="card-header-flex">
+                                    <div>
+                                        <h3 class="card-title">Dernière commande</h3>
+                                        <p class="card-subtitle">N° 84920 — 14 Mars 2024</p>
+                                    </div>
+                                    <span class="badge badge-success">
+                                        <span class="badge-dot"></span>
+                                        Expédiée
+                                    </span>
+                                </div>
+                                
+                                <div class="order-preview">
+                                    <div class="order-images">
+                                        <img src="{{ asset('images/cookie1.jpg') }}" alt="Cookie 1" class="order-img">
+                                        <img src="{{ asset('images/cookie2.jpg') }}" alt="Cookie 2" class="order-img">
+                                        <div class="order-img-more">+2</div>
+                                    </div>
+                                    <div class="order-info">
+                                        <p class="order-name">Boîte Signature & Pépites</p>
+                                        <p class="order-delivery">Livraison prévue demain</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-full">
+                                <span class="material-symbols-outlined">local_shipping</span>
+                                Suivre ma livraison
+                            </button>
+                            
+                            <span class="card-icon-bg material-symbols-outlined">package</span>
+                        </div>
+
+                        {# Carte Points de fidélité #}
+                        <div class="card card-loyalty">
+                            <div class="card-body">
+                                <div class="card-header-flex">
+                                    <div>
+                                        <h3 class="loyalty-title">Club Miettes d'Or</h3>
+                                        <p class="loyalty-subtitle">Votre solde de gourmandise</p>
+                                    </div>
+                                    <span class="material-symbols-outlined loyalty-icon">loyalty</span>
+                                </div>
+                                
+                                <div class="loyalty-points">
+                                    <span class="points-number">1,250</span>
+                                    <span class="points-label">points</span>
+                                </div>
+                                
+                                <div class="loyalty-reward">
+                                    <p class="reward-label">RÉCOMPENSE DISPONIBLE</p>
+                                    <div class="reward-card">
+                                        <div class="reward-content">
+                                            <span class="material-symbols-outlined">redeem</span>
+                                            <span class="reward-text">1 Cookie Triple Chocolat OFFERT</span>
+                                        </div>
+                                        <button class="btn-reward">UTILISER</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="loyalty-progress">
+                                <p class="progress-text">Prochain palier : 1500 pts</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section Favoris #}
+                    <section class="favorites-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span class="material-symbols-outlined">favorite</span>
+                                Vos Incontournables
+                            </h3>
+                            <div class="section-nav">
+                                <button class="nav-btn" id="favPrev">
+                                    <span class="material-symbols-outlined">chevron_left</span>
+                                </button>
+                                <button class="nav-btn" id="favNext">
+                                    <span class="material-symbols-outlined">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="favorites-slider" id="favoritesSlider">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="{{ asset('images/cookie1.jpg') }}" alt="Pépite Dark Intense">
+                                    <div class="product-overlay">
+                                        <button class="btn-add">Ajouter vite !</button>
+                                    </div>
+                                </div>
+                                <h4 class="product-name">Pépite Dark Intense</h4>
+                                <p class="product-price">4.50€ — Le préféré du Chef</p>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="{{ asset('images/cookie2.jpg') }}" alt="Caramel au Beurre Salé">
+                                    <div class="product-overlay">
+                                        <button class="btn-add">Ajouter vite !</button>
+                                    </div>
+                                </div>
+                                <h4 class="product-name">Caramel au Beurre Salé</h4>
+                                <p class="product-price">4.80€ — Fondant & Craquant</p>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="{{ asset('images/cookie3.jpg') }}" alt="Macadamia & Chocolat Blanc">
+                                    <div class="product-overlay">
+                                        <button class="btn-add">Ajouter vite !</button>
+                                    </div>
+                                </div>
+                                <h4 class="product-name">Macadamia & Chocolat Blanc</h4>
+                                <p class="product-price">4.90€ — Un nuage de douceur</p>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="{{ asset('images/cookie4.jpg') }}" alt="Matcha & Framboise">
+                                    <div class="product-overlay">
+                                        <button class="btn-add">Ajouter vite !</button>
+                                    </div>
+                                </div>
+                                <h4 class="product-name">Matcha & Framboise</h4>
+                                <p class="product-price">5.20€ — L'Équilibre Parfait</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                {# ONGLET 2 : Mes Commandes #}
+                <div id="tab-commandes" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Mes Commandes</h3>
+                        <p class="tab-description">Retrouvez l'historique de toutes vos commandes</p>
+                        
+                        {# Liste des commandes - À compléter avec vos données #}
+                        <div class="orders-list">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# ONGLET 3 : Mes Informations #}
+                <div id="tab-informations" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Mes Informations</h3>
+                        <p class="tab-description">Gérez vos informations personnelles</p>
+                        
+                        {# Formulaire d'édition - À compléter #}
+                        <div class="info-form">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# ONGLET 4 : Mes Adresses #}
+                <div id="tab-adresses" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Mes Adresses</h3>
+                        <p class="tab-description">Gérez vos adresses de livraison</p>
+                        
+                        {# Liste des adresses - À compléter #}
+                        <div class="addresses-list">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# ONGLET 5 : Moyens de Paiement #}
+                <div id="tab-paiement" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Moyens de Paiement</h3>
+                        <p class="tab-description">Gérez vos cartes bancaires</p>
+                        
+                        {# Liste des cartes - À compléter #}
+                        <div class="payment-methods">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# ONGLET 6 : Mes Favoris #}
+                <div id="tab-favoris" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Mes Favoris</h3>
+                        <p class="tab-description">Vos cookies préférés</p>
+                        
+                        {# Liste des favoris - À compléter #}
+                        <div class="favorites-list">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# ONGLET 7 : Avis & Notes #}
+                <div id="tab-avis" class="tab-content">
+                    <div class="tab-inner">
+                        <h3 class="tab-title">Avis & Notes</h3>
+                        <p class="tab-description">Vos avis sur nos produits</p>
+                        
+                        {# Liste des avis - À compléter #}
+                        <div class="reviews-list">
+                            <p class="empty-state">Contenu à venir...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/perline-dashboard.js') }}"></script>
+{% endblock %}
