@@ -19,9 +19,10 @@ class ProduitFixtures extends Fixture
         $cookie1->setDescription('Un délicieux cookie aux éclats de pistache et une touche de cannelle pour une saveur raffinée et épicée');
         $cookie1->setPrix($faker->randomFloat(2, 3.5, 4.5));
         $cookie1->setStock($faker->numberBetween(20, 80));
-        $cookie1->setImage('cookie-pistache-cannelle.jpg');
+        $cookie1->setImage('cookie-pistache-cannelle.png'); // ✅ .png au lieu de .jpg
         $cookie1->setDisponible(true);
         $manager->persist($cookie1);
+        $this->addReference('produit_0', $cookie1);
 
         // Cookie 2 : Pêche Caramel
         $cookie2 = new Produit();
@@ -29,9 +30,10 @@ class ProduitFixtures extends Fixture
         $cookie2->setDescription('Un cookie gourmand aux morceaux de pêche fondante et caramel onctueux, parfait pour les amateurs de saveurs fruitées');
         $cookie2->setPrix($faker->randomFloat(2, 3.5, 4.5));
         $cookie2->setStock($faker->numberBetween(20, 80));
-        $cookie2->setImage('cookie-peche-caramel.jpg');
+        $cookie2->setImage('cookie-peche-caramel.png'); // ✅ .png au lieu de .jpg
         $cookie2->setDisponible(true);
         $manager->persist($cookie2);
+        $this->addReference('produit_1', $cookie2);
 
         // Cookie 3 : Noisette Vanille
         $cookie3 = new Produit();
@@ -39,9 +41,10 @@ class ProduitFixtures extends Fixture
         $cookie3->setDescription('Un cookie classique et réconfortant aux éclats de noisettes torréfiées et une douce vanille bourbon');
         $cookie3->setPrix($faker->randomFloat(2, 3.5, 4.5));
         $cookie3->setStock($faker->numberBetween(20, 80));
-        $cookie3->setImage('cookie-noisette-vanille.jpg');
+        $cookie3->setImage('cookie-noisette-vanille.png'); // ✅ .png au lieu de .jpg
         $cookie3->setDisponible(true);
         $manager->persist($cookie3);
+        $this->addReference('produit_2', $cookie3);
 
         // Cookie 4 : Macadamia Framboise
         $cookie4 = new Produit();
@@ -49,9 +52,10 @@ class ProduitFixtures extends Fixture
         $cookie4->setDescription('L\'alliance parfaite entre le croquant des noix de macadamia et l\'acidité des framboises séchées');
         $cookie4->setPrix($faker->randomFloat(2, 4.0, 5.0));
         $cookie4->setStock($faker->numberBetween(20, 80));
-        $cookie4->setImage('cookie-macadamia-framboise.jpg');
+        $cookie4->setImage('cookie-macadamia-framboise.png'); // ✅ .png au lieu de .jpg
         $cookie4->setDisponible(true);
         $manager->persist($cookie4);
+        $this->addReference('produit_3', $cookie4);
 
         // Cookie 5 : Fruits Rouges
         $cookie5 = new Produit();
@@ -59,9 +63,10 @@ class ProduitFixtures extends Fixture
         $cookie5->setDescription('Un cookie aux notes acidulées avec un mélange généreux de fraises, framboises et myrtilles séchées');
         $cookie5->setPrix($faker->randomFloat(2, 3.5, 4.5));
         $cookie5->setStock($faker->numberBetween(20, 80));
-        $cookie5->setImage('cookie-fruits-rouges.jpg');
+        $cookie5->setImage('cookie-fruits-rouges.png'); // ✅ .png au lieu de .jpg
         $cookie5->setDisponible(true);
         $manager->persist($cookie5);
+        $this->addReference('produit_4', $cookie5);
 
         $manager->flush();
     }

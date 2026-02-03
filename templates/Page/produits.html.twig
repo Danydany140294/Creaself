@@ -34,7 +34,7 @@
                                 <h3>{{ produit.name }}</h3>
                                 <p>{{ produit.description ?? 'Cookie artisanal fait maison avec amour' }}</p>
                                 
-                                {% if produit.stock > 0 %}
+                                {% if produit.isEnStock() %}
                                     <button class="nc-btn nc-btn-primary" 
                                             onclick="scrollToProduct({{ produit.id }})">
                                         Commander
@@ -109,9 +109,9 @@
                              alt="{{ produit.name }}">
                         
                         {# Badges de disponibilité #}
-                        {% if produit.stock == 0 %}
+                        {% if produit.isRuptureStock() %}
                             <span class="nc-badge nc-badge-out">Rupture</span>
-                        {% elseif produit.stock < 5 %}
+                        {% elseif produit.isStockFaible() %}
                             <span class="nc-badge nc-badge-limited">Stock limité</span>
                         {% endif %}
                     </div>
@@ -124,7 +124,7 @@
                     
                     {# Indicateur de stock #}
                     <div class="nc-stock-info">
-                        {% if produit.stock > 0 %}
+                        {% if produit.isEnStock() %}
                             <i class="fas fa-check-circle"></i>
                             <span>{{ produit.stock }} en stock</span>
                         {% else %}
@@ -134,7 +134,7 @@
                     </div>
 
                     {# Formulaire d'ajout au panier #}
-                    {% if produit.stock > 0 %}
+                    {% if produit.isAchetable() %}
                         <form method="POST" 
                               action="{{ path('app_panier_ajouter_produit', {id: produit.id}) }}"
                               class="nc-add-to-cart-form">

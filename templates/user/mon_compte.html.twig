@@ -20,7 +20,7 @@
                     {# En-tête utilisateur #}
                     <div class="user-header">
                         <div class="user-avatar-wrapper">
-                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ?? asset('images/default-avatar.jpg') }}');"></div>
+                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ? asset('images/avatars/' ~ app.user.avatar) : asset('images/default-avatar.jpg') }}');"></div>
                             <div class="user-badge">
                                 <span class="material-symbols-outlined">verified</span>
                             </div>
@@ -99,8 +99,8 @@
                                 
                                 <div class="order-preview">
                                     <div class="order-images">
-                                        <img src="{{ asset('images/cookie1.jpg') }}" alt="Cookie 1" class="order-img">
-                                        <img src="{{ asset('images/cookie2.jpg') }}" alt="Cookie 2" class="order-img">
+                                        <img src="{{ asset('asset/images/produits/cookie-pistache-cannelle.png') }}" alt="Cookie 1" class="order-img">
+                                        <img src="{{ asset('asset/images/produits/cookie-peche-caramel.png') }}" alt="Cookie 2" class="order-img">
                                         <div class="order-img-more">+2</div>
                                     </div>
                                     <div class="order-info">
@@ -130,7 +130,7 @@
                                 </div>
                                 
                                 <div class="loyalty-points">
-                                    <span class="points-number">1,250</span>
+                                    <span class="points-number">{{ app.user.pointsFidelite }}</span>
                                     <span class="points-label">points</span>
                                 </div>
                                 
@@ -149,7 +149,7 @@
                             <div class="loyalty-progress">
                                 <p class="progress-text">Prochain palier : 1500 pts</p>
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 80%;"></div>
+                                    <div class="progress-fill" style="width: {{ (app.user.pointsFidelite / 1500 * 100)|number_format(0) }}%;"></div>
                                 </div>
                             </div>
                         </div>
@@ -173,49 +173,22 @@
                         </div>
                         
                         <div class="favorites-slider" id="favoritesSlider">
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="{{ asset('images/cookie1.jpg') }}" alt="Pépite Dark Intense">
-                                    <div class="product-overlay">
-                                        <button class="btn-add">Ajouter vite !</button>
+                            {% if app.user.favoris|length > 0 %}
+                                {% for produit in app.user.favoris %}
+                                    <div class="product-card">
+                                        <div class="product-image">
+                                            <img src="{{ asset('asset/images/produits/' ~ produit.image) }}" alt="{{ produit.name }}">
+                                            <div class="product-overlay">
+                                                <button class="btn-add" onclick="window.location.href='{{ path('app_panier_ajouter_produit', {id: produit.id}) }}'">Ajouter vite !</button>
+                                            </div>
+                                        </div>
+                                        <h4 class="product-name">{{ produit.name }}</h4>
+                                        <p class="product-price">{{ produit.prix|number_format(2, ',', ' ') }}€</p>
                                     </div>
-                                </div>
-                                <h4 class="product-name">Pépite Dark Intense</h4>
-                                <p class="product-price">4.50€ — Le préféré du Chef</p>
-                            </div>
-                            
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="{{ asset('images/cookie2.jpg') }}" alt="Caramel au Beurre Salé">
-                                    <div class="product-overlay">
-                                        <button class="btn-add">Ajouter vite !</button>
-                                    </div>
-                                </div>
-                                <h4 class="product-name">Caramel au Beurre Salé</h4>
-                                <p class="product-price">4.80€ — Fondant & Craquant</p>
-                            </div>
-                            
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="{{ asset('images/cookie3.jpg') }}" alt="Macadamia & Chocolat Blanc">
-                                    <div class="product-overlay">
-                                        <button class="btn-add">Ajouter vite !</button>
-                                    </div>
-                                </div>
-                                <h4 class="product-name">Macadamia & Chocolat Blanc</h4>
-                                <p class="product-price">4.90€ — Un nuage de douceur</p>
-                            </div>
-                            
-                            <div class="product-card">
-                                <div class="product-image">
-                                    <img src="{{ asset('images/cookie4.jpg') }}" alt="Matcha & Framboise">
-                                    <div class="product-overlay">
-                                        <button class="btn-add">Ajouter vite !</button>
-                                    </div>
-                                </div>
-                                <h4 class="product-name">Matcha & Framboise</h4>
-                                <p class="product-price">5.20€ — L'Équilibre Parfait</p>
-                            </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="empty-state">Vous n'avez pas encore de favoris. Explorez notre boutique !</p>
+                            {% endif %}
                         </div>
                     </section>
                 </div>
@@ -226,9 +199,19 @@
                         <h3 class="tab-title">Mes Commandes</h3>
                         <p class="tab-description">Retrouvez l'historique de toutes vos commandes</p>
                         
-                        {# Liste des commandes - À compléter avec vos données #}
+                        {# Liste des commandes #}
                         <div class="orders-list">
-                            <p class="empty-state">Contenu à venir...</p>
+                            {% if app.user.commandes|length > 0 %}
+                                {% for commande in app.user.commandes %}
+                                    <div class="order-item">
+                                        <p>Commande #{{ commande.id }} - {{ commande.dateCommande|date('d/m/Y') }}</p>
+                                        <p>Statut : {{ commande.statut }}</p>
+                                        <p>Total : {{ commande.total|number_format(2, ',', ' ') }}€</p>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="empty-state">Vous n'avez pas encore passé de commande.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -239,9 +222,32 @@
                         <h3 class="tab-title">Mes Informations</h3>
                         <p class="tab-description">Gérez vos informations personnelles</p>
                         
-                        {# Formulaire d'édition - À compléter #}
+                        {# Formulaire d'édition #}
                         <div class="info-form">
-                            <p class="empty-state">Contenu à venir...</p>
+                            <div class="info-item">
+                                <label>Email</label>
+                                <p>{{ app.user.email }}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Nom</label>
+                                <p>{{ app.user.nom }}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Prénom</label>
+                                <p>{{ app.user.prenom }}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Téléphone</label>
+                                <p>{{ app.user.telephone ?? 'Non renseigné' }}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Date de naissance</label>
+                                <p>{{ app.user.dateNaissance ? app.user.dateNaissance|date('d/m/Y') : 'Non renseignée' }}</p>
+                            </div>
+                            <div class="info-item">
+                                <label>Points de fidélité</label>
+                                <p>{{ app.user.pointsFidelite }} points</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -252,9 +258,26 @@
                         <h3 class="tab-title">Mes Adresses</h3>
                         <p class="tab-description">Gérez vos adresses de livraison</p>
                         
-                        {# Liste des adresses - À compléter #}
+                        {# Liste des adresses #}
                         <div class="addresses-list">
-                            <p class="empty-state">Contenu à venir...</p>
+                            {% if app.user.adresses|length > 0 %}
+                                {% for adresse in app.user.adresses %}
+                                    <div class="address-item {% if adresse.parDefaut %}default-address{% endif %}">
+                                        <h4>{{ adresse.nom }}</h4>
+                                        <p>{{ adresse.rue }}</p>
+                                        {% if adresse.complement %}
+                                            <p>{{ adresse.complement }}</p>
+                                        {% endif %}
+                                        <p>{{ adresse.codePostal }} {{ adresse.ville }}</p>
+                                        <p>{{ adresse.pays }}</p>
+                                        {% if adresse.parDefaut %}
+                                            <span class="badge badge-success">Adresse par défaut</span>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="empty-state">Vous n'avez pas encore enregistré d'adresse.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -265,9 +288,9 @@
                         <h3 class="tab-title">Moyens de Paiement</h3>
                         <p class="tab-description">Gérez vos cartes bancaires</p>
                         
-                        {# Liste des cartes - À compléter #}
+                        {# Liste des cartes #}
                         <div class="payment-methods">
-                            <p class="empty-state">Contenu à venir...</p>
+                            <p class="empty-state">Fonctionnalité à venir...</p>
                         </div>
                     </div>
                 </div>
@@ -278,9 +301,33 @@
                         <h3 class="tab-title">Mes Favoris</h3>
                         <p class="tab-description">Vos cookies préférés</p>
                         
-                        {# Liste des favoris - À compléter #}
+                        {# Liste des favoris #}
                         <div class="favorites-list">
-                            <p class="empty-state">Contenu à venir...</p>
+                            {% if app.user.favoris|length > 0 %}
+                                <div class="products-grid">
+                                    {% for produit in app.user.favoris %}
+                                        <div class="product-card">
+                                            <div class="product-image">
+                                                <img src="{{ asset('asset/images/produits/' ~ produit.image) }}" alt="{{ produit.name }}">
+                                            </div>
+                                            <h4 class="product-name">{{ produit.name }}</h4>
+                                            <p class="product-price">{{ produit.prix|number_format(2, ',', ' ') }}€</p>
+                                            <p class="product-stock">
+                                                {% if produit.isEnStock() %}
+                                                    ✓ En stock
+                                                {% else %}
+                                                    ✗ Rupture de stock
+                                                {% endif %}
+                                            </p>
+                                            <button class="btn btn-primary" onclick="window.location.href='{{ path('app_panier_ajouter_produit', {id: produit.id}) }}'">
+                                                Ajouter au panier
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="empty-state">Vous n'avez pas encore de favoris. Explorez notre boutique !</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -291,9 +338,29 @@
                         <h3 class="tab-title">Avis & Notes</h3>
                         <p class="tab-description">Vos avis sur nos produits</p>
                         
-                        {# Liste des avis - À compléter #}
+                        {# Liste des avis #}
                         <div class="reviews-list">
-                            <p class="empty-state">Contenu à venir...</p>
+                            {% if app.user.avis|length > 0 %}
+                                {% for avis in app.user.avis %}
+                                    <div class="review-item">
+                                        <h4>{{ avis.produit.name }}</h4>
+                                        <div class="stars">
+                                            {% for i in 1..5 %}
+                                                <span class="star {% if i <= avis.note %}filled{% endif %}">★</span>
+                                            {% endfor %}
+                                        </div>
+                                        <p>{{ avis.commentaire }}</p>
+                                        <p class="review-date">{{ avis.dateAvis|date('d/m/Y') }}</p>
+                                        {% if avis.approuve %}
+                                            <span class="badge badge-success">Publié</span>
+                                        {% else %}
+                                            <span class="badge badge-warning">En attente de validation</span>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="empty-state">Vous n'avez pas encore laissé d'avis.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
