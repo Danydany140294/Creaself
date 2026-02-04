@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Adresse;
 use App\Form\UserForm;
+use App\Form\AdresseType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,12 +52,12 @@ final class UserController extends AbstractController
     }
 
     /**
-     * Dashboard de l'utilisateur connecté
+     * Dashboard de l'utilisateur connecté avec gestion des adresses
      * ⚠️ IMPORTANT : Cette route doit être AVANT /{id} pour éviter les conflits
      */
-    #[Route('/mon-compte', name: 'app_user_dashboard', methods: ['GET'])]
+    #[Route('/mon-compte', name: 'app_user_dashboard', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function dashboard(): Response
+    public function dashboard(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         
@@ -63,8 +65,36 @@ final class UserController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         
+        // Créer le formulaire d'ajout d'adresse
+        $adresse = new Adresse();
+        $adresse->setUser($user);
+        
+        $adresseForm = $this->createForm(AdresseType::class, $adresse);
+        $adresseForm->handleRequest($request);
+        
+        // Gérer la soumission du formulaire d'adresse
+        if ($adresseForm->isSubmitted() && $adresseForm->isValid()) {
+            // Si l'adresse est définie par défaut, retirer le défaut des autres
+            if ($adresse->isParDefaut()) {
+                $this->removeDefaultFromOtherAddresses($user, $entityManager);
+            }
+            
+            // Si c'est la première adresse, la mettre par défaut automatiquement
+            if ($user->getAdresses()->count() === 0) {
+                $adresse->setParDefaut(true);
+            }
+            
+            $entityManager->persist($adresse);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Adresse ajoutée avec succès.');
+            
+            return $this->redirectToRoute('app_user_dashboard');
+        }
+        
         return $this->render('user/mon_compte.html.twig', [
             'user' => $user,
+            'adresseForm' => $adresseForm->createView(),
         ]);
     }
 
@@ -112,5 +142,18 @@ final class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * Retire le statut "par défaut" de toutes les adresses de l'utilisateur
+     */
+    private function removeDefaultFromOtherAddresses(User $user, EntityManagerInterface $entityManager): void
+    {
+        foreach ($user->getAdresses() as $addr) {
+            if ($addr->isParDefaut()) {
+                $addr->setParDefaut(false);
+            }
+        }
+        $entityManager->flush();
     }
 }

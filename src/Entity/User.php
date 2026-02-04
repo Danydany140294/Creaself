@@ -36,30 +36,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Nom = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $Prenom = null;
-
-    #[ORM\Column(length: 20)]
-    private ?string $Telephone = null;
-
-    // ⭐ NOUVEAUX CHAMPS POUR LE DASHBOARD
+    // ⭐ INFORMATIONS PERSONNELLES
     
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $telephone = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $dateNaissance = null;
 
+    // ⭐ FIDÉLITÉ & DATES
+    
     #[ORM\Column(options: ['default' => 0])]
     private int $pointsFidelite = 0;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateInscription = null;
 
-    // ⭐ RELATIONS POUR LE DASHBOARD
+    // ⭐ STRIPE (pour les paiements)
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
+    // ⭐ RELATIONS
 
     /**
      * @var Collection<int, Commande>
@@ -87,14 +94,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_favoris')]
     private Collection $favoris;
 
+    /**
+     * @var Collection<int, MoyenPaiement>
+     */
+    #[ORM\OneToMany(targetEntity: MoyenPaiement::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $moyensPaiement;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
         $this->adresses = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->favoris = new ArrayCollection();
+        $this->moyensPaiement = new ArrayCollection();
         $this->dateInscription = new \DateTime();
+        $this->pointsFidelite = 0;
     }
+
+    // ========================================
+    // GETTERS & SETTERS BASIQUES
+    // ========================================
 
     public function getId(): ?int
     {
@@ -146,40 +165,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // clear temporary sensitive data if any
     }
 
+    // ========================================
+    // INFORMATIONS PERSONNELLES
+    // ========================================
+
     public function getNom(): ?string
     {
-        return $this->Nom;
+        return $this->nom;
     }
 
-    public function setNom(string $Nom): static
+    public function setNom(string $nom): static
     {
-        $this->Nom = $Nom;
+        $this->nom = $nom;
         return $this;
     }
 
     public function getPrenom(): ?string
     {
-        return $this->Prenom;
+        return $this->prenom;
     }
 
-    public function setPrenom(string $Prenom): static
+    public function setPrenom(string $prenom): static
     {
-        $this->Prenom = $Prenom;
+        $this->prenom = $prenom;
         return $this;
     }
 
     public function getTelephone(): ?string
     {
-        return $this->Telephone;
+        return $this->telephone;
     }
 
-    public function setTelephone(string $Telephone): static
+    public function setTelephone(?string $telephone): static
     {
-        $this->Telephone = $Telephone;
+        $this->telephone = $telephone;
         return $this;
     }
-
-    // ⭐ NOUVEAUX GETTERS/SETTERS
 
     public function getAvatar(): ?string
     {
@@ -202,6 +223,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->dateNaissance = $dateNaissance;
         return $this;
     }
+
+    /**
+     * Retourne l'âge de l'utilisateur
+     */
+    public function getAge(): ?int
+    {
+        if (!$this->dateNaissance) {
+            return null;
+        }
+        
+        $now = new \DateTime();
+        return $now->diff($this->dateNaissance)->y;
+    }
+
+    // ========================================
+    // FIDÉLITÉ & DATES
+    // ========================================
 
     public function getPointsFidelite(): int
     {
@@ -237,7 +275,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // ⭐ MÉTHODES POUR LES RELATIONS
+    /**
+     * Retourne le nombre de jours depuis l'inscription
+     */
+    public function getJoursDepuisInscription(): int
+    {
+        $now = new \DateTime();
+        return $now->diff($this->dateInscription)->days;
+    }
+
+    // ========================================
+    // STRIPE
+    // ========================================
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+        return $this;
+    }
+
+    // ========================================
+    // RELATIONS - COMMANDES
+    // ========================================
 
     /**
      * @return Collection<int, Commande>
@@ -278,6 +342,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Retourne le nombre total de commandes
+     */
+    public function getNombreCommandes(): int
+    {
+        return $this->commandes->count();
+    }
+
+    /**
+     * Retourne le montant total dépensé
+     */
+    public function getMontantTotalDepense(): float
+    {
+        $total = 0;
+        foreach ($this->commandes as $commande) {
+            $total += $commande->getTotalTTC();
+        }
+        return $total;
+    }
+
+    // ========================================
+    // RELATIONS - ADRESSES
+    // ========================================
+
+    /**
      * @return Collection<int, Adresse>
      */
     public function getAdresses(): Collection
@@ -303,6 +391,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+
+    /**
+     * Retourne l'adresse par défaut de l'utilisateur
+     */
+    public function getAdresseParDefaut(): ?Adresse
+    {
+        foreach ($this->adresses as $adresse) {
+            if ($adresse->isParDefaut()) {
+                return $adresse;
+            }
+        }
+        return $this->adresses->first() ?: null;
+    }
+
+    /**
+     * Retourne le nombre d'adresses enregistrées
+     */
+    public function getNombreAdresses(): int
+    {
+        return $this->adresses->count();
+    }
+
+    // ========================================
+    // RELATIONS - AVIS
+    // ========================================
 
     /**
      * @return Collection<int, Avis>
@@ -331,6 +444,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // ========================================
+    // RELATIONS - FAVORIS
+    // ========================================
+
     /**
      * @return Collection<int, Produit>
      */
@@ -356,5 +473,104 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isFavori(Produit $produit): bool
     {
         return $this->favoris->contains($produit);
+    }
+
+    // ========================================
+    // RELATIONS - MOYENS DE PAIEMENT
+    // ========================================
+
+    /**
+     * @return Collection<int, MoyenPaiement>
+     */
+    public function getMoyensPaiement(): Collection
+    {
+        return $this->moyensPaiement;
+    }
+
+    public function addMoyensPaiement(MoyenPaiement $moyensPaiement): static
+    {
+        if (!$this->moyensPaiement->contains($moyensPaiement)) {
+            $this->moyensPaiement->add($moyensPaiement);
+            $moyensPaiement->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeMoyensPaiement(MoyenPaiement $moyensPaiement): static
+    {
+        if ($this->moyensPaiement->removeElement($moyensPaiement)) {
+            if ($moyensPaiement->getUser() === $this) {
+                $moyensPaiement->setUser(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Retourne le moyen de paiement par défaut
+     */
+    public function getMoyenPaiementParDefaut(): ?MoyenPaiement
+    {
+        foreach ($this->moyensPaiement as $moyenPaiement) {
+            if ($moyenPaiement->isParDefaut() && $moyenPaiement->isActif()) {
+                return $moyenPaiement;
+            }
+        }
+        return $this->moyensPaiement->first() ?: null;
+    }
+
+    /**
+     * Vérifie si l'utilisateur a au moins un moyen de paiement actif
+     */
+    public function hasMoyenPaiement(): bool
+    {
+        foreach ($this->moyensPaiement as $moyenPaiement) {
+            if ($moyenPaiement->isActif()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ========================================
+    // MÉTHODES UTILITAIRES
+    // ========================================
+
+    /**
+     * Retourne le nom complet de l'utilisateur
+     */
+    public function getNomComplet(): string
+    {
+        return trim($this->prenom . ' ' . $this->nom);
+    }
+
+    /**
+     * Retourne les initiales de l'utilisateur
+     */
+    public function getInitiales(): string
+    {
+        $prenom = $this->prenom ? substr($this->prenom, 0, 1) : '';
+        $nom = $this->nom ? substr($this->nom, 0, 1) : '';
+        return strtoupper($prenom . $nom);
+    }
+
+    /**
+     * Vérifie si l'utilisateur a complété son profil
+     */
+    public function isProfilComplet(): bool
+    {
+        return $this->nom !== null 
+            && $this->prenom !== null 
+            && $this->telephone !== null 
+            && $this->dateNaissance !== null
+            && $this->adresses->count() > 0;
+    }
+
+    /**
+     * Représentation string de l'utilisateur
+     */
+    public function __toString(): string
+    {
+        return $this->getNomComplet() . ' (' . $this->email . ')';
     }
 }

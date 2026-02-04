@@ -53,14 +53,7 @@
                             <span class="material-symbols-outlined">credit_card</span>
                             <span class="nav-text">Moyens de Paiement</span>
                         </a>
-                        <a href="#favoris" class="nav-item" data-tab="favoris">
-                            <span class="material-symbols-outlined">favorite</span>
-                            <span class="nav-text">Mes Favoris</span>
-                        </a>
-                        <a href="#avis" class="nav-item" data-tab="avis">
-                            <span class="material-symbols-outlined">star_rate</span>
-                            <span class="nav-text">Avis & Notes</span>
-                        </a>
+                       
                         
                         <div class="nav-divider"></div>
                         
@@ -194,176 +187,404 @@
                 </div>
 
                 {# ONGLET 2 : Mes Commandes #}
-                <div id="tab-commandes" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Mes Commandes</h3>
-                        <p class="tab-description">Retrouvez l'historique de toutes vos commandes</p>
-                        
-                        {# Liste des commandes #}
-                        <div class="orders-list">
-                            {% if app.user.commandes|length > 0 %}
-                                {% for commande in app.user.commandes %}
-                                    <div class="order-item">
-                                        <p>Commande #{{ commande.id }} - {{ commande.dateCommande|date('d/m/Y') }}</p>
-                                        <p>Statut : {{ commande.statut }}</p>
-                                        <p>Total : {{ commande.total|number_format(2, ',', ' ') }}€</p>
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="empty-state">Vous n'avez pas encore passé de commande.</p>
-                            {% endif %}
+               <div id="tab-commandes" class="tab-content">
+    <div class="tab-inner">
+        <h3 class="tab-title">Mes Commandes</h3>
+        <p class="tab-description">Retrouvez l'historique de toutes vos commandes</p>
+        
+        {# Liste des commandes #}
+        <div class="orders-list">
+            {% if app.user.commandes|length > 0 %}
+                {% for commande in app.user.commandes %}
+                    <div class="order-item">
+                        <div class="order-header">
+                            <p><strong>{{ commande.numeroCommande }}</strong></p>
+                            <span class="badge {{ commande.statutBadgeClass }}">
+                                {{ commande.statutLabel }}
+                            </span>
                         </div>
+                        
+                        <p>Date : {{ commande.dateCommande|date('d/m/Y') }}</p>
+                        <p>{{ commande.nombreLignes }} article(s) - {{ commande.nombreTotalArticles }} unité(s)</p>
+                        <p><strong>Total : {{ commande.totalTTC|number_format(2, ',', ' ') }}€</strong></p>
+                        
+                        {% if commande.enCours %}
+                            <p class="text-info">{{ commande.messageLivraison }}</p>
+                        {% endif %}
                     </div>
-                </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-state">Vous n'avez pas encore passé de commande.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
                 {# ONGLET 3 : Mes Informations #}
                 <div id="tab-informations" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Mes Informations</h3>
-                        <p class="tab-description">Gérez vos informations personnelles</p>
-                        
-                        {# Formulaire d'édition #}
-                        <div class="info-form">
-                            <div class="info-item">
-                                <label>Email</label>
-                                <p>{{ app.user.email }}</p>
-                            </div>
-                            <div class="info-item">
-                                <label>Nom</label>
-                                <p>{{ app.user.nom }}</p>
-                            </div>
-                            <div class="info-item">
-                                <label>Prénom</label>
-                                <p>{{ app.user.prenom }}</p>
-                            </div>
-                            <div class="info-item">
-                                <label>Téléphone</label>
-                                <p>{{ app.user.telephone ?? 'Non renseigné' }}</p>
-                            </div>
-                            <div class="info-item">
-                                <label>Date de naissance</label>
-                                <p>{{ app.user.dateNaissance ? app.user.dateNaissance|date('d/m/Y') : 'Non renseignée' }}</p>
-                            </div>
-                            <div class="info-item">
-                                <label>Points de fidélité</label>
-                                <p>{{ app.user.pointsFidelite }} points</p>
-                            </div>
-                        </div>
+    <div class="tab-inner">
+        <h3 class="tab-title">Mes Informations</h3>
+        <p class="tab-description">Gérez vos informations personnelles</p>
+        
+        {# Carte principale des informations #}
+        <div class="info-card">
+            <div class="info-card-header">
+                <div class="info-header-content">
+                    <span class="material-symbols-outlined info-header-icon">person</span>
+                    <div>
+                        <h4 class="info-header-title">Informations personnelles</h4>
+                        <p class="info-header-subtitle">Vos coordonnées et informations de contact</p>
                     </div>
                 </div>
+                <button type="button" class="btn btn-outline btn-sm" id="btn-edit-info">
+                    <span class="material-symbols-outlined">edit</span>
+                    Modifier
+                </button>
+            </div>
+
+            <div class="info-grid">
+                {# Email #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">mail</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Email</label>
+                        <p class="info-value">{{ app.user.email }}</p>
+                    </div>
+                </div>
+
+                {# Nom #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">badge</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Nom</label>
+                        <p class="info-value">{{ app.user.nom }}</p>
+                    </div>
+                </div>
+
+                {# Prénom #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Prénom</label>
+                        <p class="info-value">{{ app.user.prenom }}</p>
+                    </div>
+                </div>
+
+                {# Téléphone #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">phone</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Téléphone</label>
+                        <p class="info-value">{{ app.user.telephone ?? 'Non renseigné' }}</p>
+                    </div>
+                </div>
+
+                {# Date de naissance #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">cake</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Date de naissance</label>
+                        <p class="info-value">
+                            {{ app.user.dateNaissance ? app.user.dateNaissance|date('d/m/Y') : 'Non renseignée' }}
+                        </p>
+                    </div>
+                </div>
+
+                {# Membre depuis #}
+                <div class="info-item">
+                    <div class="info-icon-wrapper">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <div class="info-content">
+                        <label class="info-label">Membre depuis</label>
+                        <p class="info-value">
+                            {{ app.user.dateInscription ? app.user.dateInscription|date('d/m/Y') : 'Non disponible' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Carte de fidélité #}
+        <div class="info-loyalty-card">
+            <div class="info-loyalty-content">
+                <div class="info-loyalty-icon-wrapper">
+                    <span class="material-symbols-outlined">redeem</span>
+                </div>
+                <div class="info-loyalty-text">
+                    <h4 class="info-loyalty-title">Points de fidélité</h4>
+                    <p class="info-loyalty-subtitle">Cumulez des points à chaque achat</p>
+                </div>
+            </div>
+            <div class="info-loyalty-points">
+                <span class="points-number">{{ app.user.pointsFidelite }}</span>
+                <span class="points-label">points</span>
+            </div>
+        </div>
+
+        {# Section sécurité #}
+        <div class="info-security-section">
+            <h4 class="info-security-title">
+                <span class="material-symbols-outlined">security</span>
+                Sécurité
+            </h4>
+            <div class="info-security-actions">
+                <a href="#" class="btn btn-outline">
+                    <span class="material-symbols-outlined">lock</span>
+                    Modifier mon mot de passe
+                </a>
+                <a href="#" class="btn btn-outline">
+                    <span class="material-symbols-outlined">shield</span>
+                    Activer l'authentification à deux facteurs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
                 {# ONGLET 4 : Mes Adresses #}
-                <div id="tab-adresses" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Mes Adresses</h3>
-                        <p class="tab-description">Gérez vos adresses de livraison</p>
-                        
-                        {# Liste des adresses #}
-                        <div class="addresses-list">
-                            {% if app.user.adresses|length > 0 %}
-                                {% for adresse in app.user.adresses %}
-                                    <div class="address-item {% if adresse.parDefaut %}default-address{% endif %}">
-                                        <h4>{{ adresse.nom }}</h4>
-                                        <p>{{ adresse.rue }}</p>
-                                        {% if adresse.complement %}
-                                            <p>{{ adresse.complement }}</p>
-                                        {% endif %}
-                                        <p>{{ adresse.codePostal }} {{ adresse.ville }}</p>
-                                        <p>{{ adresse.pays }}</p>
-                                        {% if adresse.parDefaut %}
-                                            <span class="badge badge-success">Adresse par défaut</span>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="empty-state">Vous n'avez pas encore enregistré d'adresse.</p>
-                            {% endif %}
+               <div id="tab-adresses" class="tab-content">
+    <div class="tab-inner">
+        <h3 class="tab-title">Mes Adresses</h3>
+        <p class="tab-description">Gérez vos adresses de livraison</p>
+        
+        {# Bouton pour ajouter une nouvelle adresse #}
+        <div class="mb-4">
+            <button type="button" class="btn btn-primary" id="btn-add-address">
+                <span class="material-symbols-outlined">add</span>
+                Ajouter une nouvelle adresse
+            </button>
+        </div>
+
+        {# Formulaire d'ajout/modification d'adresse (caché par défaut) #}
+        <div id="address-form-container" class="address-form-container">
+            <div class="address-form-card">
+                <h4 class="address-form-title" id="form-title">Nouvelle adresse</h4>
+                {{ form_start(adresseForm, {'attr': {'class': 'address-form'}}) }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(adresseForm.nom) }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_row(adresseForm.pays) }}
                         </div>
                     </div>
-                </div>
 
+                    <div class="mb-3">
+                        {{ form_row(adresseForm.rue) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_row(adresseForm.complement) }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form_row(adresseForm.codePostal) }}
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            {{ form_row(adresseForm.ville) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form_widget(adresseForm.parDefaut) }}
+                            {{ form_label(adresseForm.parDefaut) }}
+                        </div>
+                    </div>
+
+                    <div class="address-form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-symbols-outlined">save</span>
+                            Enregistrer
+                        </button>
+                        <button type="button" class="btn btn-outline" id="btn-cancel-address">
+                            <span class="material-symbols-outlined">close</span>
+                            Annuler
+                        </button>
+                    </div>
+                {{ form_end(adresseForm) }}
+            </div>
+        </div>
+        
+        {# Liste des adresses #}
+        <div class="addresses-list">
+            {% if app.user.adresses|length > 0 %}
+                <div class="addresses-grid">
+                    {% for adresse in app.user.adresses %}
+                        <div class="address-card {% if adresse.parDefaut %}address-card-default{% endif %}">
+                            <div class="address-card-header">
+                                <h5 class="address-card-title">{{ adresse.nom }}</h5>
+                                {% if adresse.parDefaut %}
+                                    <span class="badge badge-success">
+                                        <span class="badge-dot"></span>
+                                        Par défaut
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="address-details">
+                                <p class="address-detail-item">
+                                    <span class="material-symbols-outlined">location_on</span>
+                                    {{ adresse.rue }}
+                                </p>
+                                {% if adresse.complement %}
+                                    <p class="address-detail-item address-detail-muted">
+                                        <span class="material-symbols-outlined">info</span>
+                                        {{ adresse.complement }}
+                                    </p>
+                                {% endif %}
+                                <p class="address-detail-item">
+                                    <span class="material-symbols-outlined">location_city</span>
+                                    {{ adresse.codePostal }} {{ adresse.ville }}
+                                </p>
+                                <p class="address-detail-item address-detail-muted">
+                                    <span class="material-symbols-outlined">public</span>
+                                    {{ adresse.pays }}
+                                </p>
+                            </div>
+
+                            <div class="address-actions">
+                                <a href="{{ path('app_adresses_edit', {id: adresse.id}) }}" 
+                                   class="btn btn-sm btn-outline">
+                                    <span class="material-symbols-outlined">edit</span>
+                                    Modifier
+                                </a>
+                                {% if not adresse.parDefaut %}
+                                    <a href="{{ path('app_adresses_set_default', {id: adresse.id}) }}" 
+                                       class="btn btn-sm btn-outline">
+                                        <span class="material-symbols-outlined">check_circle</span>
+                                        Par défaut
+                                    </a>
+                                {% endif %}
+                                <a href="{{ path('app_adresses_delete', {id: adresse.id}) }}" 
+                                   class="btn btn-sm btn-danger btn-delete-address"
+                                   data-address-name="{{ adresse.nom }}">
+                                    <span class="material-symbols-outlined">delete</span>
+                                    Supprimer
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="addresses-empty-state">
+                    <span class="material-symbols-outlined address-empty-icon">location_off</span>
+                    <p>Vous n'avez pas encore enregistré d'adresse.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+                
                 {# ONGLET 5 : Moyens de Paiement #}
-                <div id="tab-paiement" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Moyens de Paiement</h3>
-                        <p class="tab-description">Gérez vos cartes bancaires</p>
-                        
-                        {# Liste des cartes #}
-                        <div class="payment-methods">
-                            <p class="empty-state">Fonctionnalité à venir...</p>
-                        </div>
-                    </div>
-                </div>
+<div id="tab-paiement" class="tab-content">
+    <div class="tab-inner">
+        <h3 class="tab-title">Moyens de Paiement</h3>
+        <p class="tab-description">Gérez vos moyens de paiement</p>
+        
+        {# Boutons d'ajout avec logos #}
+        <div class="payment-actions">
+            <button class="btn-payment btn-payment-card" id="btn-add-card">
+                <svg class="payment-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" fill="none">
+                    <rect width="48" height="32" rx="4" fill="#1A1F71"/>
+                    <circle cx="18" cy="16" r="8" fill="#EB001B"/>
+                    <circle cx="30" cy="16" r="8" fill="#F79E1B"/>
+                    <path d="M24 9.6C25.8 11 27 13.3 27 16C27 18.7 25.8 21 24 22.4C22.2 21 21 18.7 21 16C21 13.3 22.2 11 24 9.6Z" fill="#FF5F00"/>
+                </svg>
+                <span>Ajouter une carte bancaire</span>
+            </button>
+            
+            <button class="btn-payment btn-payment-apple" id="btn-add-apple-pay">
+                <svg class="payment-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 20" fill="currentColor">
+                    <path d="M9.5 3.5c.8-.9 1.3-2.2 1.2-3.5-1.1.1-2.5.8-3.3 1.7-.7.8-1.4 2.1-1.2 3.4 1.3.1 2.6-.7 3.3-1.6zm1.1 1.8c-1.8-.1-3.3.9-4.1.9-.9 0-2.2-.9-3.6-.9-1.9 0-3.6 1.1-4.5 2.7-2 3.6-.5 9 1.4 11.9.9 1.4 2 3 3.4 2.9 1.4-.1 1.9-.9 3.6-.9 1.6 0 2.1.9 3.6.9 1.5 0 2.4-1.4 3.3-2.8.9-1.4 1.3-2.7 1.3-2.8 0 0-2.6-1-2.6-3.9 0-2.4 2-3.6 2.1-3.7-1.3-1.8-3.2-2-3.9-2.1zm8.9-3.3v14h2.2v-4.8h3.1c2.8 0 4.7-1.9 4.7-4.6s-1.9-4.6-4.6-4.6h-5.4zm2.2 1.9h2.6c1.9 0 3 1 3 2.7s-1.1 2.7-3 2.7h-2.6v-5.4zm14.8 12.3c1.4 0 2.7-.6 3.3-1.7h.1v1.5h2v-7.4c0-2.1-1.7-3.5-4.3-3.5-2.4 0-4.2 1.4-4.3 3.3h2c.2-.9 1-1.5 2.2-1.5 1.4 0 2.2.7 2.2 1.9v.8l-2.9.2c-2.7.2-4.1 1.2-4.1 3.1 0 1.9 1.5 3.2 3.6 3.2zm.6-1.7c-1.2 0-2-.6-2-1.5s.8-1.5 2.3-1.6l2.7-.2v1c0 1.3-1.1 2.3-2.9 2.3zm11.4 4.1c2.1 0 3.1-.8 4-3.2l3.8-10.6h-2.3l-2.5 8.1h-.1l-2.5-8.1h-2.3l3.6 10.1-.2.6c-.3 1.1-1 1.5-2 1.5-.2 0-.6 0-.8-.1v1.7c.2.1.8.1 1.2.1z"/>
+                </svg>
+                <span>Apple Pay</span>
+            </button>
+        </div>
 
-                {# ONGLET 6 : Mes Favoris #}
-                <div id="tab-favoris" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Mes Favoris</h3>
-                        <p class="tab-description">Vos cookies préférés</p>
-                        
-                        {# Liste des favoris #}
-                        <div class="favorites-list">
-                            {% if app.user.favoris|length > 0 %}
-                                <div class="products-grid">
-                                    {% for produit in app.user.favoris %}
-                                        <div class="product-card">
-                                            <div class="product-image">
-                                                <img src="{{ asset('asset/images/produits/' ~ produit.image) }}" alt="{{ produit.name }}">
-                                            </div>
-                                            <h4 class="product-name">{{ produit.name }}</h4>
-                                            <p class="product-price">{{ produit.prix|number_format(2, ',', ' ') }}€</p>
-                                            <p class="product-stock">
-                                                {% if produit.isEnStock() %}
-                                                    ✓ En stock
-                                                {% else %}
-                                                    ✗ Rupture de stock
-                                                {% endif %}
-                                            </p>
-                                            <button class="btn btn-primary" onclick="window.location.href='{{ path('app_panier_ajouter_produit', {id: produit.id}) }}'">
-                                                Ajouter au panier
-                                            </button>
-                                        </div>
-                                    {% endfor %}
-                                </div>
+        {# Liste des moyens de paiement #}
+        <div class="payment-methods">
+            {% if app.user.moyensPaiement|length > 0 %}
+                {% for moyen in app.user.moyensPaiement %}
+                    <div class="payment-item {% if moyen.parDefaut %}default-payment{% endif %} {% if moyen.expire %}expired{% endif %}">
+                        <div class="payment-icon">
+                            {% if moyen.type == 'apple_pay' %}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                                </svg>
                             {% else %}
-                                <p class="empty-state">Vous n'avez pas encore de favoris. Explorez notre boutique !</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" fill="none">
+                                    <rect width="48" height="32" rx="4" fill="currentColor" opacity="0.1"/>
+                                    <circle cx="18" cy="16" r="8" fill="#EB001B"/>
+                                    <circle cx="30" cy="16" r="8" fill="#F79E1B"/>
+                                </svg>
                             {% endif %}
                         </div>
-                    </div>
-                </div>
-
-                {# ONGLET 7 : Avis & Notes #}
-                <div id="tab-avis" class="tab-content">
-                    <div class="tab-inner">
-                        <h3 class="tab-title">Avis & Notes</h3>
-                        <p class="tab-description">Vos avis sur nos produits</p>
                         
-                        {# Liste des avis #}
-                        <div class="reviews-list">
-                            {% if app.user.avis|length > 0 %}
-                                {% for avis in app.user.avis %}
-                                    <div class="review-item">
-                                        <h4>{{ avis.produit.name }}</h4>
-                                        <div class="stars">
-                                            {% for i in 1..5 %}
-                                                <span class="star {% if i <= avis.note %}filled{% endif %}">★</span>
-                                            {% endfor %}
-                                        </div>
-                                        <p>{{ avis.commentaire }}</p>
-                                        <p class="review-date">{{ avis.dateAvis|date('d/m/Y') }}</p>
-                                        {% if avis.approuve %}
-                                            <span class="badge badge-success">Publié</span>
-                                        {% else %}
-                                            <span class="badge badge-warning">En attente de validation</span>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="empty-state">Vous n'avez pas encore laissé d'avis.</p>
+                        <div class="payment-info">
+                            <h4>{{ moyen.nomAffichage }}</h4>
+                            
+                            {% if moyen.type == 'stripe_card' %}
+                                <p class="payment-details">
+                                    {% if moyen.expiration %}
+                                        Expire le {{ moyen.expiration }}
+                                    {% endif %}
+                                </p>
+                                
+                                {% if moyen.expire %}
+                                    <span class="badge badge-danger">Expirée</span>
+                                {% endif %}
                             {% endif %}
+                            
+                            {% if moyen.parDefaut %}
+                                <span class="badge badge-success">Par défaut</span>
+                            {% endif %}
+                            
+                            <p class="payment-date">Ajouté le {{ moyen.dateAjout|date('d/m/Y') }}</p>
+                        </div>
+                        
+                        <div class="payment-actions-btn">
+                            {% if not moyen.parDefaut %}
+                                <button class="btn btn-sm btn-outline" onclick="setDefaultPayment({{ moyen.id }})">
+                                    Définir par défaut
+                                </button>
+                            {% endif %}
+                            <button class="btn btn-sm btn-danger" onclick="deletePayment({{ moyen.id }})">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
                         </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                    <p>Aucun moyen de paiement enregistré</p>
+                    <p class="text-muted">Ajoutez une carte bancaire ou configurez Apple Pay pour des paiements plus rapides</p>
                 </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+               
+
+            
+                
             </div>
         </main>
     </div>
