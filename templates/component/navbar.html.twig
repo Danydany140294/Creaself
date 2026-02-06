@@ -12,35 +12,83 @@
     </div>
 </div>
 
-<!-- Logo -->
-<div class="logo-section">
-    <a href="{{ path('app_home') }}">
-        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
-    </a>
-</div>
-
 <!-- Overlay pour menu mobile -->
 <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
 
 <!-- Navbar -->
 <nav class="navbar">
-    <!-- Bouton Burger (visible uniquement sur mobile) -->
-    <button class="burger-menu" id="burgerMenu" onclick="toggleMobileMenu()" aria-label="Menu de navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+    <!-- Logo à gauche (visible uniquement en mobile) -->
+    <a href="{{ path('app_home') }}" class="navbar-logo-mobile">
+        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
+    </a>
 
     <!-- Liens de navigation centrés -->
     <ul class="nav-links" id="navLinks">
+        <!-- LIENS DE NAVIGATION NORMAUX -->
         <li><a href="{{ path('app_quisommesnous') }}" onclick="closeMobileMenu()">Qui sommes nous ?</a></li>
         <li><a href="{{ path('app_produits') }}" onclick="closeMobileMenu()">Nos Cookies</a></li>
         <li><a href="{{ path('app_box') }}" onclick="closeMobileMenu()">Nos Box</a></li>
         <li><a href="{{ path('app_contact') }}" onclick="closeMobileMenu()">Contactez-nous</a></li>
+        
+        <!-- SECTION AUTH MOBILE (visible uniquement en mobile) -->
+        <div class="mobile-auth-section">
+            {% if app.user %}
+                <!-- Si connecté : afficher les infos utilisateur -->
+                <div class="mobile-user-section">
+                    <div class="mobile-user-header">
+                        <i class="fas fa-user-circle"></i>
+                        <div class="mobile-user-info">
+                            <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
+                            <div class="user-email">{{ app.user.email }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mobile-user-links">
+                        <a href="{{ path('app_user_dashboard') }}" onclick="closeMobileMenu()">
+                            <i class="fas fa-user-cog"></i>
+                            Mon profil
+                        </a>
+                        
+                        <a href="{{ path('app_user_dashboard') }}#adresses" onclick="closeMobileMenu()">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Mes adresses
+                        </a>
+                        
+                        <a href="{{ path('app_user_dashboard') }}#paiement" onclick="closeMobileMenu()">
+                            <i class="fas fa-credit-card"></i>
+                            Moyens de paiement
+                        </a>
+                        
+                        <a href="{{ path('app_user_dashboard') }}#commandes" onclick="closeMobileMenu()">
+                            <i class="fas fa-box"></i>
+                            Mes commandes
+                        </a>
+                        
+                        <a href="{{ path('app_logout') }}" class="logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Déconnexion
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Si non connecté : bouton login -->
+                <a href="{{ path('app_login') }}" class="mobile-login-btn" onclick="closeMobileMenu()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Se connecter</span>
+                </a>
+            {% endif %}
+        </div>
     </ul>
 
     <!-- Boutons à droite -->
     <div class="nav-buttons">
+        <!-- Bouton Burger AVANT le panier en mobile -->
+        <button class="burger-menu" id="burgerMenu" onclick="toggleMobileMenu()" aria-label="Menu de navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
         <!-- Bouton Panier -->
         <button onclick="openModalPanier()" class="btn btn-panier" type="button" aria-label="Voir le panier">
             <i class="fa-solid fa-basket-shopping"></i>
@@ -48,7 +96,7 @@
             <span class="cart-badge" id="cartBadge">0</span>
         </button>
 
-        <!-- SI CONNECTÉ : Menu utilisateur avec dropdown -->
+        <!-- SI CONNECTÉ : Menu utilisateur avec dropdown (caché en mobile) -->
         {% if app.user %}
             <div class="user-menu">
                 <button class="btn btn-user" onclick="toggleUserMenu(event)" aria-label="Menu utilisateur">
@@ -90,7 +138,7 @@
                 </div>
             </div>
         {% else %}
-            <!-- SI NON CONNECTÉ : Bouton Login simple -->
+            <!-- SI NON CONNECTÉ : Bouton Login simple (caché en mobile) -->
             <a href="{{ path('app_login') }}" class="btn btn-login" aria-label="Se connecter">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>Login</span>
@@ -98,6 +146,13 @@
         {% endif %}
     </div>
 </nav>
+
+<!-- Logo Desktop (visible uniquement sur desktop/tablette) -->
+<div class="logo-section logo-desktop">
+    <a href="{{ path('app_home') }}">
+        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
+    </a>
+</div>
 
 <!-- JavaScript de la navbar -->
 <script>
