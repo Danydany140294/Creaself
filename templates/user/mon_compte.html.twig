@@ -20,7 +20,7 @@
                     {# En-tête utilisateur #}
                     <div class="user-header">
                         <div class="user-avatar-wrapper">
-                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ? asset('images/avatars/' ~ app.user.avatar) : asset('images/default-avatar.jpg') }}');"></div>
+                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ? asset('asset/images/home/' ~ app.user.avatar) : asset('asset/images/home/avatar.jpg') }}');"></div>
                             <div class="user-badge">
                                 <span class="material-symbols-outlined">verified</span>
                             </div>
