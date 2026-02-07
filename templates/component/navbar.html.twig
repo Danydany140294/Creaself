@@ -13,27 +13,25 @@
 </div>
 
 <!-- Overlay pour menu mobile -->
-<div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+<div class="nav-overlay" id="navOverlay"></div>
 
 <!-- Navbar -->
-<nav class="navbar">
-    <!-- Logo à gauche (visible uniquement en mobile) -->
+<nav class="navbar" id="mainNavbar">
+    <!-- Logo mobile -->
     <a href="{{ path('app_home') }}" class="navbar-logo-mobile">
         <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
     </a>
 
-    <!-- Liens de navigation centrés -->
+    <!-- Menu de navigation -->
     <ul class="nav-links" id="navLinks">
-        <!-- LIENS DE NAVIGATION NORMAUX -->
-        <li><a href="{{ path('app_quisommesnous') }}" onclick="closeMobileMenu()">Qui sommes nous ?</a></li>
-        <li><a href="{{ path('app_produits') }}" onclick="closeMobileMenu()">Nos Cookies</a></li>
-        <li><a href="{{ path('app_box') }}" onclick="closeMobileMenu()">Nos Box</a></li>
-        <li><a href="{{ path('app_contact') }}" onclick="closeMobileMenu()">Contactez-nous</a></li>
+        <li><a href="{{ path('app_quisommesnous') }}">Qui sommes nous ?</a></li>
+        <li><a href="{{ path('app_produits') }}">Nos Cookies</a></li>
+        <li><a href="{{ path('app_box') }}">Nos Box</a></li>
+        <li><a href="{{ path('app_contact') }}">Contactez-nous</a></li>
         
-        <!-- SECTION AUTH MOBILE (visible uniquement en mobile) -->
-        <div class="mobile-auth-section">
+        <!-- Section auth mobile -->
+        <li class="mobile-auth-section">
             {% if app.user %}
-                <!-- Si connecté : afficher les infos utilisateur -->
                 <div class="mobile-user-section">
                     <div class="mobile-user-header">
                         <i class="fas fa-user-circle"></i>
@@ -43,69 +41,64 @@
                         </div>
                     </div>
                     
-                    <div class="mobile-user-links">
-                        <a href="{{ path('app_user_dashboard') }}" onclick="closeMobileMenu()">
+                    <nav class="mobile-user-links">
+                        <a href="{{ path('app_user_dashboard') }}">
                             <i class="fas fa-user-cog"></i>
-                            Mon profil
+                            <span>Mon profil</span>
                         </a>
-                        
-                        <a href="{{ path('app_user_dashboard') }}#adresses" onclick="closeMobileMenu()">
+                        <a href="{{ path('app_user_dashboard') }}#adresses">
                             <i class="fas fa-map-marker-alt"></i>
-                            Mes adresses
+                            <span>Mes adresses</span>
                         </a>
-                        
-                        <a href="{{ path('app_user_dashboard') }}#paiement" onclick="closeMobileMenu()">
+                        <a href="{{ path('app_user_dashboard') }}#paiement">
                             <i class="fas fa-credit-card"></i>
-                            Moyens de paiement
+                            <span>Moyens de paiement</span>
                         </a>
-                        
-                        <a href="{{ path('app_user_dashboard') }}#commandes" onclick="closeMobileMenu()">
+                        <a href="{{ path('app_user_dashboard') }}#commandes">
                             <i class="fas fa-box"></i>
-                            Mes commandes
+                            <span>Mes commandes</span>
                         </a>
-                        
                         <a href="{{ path('app_logout') }}" class="logout">
                             <i class="fas fa-sign-out-alt"></i>
-                            Déconnexion
+                            <span>Déconnexion</span>
                         </a>
-                    </div>
+                    </nav>
                 </div>
             {% else %}
-                <!-- Si non connecté : bouton login -->
-                <a href="{{ path('app_login') }}" class="mobile-login-btn" onclick="closeMobileMenu()">
+                <a href="{{ path('app_login') }}" class="mobile-login-btn">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Se connecter</span>
                 </a>
             {% endif %}
-        </div>
+        </li>
     </ul>
 
     <!-- Boutons à droite -->
     <div class="nav-buttons">
-        <!-- Bouton Burger AVANT le panier en mobile -->
-        <button class="burger-menu" id="burgerMenu" onclick="toggleMobileMenu()" aria-label="Menu de navigation">
+        <!-- Burger menu -->
+        <button class="burger-menu" id="burgerMenu" aria-label="Menu de navigation" aria-expanded="false">
             <span></span>
             <span></span>
             <span></span>
         </button>
 
-        <!-- Bouton Panier -->
-        <button onclick="openModalPanier()" class="btn btn-panier" type="button" aria-label="Voir le panier">
+        <!-- Panier -->
+        <button class="btn-panier" id="btnPanier" type="button" aria-label="Voir le panier">
             <i class="fa-solid fa-basket-shopping"></i>
             <span>Panier</span>
             <span class="cart-badge" id="cartBadge">0</span>
         </button>
 
-        <!-- SI CONNECTÉ : Menu utilisateur avec dropdown (caché en mobile) -->
+        <!-- Menu utilisateur desktop -->
         {% if app.user %}
-            <div class="user-menu">
-                <button class="btn btn-user" onclick="toggleUserMenu(event)" aria-label="Menu utilisateur">
+            <div class="user-menu" id="userMenu">
+                <button class="btn-user" aria-label="Menu utilisateur" aria-expanded="false">
                     <i class="fas fa-user-circle"></i>
                     <span>{{ app.user.prenom ?? 'Mon compte' }}</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
 
-                <div class="dropdown-menu">
+                <div class="dropdown-menu" role="menu">
                     <div class="dropdown-header">
                         <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
                         <div class="user-email">{{ app.user.email }}</div>
@@ -113,33 +106,28 @@
                     
                     <a href="{{ path('app_user_dashboard') }}" class="dropdown-item">
                         <i class="fas fa-user-cog"></i>
-                        Mon profil
+                        <span>Mon profil</span>
                     </a>
-                    
                     <a href="{{ path('app_user_dashboard') }}#adresses" class="dropdown-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        Mes adresses
+                        <span>Mes adresses</span>
                     </a>
-                    
                     <a href="{{ path('app_user_dashboard') }}#paiement" class="dropdown-item">
                         <i class="fas fa-credit-card"></i>
-                        Moyens de paiement
+                        <span>Moyens de paiement</span>
                     </a>
-                    
                     <a href="{{ path('app_user_dashboard') }}#commandes" class="dropdown-item">
                         <i class="fas fa-box"></i>
-                        Mes commandes
+                        <span>Mes commandes</span>
                     </a>
-                    
                     <a href="{{ path('app_logout') }}" class="dropdown-item logout">
                         <i class="fas fa-sign-out-alt"></i>
-                        Déconnexion
+                        <span>Déconnexion</span>
                     </a>
                 </div>
             </div>
         {% else %}
-            <!-- SI NON CONNECTÉ : Bouton Login simple (caché en mobile) -->
-            <a href="{{ path('app_login') }}" class="btn btn-login" aria-label="Se connecter">
+            <a href="{{ path('app_login') }}" class="btn-login" aria-label="Se connecter">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>Login</span>
             </a>
@@ -147,160 +135,11 @@
     </div>
 </nav>
 
-<!-- Logo Desktop (visible uniquement sur desktop/tablette) -->
+<!-- Logo Desktop -->
 <div class="logo-section logo-desktop">
     <a href="{{ path('app_home') }}">
         <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
     </a>
 </div>
 
-<!-- JavaScript de la navbar -->
-<script>
-console.log('✅ Navbar JavaScript chargé');
-
-// ========================================
-// MENU MOBILE BURGER
-// ========================================
-function toggleMobileMenu() {
-    const navLinks = document.getElementById('navLinks');
-    const burgerMenu = document.getElementById('burgerMenu');
-    const navOverlay = document.getElementById('navOverlay');
-    
-    if (navLinks && burgerMenu && navOverlay) {
-        navLinks.classList.toggle('active');
-        burgerMenu.classList.toggle('active');
-        navOverlay.classList.toggle('active');
-    }
-}
-
-function closeMobileMenu() {
-    const navLinks = document.getElementById('navLinks');
-    const burgerMenu = document.getElementById('burgerMenu');
-    const navOverlay = document.getElementById('navOverlay');
-    
-    if (navLinks && burgerMenu && navOverlay) {
-        navLinks.classList.remove('active');
-        burgerMenu.classList.remove('active');
-        navOverlay.classList.remove('active');
-    }
-}
-
-// Fermer le menu mobile avec la touche Escape
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeMobileMenu();
-    }
-});
-
-// ========================================
-// MENU UTILISATEUR DROPDOWN
-// ========================================
-function toggleUserMenu(event) {
-    if (event) event.stopPropagation();
-    
-    const userMenu = document.querySelector('.user-menu');
-    if (userMenu) {
-        userMenu.classList.toggle('active');
-    }
-}
-
-// Fermer le menu utilisateur en cliquant ailleurs
-document.addEventListener('click', function(event) {
-    const userMenu = document.querySelector('.user-menu');
-    if (!userMenu) return;
-    
-    if (!userMenu.contains(event.target)) {
-        userMenu.classList.remove('active');
-    }
-});
-
-// ========================================
-// MODAL PANIER
-// ========================================
-function openModalPanier() {
-    const modal = document.getElementById('modalPanier');
-    if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        chargerPanier();
-    } else {
-        console.warn('⚠️ Modal panier introuvable');
-    }
-}
-
-function closeModalPanier() {
-    const modal = document.getElementById('modalPanier');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-}
-
-// ========================================
-// API PANIER
-// ========================================
-async function chargerPanier() {
-    try {
-        const response = await fetch('/panier/api/panier');
-        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-        
-        const data = await response.json();
-        if (data.success) {
-            updateCartBadge(data.nombre_articles);
-        }
-    } catch (error) {
-        console.error('❌ Erreur panier:', error);
-        updateCartBadge(0);
-    }
-}
-
-function updateCartBadge(count) {
-    const badge = document.getElementById('cartBadge');
-    if (!badge) return;
-    
-    badge.textContent = count;
-    
-    if (count === 0) {
-        badge.classList.remove('show');
-    } else {
-        badge.classList.add('show');
-    }
-}
-
-// ========================================
-// GESTION DU RESIZE - Fermer le menu mobile si on passe en desktop
-// ========================================
-let resizeTimer;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-        // Si on dépasse 768px, fermer le menu mobile
-        if (window.innerWidth > 768) {
-            closeMobileMenu();
-        }
-    }, 250);
-});
-
-// ========================================
-// INITIALISATION
-// ========================================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ DOM chargé - Navbar');
-    
-    // Charger le panier
-    chargerPanier();
-    
-    // Fermer modal panier en cliquant dehors
-    const modalPanier = document.getElementById('modalPanier');
-    if (modalPanier) {
-        modalPanier.addEventListener('click', function(event) {
-            if (event.target === modalPanier) {
-                closeModalPanier();
-            }
-        });
-    }
-    
-    // Log de la taille de l'écran pour debug
-    console.log('📱 Largeur écran:', window.innerWidth + 'px');
-});
-</script>
+<script src="{{ asset('js/navbar.js') }}"></script>
