@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
 
 /* ========================================
-   VARIABLES CSS (Facilite la maintenance)
+   VARIABLES CSS
 ======================================== */
 :root {
     --color-primary: #c5a387;
@@ -56,8 +56,8 @@ html {
 }
 
 @keyframes scroll-left {
-    from { transform: translateX(100%); }
-    to { transform: translateX(-100%); }
+    from { transform: translateX(0); }
+    to { transform: translateX(-90%); }
 }
 
 /* ========================================
@@ -107,6 +107,7 @@ html {
     list-style: none;
     font-family: 'Bungee Spice', cursive;
     align-items: center;
+    -webkit-overflow-scrolling: touch;
 }
 
 .nav-links li a {
@@ -148,7 +149,6 @@ html {
     right: 40px;
 }
 
-/* Styles communs boutons */
 .btn-panier,
 .btn-login,
 .btn-user {
@@ -358,6 +358,8 @@ html {
     transform: rotate(-45deg) translate(7px, -7px);
 }
 
+
+
 /* ========================================
    9. OVERLAY
 ======================================== */
@@ -390,35 +392,22 @@ html {
 
 /* TABLETTE PAYSAGE (769px - 1024px) */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
-
-    .dropdown-menu {
-    border: 5px solid red !important;
-    background: yellow !important;
-}
-
-.nav-links {
-    border: 5px solid blue !important;
-}
-
-.mobile-login-btn {
-    border: 5px solid green !important;
-}
     .navbar {
         padding: 15px 30px;
     }
-    
+
     .nav-links {
         gap: 30px;
     }
-    
+
     .nav-links li a {
         font-size: 14px;
     }
-    
+
     .nav-buttons {
         right: 30px;
     }
-    
+
     .logo-section img {
         height: 150px;
     }
@@ -426,17 +415,14 @@ html {
 
 /* TABLETTE PORTRAIT (481px - 768px) */
 @media screen and (min-width: 481px) and (max-width: 768px) {
-
-    
     .logo-section img {
         height: 100px;
     }
-    
+
     .navbar {
         padding: 12px 20px;
     }
-    
-    /* Burger visible */
+
     .burger-menu {
         display: flex;
         position: absolute;
@@ -444,14 +430,13 @@ html {
         top: 50%;
         transform: translateY(-50%);
     }
-    
-    /* Menu latéral */
+
     .nav-links {
         position: fixed;
         top: 0;
         right: -100%;
         height: 100vh;
-        width: 280px;
+        width: 200px;
         background: var(--color-bg);
         flex-direction: column;
         gap: 0;
@@ -461,35 +446,34 @@ html {
         z-index: 99;
         overflow-y: auto;
     }
-    
+
     .nav-links.active {
         right: 0;
     }
-    
+
     .nav-links li {
         width: 100%;
         border-bottom: 1px solid var(--color-border);
     }
-    
+
     .nav-links li a {
         display: block;
-        padding: 20px 30px;
-        font-size: 16px;
+        padding: 20px 10px;
+        font-size: 13px;
         font-family: Arial, sans-serif;
         color: var(--color-text);
     }
-    
+
     .nav-links li a::after {
         display: none;
     }
-    
+
     .nav-links li a:hover {
         background: #f8f8f8;
         color: var(--color-accent);
         padding-left: 40px;
     }
-    
-    /* Auth section visible */
+
     .mobile-auth-section {
         display: block;
         padding: 15px;
@@ -497,82 +481,83 @@ html {
         border-top: 1px solid var(--color-border);
         margin-top: auto;
     }
-    
-    /* Boutons navbar en icônes */
+
     .nav-buttons {
         position: static;
         gap: 12px;
     }
-    
+
     .navbar .btn-panier span:not(.cart-badge),
     .navbar .btn-login span,
     .navbar .btn-user span {
         display: none;
     }
-    
+
     .btn-panier,
     .btn-login,
     .btn-user {
         padding: 12px;
-        width: 45px;
+        width: 40px;
         height: 45px;
         justify-content: center;
     }
-    
+
     .btn-user .fa-chevron-down {
         display: none;
     }
-    
+
     .cart-badge {
         top: -8px;
         right: -8px;
     }
-    
+
     .dropdown-menu {
-        min-width: 220px;
+        min-width: 120px;
         right: -10px;
     }
-    
+
     .promo-banner-content {
-        font-size: 14px;
+         display: inline-block;
+    white-space: nowrap;
+    animation: scroll-left 20s linear infinite;
+    font-size: 16px;
+    font-weight: bold;
     }
-    
+
     .promo-banner-content span {
         margin: 0 30px;
     }
 }
 
-/* MOBILE (< 480px) */
+/* ========================================
+   MOBILE (< 480px) — bloc UNIQUE et propre
+======================================== */
 @media screen and (max-width: 480px) {
-    /* Cacher logo desktop */
 
-
-
-
+    /* --- Logo --- */
     .logo-section.logo-desktop {
         display: none;
     }
-    
-    /* Logo mobile visible */
+
     .navbar-logo-mobile {
         display: block;
         position: absolute;
         left: 15px;
     }
-    
+
     .navbar-logo-mobile img {
         height: 55px;
         width: auto;
     }
-    
-    /* Navbar */
+
+    /* --- Navbar --- */
     .navbar {
         padding: 12px 15px 12px 90px;
         justify-content: flex-end;
         min-height: var(--navbar-height-mobile);
     }
-    
-    /* Burger */
+
+    /* --- Burger --- */
     .burger-menu {
         display: flex;
         position: static;
@@ -581,17 +566,57 @@ html {
         height: 40px;
         order: 1;
     }
-    
+
     .burger-menu span {
         width: 22px;
     }
-    
-    /* Menu mobile */
+
+    /* --- Bouton panier --- */
+    .btn-panier {
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        box-shadow: none;
+        order: 2;
+    }
+
+    .btn-panier:hover {
+        background: transparent;
+        transform: none;
+    }
+
+    .btn-panier i {
+        font-size: 20px;
+        color: var(--color-primary-dark);
+    }
+
+    .cart-badge {
+        top: -4px;
+        right: -4px;
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    /* Masquer login/user desktop dans la navbar */
+    .navbar .btn-login,
+    .navbar .user-menu {
+        display: none;
+    }
+
+    /* --- Nav buttons --- */
+    .nav-buttons {
+        position: static;
+        gap: 5px;
+    }
+
+    /* --- Menu mobile : pleine largeur --- */
     .nav-links {
         position: fixed;
         top: var(--navbar-height-mobile);
         right: -100%;
-        width: 250px;
+        width: 100%;
         height: auto;
         max-height: calc(100vh - var(--navbar-height-mobile));
         overflow-y: auto;
@@ -602,53 +627,54 @@ html {
         flex-direction: column;
         gap: 0;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: center;
     }
-    
+
     .nav-links.active {
         right: 0;
+
     }
-    
+
     .nav-links li {
         width: 100%;
         border-bottom: 1px solid #e8e8e8;
     }
-    
+
     .nav-links li a {
         display: block;
-        padding: 15px 20px;
+        padding: 18px 25px;
         font-family: Arial, sans-serif;
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 600;
         color: var(--color-text);
     }
-    
+
     .nav-links li a::after {
         display: none;
     }
-    
+
     .nav-links li a:hover {
         background: rgba(197, 163, 135, 0.15);
         color: var(--color-accent);
-        padding-left: 25px;
+        padding-left: 30px;
     }
-    
-    /* AUTH SECTION MOBILE */
+
+    /* --- Section auth mobile --- */
     .mobile-auth-section {
         display: block;
         background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        padding: 15px;
-        margin-top: auto;
-        border-top: none;
+        padding: 20px;
+        border-top: 3px solid var(--color-primary-dark);
     }
-    
-    /* Bouton login mobile */
+
+    /* Bouton login (non connecté) */
     .mobile-login-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         background: var(--color-bg);
         color: var(--color-primary-dark);
         border-radius: 8px;
@@ -658,139 +684,119 @@ html {
         box-shadow: var(--shadow-light);
         transition: all var(--transition-speed);
     }
-    
-    .mobile-login-btn i,
-    .mobile-login-btn span {
-        color: var(--color-primary-dark);
-    }
-    
-    .mobile-login-btn:hover {
-        background: #f5f5f5;
-        transform: translateY(-2px);
-    }
-    
-    /* User section mobile */
+
+ .mobile-login-btn:hover {
+    background: var(--color-bg) !important;
+    color: var(--color-accent) !important;
+    transform: translateY(-2px);
+}
+
+.mobile-login-btn:hover i,
+.mobile-login-btn:hover span {
+    color: var(--color-accent) !important;
+}
+
+    /* Bloc user connecté */
     .mobile-user-section {
         background: var(--color-bg);
-        border-radius: 8px;
-        padding: 12px;
-        box-shadow: var(--shadow-light);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-medium);
     }
-    
+
     .mobile-user-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--color-border);
-        margin-bottom: 10px;
-    }
-    
+    display: flex;
+    align-items: center;
+    justify-content: center;  /* ← centrage horizontal */
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid var(--color-border);
+}
+
     .mobile-user-header i {
-        font-size: 24px;
+        font-size: 28px;
         color: var(--color-primary-dark);
     }
-    
+
     .mobile-user-info .user-name {
         font-weight: 700;
-        font-size: 13px;
+        font-size: 14px;
         color: var(--color-text);
+        text-align: center;
     }
-    
+
     .mobile-user-info .user-email {
         font-size: 11px;
-        color: #666;
+        color: #888;
+        text-align: center;
     }
-    
+
+    /* Grille 2 colonnes pour les liens user */
     .mobile-user-links {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
     }
-    
+
     .mobile-user-links a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-        color: var(--color-text);
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 13px;
-        transition: all 0.2s;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 8px !important;
+        padding: 16px 10px !important;
     }
-    
+
+    .mobile-user-links a span {
+        display: block !important;
+        width: 100% !important;
+    }
+
     .mobile-user-links a:hover {
         background: rgba(197, 163, 135, 0.15);
     }
-    
+
     .mobile-user-links a i {
-        font-size: 14px;
-        color: var(--color-primary-dark);
-        width: 18px;
+        display: block !important;
+        font-size: 22px !important;
+        width: auto !important;
+        margin: 0 !important;
+         color: var(--color-primary-dark) !important;
     }
-    
+
+    .btn-panier span:not(.cart-badge) {
+        display: none !important;
+    }
+
+    /* Déconnexion sur toute la largeur */
     .mobile-user-links a.logout {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: center;
         color: var(--color-accent);
         font-weight: 700;
-        border-top: 1px solid var(--color-border);
-        margin-top: 8px;
-        padding-top: 12px;
+        border-top: 2px solid var(--color-border);
+        border-right: none;
+        border-bottom: none;
+        padding: 14px;
+        gap: 10px;
     }
-    
+
     .mobile-user-links a.logout i {
         color: var(--color-accent);
+        font-size: 16px;
     }
-    
-    /* Boutons navbar */
-    .nav-buttons {
-        position: static;
-        gap: 5px;
-    }
-    
-    /* Bouton panier */
-    .btn-panier {
-        padding: 8px;
-        width: 40px;
-        height: 40px;
-        background: transparent;
-        box-shadow: none;
-        order: 2;
-    }
-    
-    .btn-panier:hover {
-        background: transparent;
-        transform: none;
-    }
-    
-    .btn-panier i {
-        font-size: 20px;
-        color: var(--color-primary-dark);
-    }
-    
-    .cart-badge {
-        top: -4px;
-        right: -4px;
-        width: 18px;
-        height: 18px;
-        font-size: 10px;
-    }
-    
-    /* Masquer navbar login/user */
-    .navbar .btn-login,
-    .navbar .user-menu {
-        display: none;
-    }
-    
-    /* Bandeau promo */
+
+    /* --- Bandeau promo --- */
     .promo-banner {
         padding: 10px 0;
     }
-    
+
     .promo-banner-content {
         font-size: 11px;
     }
-    
+
     .promo-banner-content span {
         margin: 0 15px;
     }
@@ -801,16 +807,12 @@ html {
     .navbar-logo-mobile img {
         height: 45px;
     }
-    
-    .nav-links {
-        width: 200px;
-    }
-    
+
     .nav-links li a {
         font-size: 13px;
-        padding: 12px 15px;
+        padding: 14px 20px;
     }
-    
+
     .mobile-login-btn {
         font-size: 12px;
         padding: 10px;
@@ -820,8 +822,6 @@ html {
 /* ========================================
    12. OPTIMISATIONS PERFORMANCE
 ======================================== */
-
-/* Désactiver animations en mode économie d'énergie */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -832,7 +832,6 @@ html {
     }
 }
 
-/* Optimisation touch sur mobile */
 @media (hover: none) and (pointer: coarse) {
     .btn-panier,
     .btn-login,
@@ -843,9 +842,4 @@ html {
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
     }
-}
-
-/* Améliorer le scrolling sur iOS */
-.nav-links {
-    -webkit-overflow-scrolling: touch;
 }

@@ -62,22 +62,22 @@
     // ========================================
     // MODAL PANIER
     // ========================================
-    function openModalPanier() {
-        if (!elements.modalPanier) {
-            console.warn('⚠️ Modal panier introuvable');
-            return;
-        }
+    // function openModalPanier() {
+    //     if (!elements.modalPanier) {
+    //         console.warn('⚠️ Modal panier introuvable');
+    //         return;
+    //     }
         
-        elements.modalPanier.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        chargerPanier();
-    }
+    //     elements.modalPanier.style.display = 'flex';
+    //     document.body.style.overflow = 'hidden';
+    //     chargerPanier();
+    // }
     
-    function closeModalPanier() {
-        if (!elements.modalPanier) return;
-        elements.modalPanier.style.display = 'none';
-        document.body.style.overflow = '';
-    }
+    // function closeModalPanier() {
+    //     if (!elements.modalPanier) return;
+    //     elements.modalPanier.style.display = 'none';
+    //     document.body.style.overflow = '';
+    // }
     
     // ========================================
     // API PANIER
@@ -147,8 +147,10 @@
         
         // Bouton panier
         if (elements.btnPanier) {
-            elements.btnPanier.addEventListener('click', openModalPanier);
-        }
+    elements.btnPanier.addEventListener('click', () => {
+        panierModal?.toggle();
+    });
+}
         
         // Fermer modal panier en cliquant dehors
         if (elements.modalPanier) {
