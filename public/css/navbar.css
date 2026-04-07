@@ -697,12 +697,12 @@ html {
 }
 
     /* Bloc user connecté */
-    .mobile-user-section {
-        background: var(--color-bg);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: var(--shadow-medium);
-    }
+   .mobile-user-section {
+    background: var(--color-bg);
+    border-radius: 12px;
+    overflow: visible;
+    box-shadow: var(--shadow-medium);
+}
 
     .mobile-user-header {
     display: flex;

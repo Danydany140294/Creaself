@@ -34,12 +34,11 @@
             {% if app.user %}
                 <div class="mobile-user-section">
                     <div class="mobile-user-header">
-                        <i class="fas fa-user-circle"></i>
-                        <div class="mobile-user-info">
-                            <div class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</div>
-                            <div class="user-email">{{ app.user.email }}</div>
-                        </div>
-                    </div>
+    <i class="fas fa-user-circle"></i>
+    <span style="-webkit-text-fill-color: red !important; font-size: 20px !important; position: relative; z-index: 9999;">
+        {{ app.user.prenom }} {{ app.user.nom }}
+    </span>
+</div>
                     
                     <nav class="mobile-user-links">
                         <a href="{{ path('app_user_dashboard') }}">

@@ -148,13 +148,14 @@ body {
     display: block;
 }
 
-.user-name {
+/* ✅ Scopé à la sidebar — ne conflicte plus avec navbar */
+.sidebar-content .user-name {
     color: var(--text-brown-dark);
     font-size: 1.25rem;
     font-weight: 700;
 }
 
-.user-title {
+.sidebar-content .user-title {
     color: var(--chocolate-dark);
     font-size: 0.75rem;
     font-style: italic;

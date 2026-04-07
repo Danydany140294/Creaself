@@ -364,3 +364,123 @@ h1, h2, h3, .serif {
 .toast-notification .text-or {
     color: var(--mix-rose);
 }
+
+.isometric-box {
+    -webkit-transform: perspective(800px) rotateX(15deg) rotateY(-8deg) rotateZ(3deg);
+    will-change: transform;
+}
+
+/* ================================================================
+   MEDIA QUERIES MOBILE — Cookie Shop
+   Compatibilité : Safari iOS (iPhone récents 375px–430px)
+
+   ⚠️  RÈGLE D'OR DE CE FICHIER :
+   Aucun sélecteur Tailwind échappé (pas de lg\:, \[, \/, etc.)
+   Safari iOS ne les parse pas → on cible uniquement :
+     - Les IDs HTML    (#compose, #shop, #isometric-box …)
+     - Les classes CSS custom (.js-cookie-item, .glass-card …)
+     - Les balises HTML simples (section, h2, img, button …)
+
+   SOMMAIRE
+   ────────────────────────────────────────────────────────────
+   §1  Reset général mobile
+   §2  Hero section
+   §3  Composer — titre & intro
+   §4  Composer — conteneur glassmorphism
+   §5  Composer — box 3D isométrique + slots
+   §6  Composer — badge compteur 0/6
+   §7  Composer — liste des cookies (scrollable)
+   §8  Composer — items cookie (lignes)
+   §9  Composer — bouton "Commander le coffret"
+   §10 Shop — en-tête (titre + lien boutique)
+   §11 Shop — grille de cards
+   §12 Shop — card individuelle
+   §13 Shop — zone image cookie
+   §14 Shop — nom + description (description masquée)
+   §15 Shop — prix + bouton panier
+   §16 Timer widget fixe
+   §17 Toast notifications
+   §18 Ajustements iPhone 17 standard  (376–393px)
+   §19 Ajustements iPhone 17 Plus/Max  (394–430px)
+   ================================================================ */
+
+
+/* ================================================================
+   §1 — RESET GÉNÉRAL MOBILE
+   Empêche tout scroll horizontal parasite sur la page entière
+   ================================================================ */
+/* =========================================================
+   MOBILE OPTIMISÉ GLOBAL (≤ 430px) — VERSION CLEAN
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    body, main {
+        overflow-x: hidden;
+    }
+
+    /* HERO */
+    .h-screen h1 {
+        font-size: 3.25rem;
+    }
+
+    .h-screen p {
+        font-size: 0.95rem;
+    }
+
+    /* COMPOSE */
+    #compose {
+        padding: 1rem 0;
+    }
+
+    #compose h2 {
+        font-size: 2rem;
+    }
+
+    /* BOX */
+    #isometric-box {
+          display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.4rem;
+        width: 100%;
+        padding: 0.5rem;
+    }
+
+    #box-grid {
+         display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.4rem;
+        width: 100%;
+    }
+
+    .box-slot {
+        display: flex !important;
+        aspect-ratio: 1;
+        width: 25%; /* 4 par ligne sur mobile */
+        max-width: 80px;
+        border-radius: 0.75rem;
+    }
+
+     /* MASQUER DESCRIPTION + BOUTON */
+    .custom-scrollbar .js-cookie-item .flex-1 p:last-child,
+    .custom-scrollbar .js-cookie-item .flex-1 button {
+        display: none !important;
+    }
+
+    /* BADGE */
+    #counter-badge {
+        top: -8px;
+        right: 50%;
+        transform: translateX(50%) rotate(-6deg);
+        width: 56px;
+        height: 56px;
+    }
+
+    #cookie-count {
+        font-size: 0.65rem;
+    }
+
+}
