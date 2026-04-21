@@ -248,3 +248,10 @@ document.addEventListener('keydown', function(event) {
 
 // Log au chargement
 console.log('✅ box.js chargé avec succès');
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#modalBoxPerso') {
+        openModalBoxPerso();
+    }
+});
+

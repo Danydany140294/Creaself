@@ -329,3 +329,103 @@ form {
     font-size: 0.9em;
     text-align: center;
 }
+
+@media (max-width: 430px) {
+
+    /* ========== BODY ========== */
+    body {
+        align-items: center !important;
+        padding: 1rem !important;
+        height: 100svh !important;
+        overflow: hidden !important;
+    }
+
+    /* ========== BACK BTN ========== */
+    .back-btn {
+        top: 1rem !important;
+        left: 1rem !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 0.5rem !important;
+    }
+
+    /* ========== CONTAINER ========== */
+    .container {
+        width: 92vw !important;
+        height: auto !important;
+        min-height: unset !important;
+        padding: 0 !important;
+        animation: none !important;
+    }
+
+    /* ========== FORM ========== */
+    .form {
+        padding: 1.75rem 1.25rem !important;
+    }
+
+    /* ========== LOGO ========== */
+    .logo {
+        margin-bottom: 1rem !important;
+    }
+
+    .logo img {
+        max-width: 90px !important;
+    }
+
+    .logo span {
+        font-size: 1.75rem !important;
+    }
+
+    /* ========== INPUTS ========== */
+    .inputBox {
+        margin-top: 1.25rem !important;
+    }
+
+    .inputBox input {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .inputBox span {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .inputBox input:valid ~ span,
+    .inputBox input:focus ~ span {
+        font-size: 0.65rem !important;
+        transform: translateX(8px) translateY(-6px) !important;
+    }
+
+    /* ========== ALERTS ========== */
+    .alert,
+    .alert-success {
+        font-size: 0.8rem !important;
+        padding: 0.6rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* ========== BOUTON LOGIN ========== */
+    .enter {
+        height: 42px !important;
+        margin-top: 1.5rem !important;
+        font-size: 0.85rem !important;
+        letter-spacing: 0.1em !important;
+    }
+
+    /* ========== LIENS ========== */
+    .links {
+        margin-top: 1.25rem !important;
+    }
+
+    .links a {
+        font-size: 0.8rem !important;
+    }
+
+    /* ========== FLOATING ELEMENTS ========== */
+    .floating-elements div {
+        animation-duration: 20s !important;
+        width: 10px !important;
+        height: 10px !important;
+    }
+}

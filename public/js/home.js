@@ -103,10 +103,8 @@ function addToBox(name, imgSrc) {
     const slot = slots[cookieCount];
 
     slot.innerHTML = `
-        <img src="${imgSrc}" 
-             class="w-[85%] h-[85%] object-cover rounded-full cookie-shadow filling-slot active" 
-             alt="${name}">
-    `;
+    <img src="${imgSrc}" alt="${name}">
+`;
 
     cookieCount++;
     countDisplay.innerText = `${cookieCount}/${maxCookies}`;

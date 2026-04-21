@@ -663,3 +663,238 @@
         font-size: 1.1rem;
     }
 }
+
+@media (max-width: 430px) {
+
+    /* ========== LAYOUT PRINCIPAL ========== */
+    .cart-experience {
+        padding: 1.5rem 1rem !important;
+        min-height: unset !important;
+    }
+
+    /* ========== HEADER ========== */
+    .cart-header {
+        margin-bottom: 1.25rem !important;
+    }
+
+    .cart-header h1 {
+        font-size: 2rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .cart-subtitle {
+        font-size: 0.85rem !important;
+    }
+
+    /* ========== PANIER VIDE ========== */
+    .empty-cart {
+        padding: 2rem 1.25rem !important;
+        margin: 1.5rem auto !important;
+        border-radius: var(--mix-radius-md) !important;
+    }
+
+    .empty-icon {
+        font-size: 2.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .empty-cart h2 {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .empty-cart p {
+        font-size: 0.85rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .btn-back-shop {
+        padding: 0.75rem 1.5rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* ========== GRID → COLONNE ========== */
+    .cart-layout {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        margin-top: 1rem !important;
+    }
+
+    /* ========== CART ROWS ========== */
+    .cart-items-wrapper {
+        gap: 0.75rem !important;
+    }
+
+    .cart-row {
+        grid-template-columns: 60px 1fr !important;
+        grid-template-rows: auto auto !important;
+        padding: 0.85rem !important;
+        gap: 0.6rem !important;
+        border-radius: var(--mix-radius-md) !important;
+    }
+
+    /* ========== IMAGE ========== */
+    .product-preview {
+        grid-row: 1 !important;
+        grid-column: 1 !important;
+    }
+
+    .img-glow-wrap {
+        width: 55px !important;
+        height: 55px !important;
+    }
+
+    /* ========== DETAILS ========== */
+    .product-details {
+        grid-row: 1 !important;
+        grid-column: 2 !important;
+        gap: 0.25rem !important;
+    }
+
+    .product-category {
+        font-size: 0.6rem !important;
+        padding: 2px 8px !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    .product-details h3 {
+        font-size: 0.9rem !important;
+    }
+
+    .flavor-notes {
+        font-size: 0.75rem !important;
+    }
+
+    .composition-item {
+        font-size: 0.65rem !important;
+        padding: 3px 8px !important;
+    }
+
+    /* ========== QTY + PRIX → LIGNE DU BAS ========== */
+    .product-qty {
+        grid-row: 2 !important;
+        grid-column: 1 !important;
+        justify-content: flex-start !important;
+    }
+
+    .product-price {
+        grid-row: 2 !important;
+        grid-column: 2 !important;
+        align-items: flex-end !important;
+        gap: 0.4rem !important;
+    }
+
+    .qty-stepper {
+        padding: 4px 10px !important;
+        gap: 0.5rem !important;
+    }
+
+    .qty-stepper button {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .qty-stepper input {
+        width: 30px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .qty-display {
+        font-size: 0.75rem !important;
+    }
+
+    .total-item-price {
+        font-size: 1rem !important;
+    }
+
+    .btn-remove {
+        padding: 4px 10px !important;
+        font-size: 0.6rem !important;
+    }
+
+    /* ========== SIDEBAR → EN BAS ========== */
+    .cart-sidebar {
+        order: 2 !important;
+    }
+
+    .summary-card {
+        padding: 1.25rem !important;
+        border-radius: var(--mix-radius-md) !important;
+    }
+
+    .sticky-summary {
+        position: static !important;
+    }
+
+    .summary-card h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    /* ========== SHIPPING ========== */
+    .shipping-info {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+        border-radius: var(--mix-radius-md) !important;
+    }
+
+    .shipping-info p {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .free-shipping {
+        font-size: 0.9rem !important;
+    }
+
+    /* ========== SUMMARY DETAILS ========== */
+    .summary-details {
+        gap: 0.6rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .detail-line {
+        font-size: 0.85rem !important;
+    }
+
+    .detail-line.total {
+        padding-top: 0.6rem !important;
+        margin-top: 0.25rem !important;
+        font-size: 1rem !important;
+    }
+
+    .final-amount {
+        font-size: 1.2rem !important;
+    }
+
+    /* ========== BOUTONS ========== */
+    .btn-checkout-neon {
+        padding: 0.9rem !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.05em !important;
+        border-radius: var(--mix-radius-md) !important;
+    }
+
+    .btn-sparkle {
+        font-size: 0.9rem !important;
+    }
+
+    .btn-clear-cart {
+        padding: 0.7rem !important;
+        font-size: 0.75rem !important;
+        border-radius: var(--mix-radius-md) !important;
+        margin-top: 0.5rem !important;
+    }
+
+    /* ========== TRUST BADGES ========== */
+    .trust-badges {
+        gap: 0.5rem !important;
+        margin-top: 0.75rem !important;
+    }
+
+    .trust-badges span {
+        font-size: 0.7rem !important;
+    }
+}

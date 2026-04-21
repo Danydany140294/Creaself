@@ -87,9 +87,9 @@
                 <h2>🍪 Compose ta box personnalisée !</h2>
                 <p>Choisis 12 cookies parmi nos {{ produits|length }} saveurs pour seulement {{ box_personnalisable.prix|number_format(2, ',', ' ') }} €</p>
             </div>
-            <button type="button" class="nc-btn nc-btn-primary" onclick="openModalBoxPerso()">
-                <i class="fas fa-cookie-bite"></i> Composer ma box
-            </button>
+            <a href="{{ path('app_box') }}#modalBoxPerso" class="nc-btn nc-btn-primary">
+    <i class="fas fa-cookie-bite"></i> Composer ma box
+</a>
         </div>
     </section>
 {% endif %}

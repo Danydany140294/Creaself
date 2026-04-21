@@ -686,7 +686,6 @@ body {
 /* ========================================
    RESPONSIVE
    ======================================== */
-
 @media (max-width: 900px) {
     .nc-hero {
         padding: 50px 5vw 30px;
@@ -713,21 +712,170 @@ body {
     }
 }
 
-@media (max-width: 600px) {
-    .nc-hero-content h1 {
-        font-size: 2rem;
+/* ================= MOBILE ================= */
+@media (max-width: 430px) {
+
+    /* ========== HERO ========== */
+    .nc-hero {
+        padding: 1.5rem 1rem !important;
+        gap: 1.25rem !important;
+        min-height: unset !important;
     }
 
-    .nc-product-tags {
-        gap: 20px;
+    .nc-hero-content h1 {
+        font-size: 2.2rem !important;
+        white-space: normal !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* ========== SWIPER ========== */
+    .nc-hero-swiper {
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    .nc-slide-card {
+        height: auto !important;
+        padding: 0.85rem !important;
+        max-width: 100% !important;
     }
 
     .nc-slide-image {
-        height: 250px;
+        height: 130px !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .nc-slide-card h3 {
+        font-size: 1rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .nc-slide-card p {
+        font-size: 0.72rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .swiper-button-prev:after,
+    .swiper-button-next:after {
+        font-size: 12px !important;
+    }
+
+    /* ========== TAGS ========== */
+    .nc-product-tags {
+        gap: 1rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    .nc-tag-label {
+        font-size: 1.25rem !important;
+    }
+
+    .nc-tag-text {
+        font-size: 0.7rem !important;
+    }
+
+    /* ========== BANNIERE BOX ========== */
+    .nc-box-banner {
+        padding: 0.75rem 1rem !important;
+    }
+
+    .nc-box-content {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        text-align: center !important;
+    }
+
+    .nc-box-icon {
+        font-size: 1.75rem !important;
+    }
+
+    .nc-box-text h2 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .nc-box-text p {
+        font-size: 0.8rem !important;
+    }
+
+    /* ========== SECTION PRODUITS ========== */
+    .nc-products {
+        padding: 1.5rem 1rem 2rem !important;
+    }
+
+    .nc-products h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .nc-product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    /* ========== CARD PRODUIT ========== */
+    .nc-product-card {
+        padding: 0.85rem 0.6rem !important;
+        border-radius: 1rem !important;
     }
 
     .nc-product-image {
-        width: 140px;
-        height: 140px;
+        width: 90px !important;
+        height: 90px !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    .nc-product-card h3 {
+        font-size: 0.9rem !important;
+        margin: 0.3rem 0 0.2rem !important;
+    }
+
+    .nc-product-price {
+        font-size: 1rem !important;
+        margin: 0.25rem 0 0.5rem !important;
+    }
+
+    .nc-stock-info {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    /* ========== QUANTITE ========== */
+    .nc-quantity-selector label {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    .nc-quantity-controls {
+        gap: 0.4rem !important;
+    }
+
+    .nc-qty-btn {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .nc-quantity-controls input {
+        width: 40px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* ========== BOUTONS ========== */
+    .nc-btn {
+        padding: 0.55rem 0.9rem !important;
+        font-size: 0.7rem !important;
+        gap: 0.3rem !important;
+    }
+
+    .nc-badge {
+        font-size: 0.6rem !important;
+        padding: 4px 8px !important;
     }
 }

@@ -20,7 +20,7 @@ class HomeController extends AbstractController
         $produits = $produitRepository->findBy(
             ['disponible' => true],
             ['id' => 'ASC'],
-            5 // Limiter à 5 produits pour l'accueil
+            6 // Limiter à 6 produits pour l'accueil
         );
 
         // Récupérer les boxes (sauf les personnalisables)

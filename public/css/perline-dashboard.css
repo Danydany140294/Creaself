@@ -1365,75 +1365,399 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 430px) {
+
+    /* ========== WRAPPER & CONTAINER ========== */
     .dashboard-wrapper {
-        padding: 0.5rem;
+        padding: 0.5rem !important;
+        align-items: flex-start !important;
     }
-    
+
+    .dashboard-container {
+        width: 100% !important;
+    }
+
+    /* ========== LAYOUT → COLONNE ========== */
+    .dashboard-main {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+
+    /* ========== SIDEBAR ========== */
+    .dashboard-sidebar {
+        width: 100% !important;
+    }
+
+    .sidebar-content {
+        padding: 0.75rem !important;
+        border-radius: var(--radius-lg) !important;
+        position: static !important;
+    }
+
+    .user-header {
+        flex-direction: row !important;
+        text-align: left !important;
+        padding: 0.75rem 0 !important;
+        gap: 0.75rem !important;
+    }
+
+    .user-avatar {
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+    }
+
+    .sidebar-content .user-name {
+        font-size: 1rem !important;
+    }
+
+    .sidebar-content .user-title {
+        font-size: 0.65rem !important;
+    }
+
+    /* NAV → SCROLL HORIZONTAL */
+    .sidebar-nav {
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        gap: 0.35rem !important;
+        padding-bottom: 0.5rem !important;
+        scrollbar-width: none !important;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .nav-item {
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0.5rem 0.75rem !important;
+        border-radius: var(--radius-md) !important;
+        white-space: nowrap !important;
+        min-width: fit-content !important;
+        gap: 0.2rem !important;
+    }
+
+    .nav-text {
+        font-size: 0.6rem !important;
+    }
+
+    .nav-item .material-symbols-outlined {
+        font-size: 1rem !important;
+    }
+
+    .nav-divider {
+        display: none !important;
+    }
+
+    /* ========== CONTENT HEADER ========== */
     .welcome-title {
-        font-size: 2rem;
+        font-size: 1.5rem !important;
     }
-    
+
     .welcome-subtitle {
-        font-size: 1rem;
+        font-size: 0.85rem !important;
     }
-    
+
+    .dashboard-content {
+        gap: 1rem !important;
+    }
+
+    /* ========== CARDS GRID ========== */
     .cards-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
     }
-    
-    .favorites-slider {
-        gap: 1rem;
+
+    .card {
+        padding: 1.25rem !important;
+        border-radius: var(--radius-lg) !important;
     }
-    
+
+    .card-title {
+        font-size: 1rem !important;
+    }
+
+    .card-subtitle {
+        font-size: 0.75rem !important;
+    }
+
+    /* ORDER CARD */
+    .order-img {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+    }
+
+    .order-img-more {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+        font-size: 0.65rem !important;
+    }
+
+    .order-name {
+        font-size: 0.8rem !important;
+    }
+
+    .order-delivery {
+        font-size: 0.7rem !important;
+    }
+
+    .order-preview {
+        margin-bottom: 1rem !important;
+    }
+
+    /* LOYALTY CARD */
+    .points-number {
+        font-size: 2.25rem !important;
+    }
+
+    .loyalty-progress {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+
+    .progress-bar {
+        width: 100% !important;
+    }
+
+    .reward-card {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        align-items: flex-start !important;
+    }
+
+    .reward-text {
+        font-size: 0.75rem !important;
+    }
+
+    /* ========== FAVORITES ========== */
+    .favorites-section {
+        padding: 1.25rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
     .product-card {
-        min-width: 160px;
+        min-width: 140px !important;
     }
 
-    .payment-actions {
-        grid-template-columns: 1fr;
+    .product-name {
+        font-size: 0.75rem !important;
     }
 
-    .payment-item {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .payment-actions-btn {
-        width: 100%;
-        justify-content: center;
+    .product-price {
+        font-size: 0.7rem !important;
     }
 
-    .info-grid {
-        grid-template-columns: 1fr;
+    /* ========== TABS ========== */
+    .tab-inner {
+        padding: 1.25rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    .tab-title {
+        font-size: 1.25rem !important;
+    }
+
+    .tab-description {
+        font-size: 0.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* ========== COMMANDES ========== */
+    .order-item {
+        padding: 1rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ========== INFORMATIONS ========== */
+    .info-card {
+        padding: 1rem !important;
+        border-radius: var(--radius-lg) !important;
+        margin-bottom: 1rem !important;
     }
 
     .info-card-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding-bottom: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
     }
 
-    .info-card-header .btn {
-        width: 100%;
-        justify-content: center;
+    .info-header-icon {
+        font-size: 1.75rem !important;
     }
 
+    .info-header-title {
+        font-size: 1.1rem !important;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .info-item {
+        padding: 0.75rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .info-icon-wrapper {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+    }
+
+    .info-icon-wrapper .material-symbols-outlined {
+        font-size: 1.1rem !important;
+    }
+
+    .info-value {
+        font-size: 0.875rem !important;
+    }
+
+    /* LOYALTY CARD INFO */
     .info-loyalty-card {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: column !important;
+        padding: 1rem !important;
+        border-radius: var(--radius-lg) !important;
+        margin-bottom: 1rem !important;
+        gap: 0.75rem !important;
     }
 
-    .info-loyalty-content {
-        flex-direction: column;
-        text-align: center;
+    .info-loyalty-icon-wrapper {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .info-loyalty-title {
+        font-size: 1rem !important;
+    }
+
+    .info-loyalty-points .points-number {
+        font-size: 2rem !important;
+    }
+
+    /* SECURITE */
+    .info-security-section {
+        padding: 1rem !important;
+        border-radius: var(--radius-lg) !important;
     }
 
     .info-security-actions {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     .info-security-actions .btn {
-        width: 100%;
-        justify-content: center;
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 0.8rem !important;
+        padding: 0.6rem 1rem !important;
+    }
+
+    /* ========== ADRESSES ========== */
+    .addresses-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .address-card {
+        padding: 1rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    .address-card-title {
+        font-size: 1rem !important;
+    }
+
+    .address-detail-item {
+        font-size: 0.8rem !important;
+    }
+
+    .address-actions {
+        flex-direction: column !important;
+    }
+
+    .address-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 0.75rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .address-form-card {
+        padding: 1rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    .address-form-actions {
+        flex-direction: column !important;
+    }
+
+    .address-form-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* ========== PAIEMENT ========== */
+    .payment-actions {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .btn-payment {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .payment-logo {
+        height: 18px !important;
+    }
+
+    .payment-item {
+        padding: 0.85rem !important;
+        gap: 0.75rem !important;
+        border-radius: var(--radius-lg) !important;
+    }
+
+    .payment-icon {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    .payment-icon svg {
+        width: 28px !important;
+    }
+
+    .payment-info h4 {
+        font-size: 0.9rem !important;
+    }
+
+    .payment-details,
+    .payment-date {
+        font-size: 0.75rem !important;
+    }
+
+    .payment-actions-btn {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .payment-actions-btn .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* ========== BOUTONS GENERAUX ========== */
+    .btn {
+        padding: 0.7rem 1rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.75rem !important;
     }
 }
