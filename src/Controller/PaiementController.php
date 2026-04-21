@@ -343,10 +343,15 @@ final class PaiementController extends AbstractController
                         $ligneCommande->setQuantite($lignePanier->getQuantite());
                         
                         if ($lignePanier->isBoxPersonnalisable() && !$lignePanier->getCompositionsPanier()->isEmpty()) {
-                            foreach ($lignePanier->getCompositionsPanier() as $compo) {
-                                $ligneCommande->addCompositionBox($compo);
-                            }
-                        }
+    foreach ($lignePanier->getCompositionsPanier() as $compo) {
+        $compoBox = new \App\Entity\CompositionBoxPersonnalisable();
+        $compoBox->setProduit($compo->getProduit());
+        $compoBox->setQuantite($compo->getQuantite());
+        $compoBox->setLigneCommande($ligneCommande);
+        $em->persist($compoBox);
+        $ligneCommande->addCompositionBox($compoBox);
+    }
+}
                         
                         $em->persist($ligneCommande);
                     }
