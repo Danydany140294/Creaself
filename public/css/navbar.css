@@ -17,6 +17,24 @@
     --transition-speed: 0.3s;
     --shadow-light: 0 2px 5px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+    --mix-champagne: #F6ECD8;
+    --mix-cream: #FAF7F2;
+    --mix-cocoa: #B08070;
+    --mix-cocoa-dark: #9A6B58;
+    --mix-gold: #CCA748;
+    --mix-gold-light: #D9B857;
+    --mix-rose: #FF6B8F;
+    --mix-rose-soft: #FF8BA5;
+    --mix-bg-main: #FAF6F3;
+    --mix-bg-card: #FFF9F2;
+    --mix-accent: #E6D8C8;
+    --mix-text-main: #3F2A1F;
+    --mix-text-secondary: #6E503D;
+    --mix-text-muted: #988977;
+    --mix-radius-lg: 18px;
+    --mix-radius-md: 12px;
+    --mix-radius-full: 9999px;
 }
 
 /* ========================================
@@ -532,7 +550,7 @@ html {
 /* ========================================
    MOBILE (< 480px) — bloc UNIQUE et propre
 ======================================== */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 430px) {
 
     /* --- Logo --- */
     .logo-section.logo-desktop {
@@ -802,22 +820,7 @@ html {
     }
 }
 
-/* TRÈS PETIT MOBILE (< 360px) */
-@media screen and (max-width: 360px) {
-    .navbar-logo-mobile img {
-        height: 45px;
-    }
 
-    .nav-links li a {
-        font-size: 13px;
-        padding: 14px 20px;
-    }
-
-    .mobile-login-btn {
-        font-size: 12px;
-        padding: 10px;
-    }
-}
 
 /* ========================================
    12. OPTIMISATIONS PERFORMANCE

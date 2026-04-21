@@ -6,6 +6,21 @@
     
     <title>{% block title %}CreaSelf{% endblock %}</title>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chocolat: "#9A6B58",
+                        or: "#CCA748",
+                        creme: "#FAF7F2",
+                    }
+                },
+            }
+        }
+    </script>
+
     {% block stylesheets %}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <link rel="stylesheet" href="{{ asset('css/home.css') }}">
