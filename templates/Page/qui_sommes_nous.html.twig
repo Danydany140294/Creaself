@@ -112,7 +112,6 @@
 </main>
 
 {% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script>
@@ -120,7 +119,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = "1";
-                    entry.target.style.transform = "translateY(0) scale(1)";
+                    entry.target.style.transform = "translateY(0)";
                     observer.unobserve(entry.target);
                 }
             });
@@ -128,21 +127,9 @@
 
         document.querySelectorAll('[data-aos]').forEach(el => {
             el.style.opacity = "0";
-            el.style.transform = "translateY(40px) scale(0.97)";
-            el.style.transition = "all 0.9s cubic-bezier(0.2, 1, 0.3, 1)";
+            el.style.transform = "translateY(5px)";
+            el.style.transition = "all 0.5s cubic-bezier(0.2, 1, 0.3, 1)";
             observer.observe(el);
-        });
-
-        document.querySelectorAll('.image-wrap').forEach(container => {
-            container.addEventListener('mousemove', (e) => {
-                const { left, top, width, height } = container.getBoundingClientRect();
-                const x = (e.clientX - left - width / 2) / 25;
-                const y = (e.clientY - top - height / 2) / 25;
-                container.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg)`;
-            });
-            container.addEventListener('mouseleave', () => {
-                container.style.transform = 'rotateX(0deg) rotateY(0deg)';
-            });
         });
     </script>
 {% endblock %}
