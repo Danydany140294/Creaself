@@ -35,7 +35,7 @@ class Commande
     private ?\DateTimeInterface $dateExpedition = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     /**
@@ -47,6 +47,9 @@ class Commande
     #[ORM\ManyToOne(targetEntity: Adresse::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Adresse $adresseLivraison = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $stripeSessionId = null;
 
     public function __construct()
     {
@@ -190,6 +193,17 @@ class Commande
         $this->adresseLivraison = $adresseLivraison;
         return $this;
     }
+
+    public function getStripeSessionId(): ?string
+{
+    return $this->stripeSessionId;
+}
+
+public function setStripeSessionId(?string $stripeSessionId): static
+{
+    $this->stripeSessionId = $stripeSessionId;
+    return $this;
+}
 
     // ========================================
     // MÉTHODES MÉTIER

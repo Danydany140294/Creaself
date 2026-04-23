@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - LOGIX</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <style>
+        .form-error { color: #ff4d6d; font-size: 11px; margin-top: 4px; display: block; }
+    </style>
 </head>
 <body>
     <a href="{{ path('app_home') }}" class="back-btn">BACK</a>
@@ -21,31 +24,36 @@
             <div class="logo">
                 <span>LOGIX</span>
             </div>
-            {{ form_start(registrationForm) }}
+            {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
                 <h3 style="color: #666; margin-bottom: 20px; text-align: center;">Créer un compte</h3>
 
                 <div class="inputBox">
                     {{ form_widget(registrationForm.Nom, {'attr': {'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.Nom) }}
                     <span>Nom</span>
                 </div>
 
                 <div class="inputBox">
                     {{ form_widget(registrationForm.Prenom, {'attr': {'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.Prenom) }}
                     <span>Prénom</span>
                 </div>
 
                 <div class="inputBox">
                     {{ form_widget(registrationForm.email, {'attr': {'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.email) }}
                     <span>Email</span>
                 </div>
 
                 <div class="inputBox">
                     {{ form_widget(registrationForm.Telephone, {'attr': {'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.Telephone) }}
                     <span>Téléphone</span>
                 </div>
 
                 <div class="inputBox">
                     {{ form_widget(registrationForm.plainPassword.first, {'attr': {'required': 'required'}}) }}
+                    {{ form_errors(registrationForm.plainPassword) }}
                     <span>Mot de passe</span>
                 </div>
 

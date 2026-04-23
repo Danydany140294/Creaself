@@ -6,8 +6,10 @@ use App\Service\PanierService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
@@ -25,7 +27,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private PanierService $panierService  // ← AJOUT : Injection du service
+        private PanierService $panierService,
+        private RateLimiterFactory $loginLimiter
     ) {
     }
 
@@ -34,6 +37,17 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->request->get('email', '');
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+
+        // ✅ Rate limiting — bloque après 5 tentatives par IP
+        $limiter = $this->loginLimiter->create($request->getClientIp());
+        $limit = $limiter->consume(1);
+
+        if (!$limit->isAccepted()) {
+            $retryAfter = $limit->getRetryAfter()->getTimestamp() - time();
+            throw new AuthenticationException(
+                sprintf('Trop de tentatives de connexion. Réessayez dans %d minutes.', ceil($retryAfter / 60))
+            );
+        }
 
         return new Passport(
             new UserBadge($email),
@@ -47,14 +61,12 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // ← AJOUT : Migration automatique du panier session → BDD
         $user = $token->getUser();
-        
-        // Forcer la récupération de la session courante
+
+        // ✅ Migration automatique du panier session → BDD
         $session = $request->getSession();
         $panierSession = $session->get('panier', null);
-        
-        // Debug temporaire (à retirer après)
+
         if ($panierSession) {
             $this->panierService->migrerSessionVersBDD($user);
         }
@@ -63,12 +75,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // Ici, tu peux rediriger en fonction du rôle de l'utilisateur
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        // Par défaut, redirection vers app_quisommesnous
         return new RedirectResponse($this->urlGenerator->generate('app_quisommesnous'));
     }
 

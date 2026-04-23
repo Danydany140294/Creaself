@@ -33,5 +33,7 @@ security:
     session_fixation_strategy: migrate
 
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/user/mon-compte, roles: ROLE_USER }
+    - { path: ^/user, roles: ROLE_ADMIN }
+    - { path: ^/profile, roles: ROLE_USER }

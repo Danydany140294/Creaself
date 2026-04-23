@@ -29,5 +29,6 @@ services:
         autowire: true
         autoconfigure: true
 
-
-  
+    App\Security\LoginFormAuthenticator:
+        arguments:
+            $loginLimiter: '@limiter.login'
