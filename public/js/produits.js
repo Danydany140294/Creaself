@@ -340,6 +340,3 @@ document.head.appendChild(style);
    LOG DE DÉMARRAGE
    ======================================== */
 
-console.log('✅ Produits.js Perline chargé avec succès !');
-console.log('🍪 Swiper initialisé');
-console.log('🛒 AJAX panier activé');

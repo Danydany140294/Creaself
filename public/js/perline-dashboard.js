@@ -10,8 +10,6 @@
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
     
-    console.log('🍪 Perline Dashboard - Initialisation...');
-    
     // Initialiser tous les modules
     initTabSystem();
     initFavoritesSlider();
@@ -19,8 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initProductActions();
     initRewardActions();
     initSmoothScroll();
-    
-    console.log('✨ Dashboard chargé avec succès !');
 });
 
 // ========================================
@@ -93,8 +89,6 @@ function initTabSystem() {
     
     // Initialiser l'onglet au chargement
     initTabFromURL();
-    
-    console.log('📊 Système d\'onglets activé');
 }
 
 // ========================================
@@ -151,8 +145,6 @@ function initFavoritesSlider() {
             favNextBtn.style.cursor = 'pointer';
         }
     });
-    
-    console.log('❤️ Slider favoris activé');
 }
 
 // ========================================

@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes adresses — Perline Cookies{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-creme py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+
+        {# Titre #}
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-chocolat">Mes adresses</h1>
+            <p class="text-gray-500 mt-1">Gérez vos adresses de livraison</p>
+        </div>
+
+        {# Flash messages #}
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="mb-4 px-4 py-3 rounded-lg text-sm font-medium
+                    {{ type == 'success' ? 'bg-green-100 text-green-700' : '' }}
+                    {{ type == 'warning' ? 'bg-yellow-100 text-yellow-700' : '' }}
+                    {{ type == 'error' ? 'bg-red-100 text-red-700' : '' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {# Liste des adresses #}
+            <div>
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Adresses enregistrées</h2>
+
+                {% set adresses = app.user.adresses %}
+
+                {% if adresses is empty %}
+                    <div class="bg-white rounded-2xl p-6 text-center text-gray-400 shadow-sm border border-gray-100">
+                        <p class="text-4xl mb-3">📭</p>
+                        <p>Aucune adresse enregistrée</p>
+                    </div>
+                {% else %}
+                    <div class="flex flex-col gap-4" id="adresses-list">
+                        {% for adresse in adresses %}
+                            {% set isEdit = editMode is defined and editMode and adresseToEdit is defined and adresseToEdit.id == adresse.id %}
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border {{ isEdit ? 'border-chocolat' : 'border-gray-100' }} transition">
+
+                                {# Badge par défaut #}
+                                {% if adresse.parDefaut %}
+                                    <span class="inline-block text-xs font-semibold bg-chocolat text-white px-3 py-1 rounded-full mb-2">
+                                        ⭐ Par défaut
+                                    </span>
+                                {% endif %}
+
+                                <p class="font-semibold text-gray-700">{{ adresse.nom }}</p>
+                                <p class="text-gray-500 text-sm mt-1">{{ adresse.rue }}</p>
+                                {% if adresse.complement %}
+                                    <p class="text-gray-400 text-sm">{{ adresse.complement }}</p>
+                                {% endif %}
+                                <p class="text-gray-500 text-sm">{{ adresse.codePostal }} {{ adresse.ville }}</p>
+                                <p class="text-gray-400 text-sm">{{ adresse.pays }}</p>
+
+                                {# Actions #}
+                                <div class="flex gap-2 mt-4 flex-wrap">
+                                    <a href="{{ path('app_adresses_edit', {id: adresse.id}) }}"
+                                       class="text-xs px-3 py-1.5 rounded-full border border-chocolat text-chocolat hover:bg-chocolat hover:text-white transition">
+                                        ✏️ Modifier
+                                    </a>
+
+                                    {% if not adresse.parDefaut %}
+                                        <form action="{{ path('app_adresses_set_default', {id: adresse.id}) }}" method="POST" class="inline">
+                                            <button type="submit"
+                                                    class="text-xs px-3 py-1.5 rounded-full border border-or text-or hover:bg-or hover:text-white transition">
+                                                ⭐ Définir par défaut
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ path('app_adresses_delete', {id: adresse.id}) }}" method="POST" class="inline"
+                                              onsubmit="return confirm('Supprimer cette adresse ?')">
+                                            <button type="submit"
+                                                    class="text-xs px-3 py-1.5 rounded-full border border-red-300 text-red-400 hover:bg-red-400 hover:text-white transition">
+                                                🗑️ Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Formulaire ajout / modification #}
+            <div>
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">
+                    {{ editMode is defined and editMode ? '✏️ Modifier l\'adresse' : '➕ Ajouter une adresse' }}
+                </h2>
+
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    {{ form_start(addressForm, {attr: {class: 'flex flex-col gap-4'}}) }}
+
+                        {# Nom #}
+                        <div>
+                            {{ form_label(addressForm.nom, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                            {{ form_widget(addressForm.nom, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                            {{ form_errors(addressForm.nom) }}
+                        </div>
+
+                        {# Rue #}
+                        <div>
+                            {{ form_label(addressForm.rue, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                            {{ form_widget(addressForm.rue, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                            {{ form_errors(addressForm.rue) }}
+                        </div>
+
+                        {# Complément #}
+                        <div>
+                            {{ form_label(addressForm.complement, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                            {{ form_widget(addressForm.complement, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                        </div>
+
+                        {# Code postal + Ville #}
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                {{ form_label(addressForm.codePostal, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                                {{ form_widget(addressForm.codePostal, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                                {{ form_errors(addressForm.codePostal) }}
+                            </div>
+                            <div>
+                                {{ form_label(addressForm.ville, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                                {{ form_widget(addressForm.ville, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                                {{ form_errors(addressForm.ville) }}
+                            </div>
+                        </div>
+
+                        {# Pays #}
+                        <div>
+                            {{ form_label(addressForm.pays, null, {label_attr: {class: 'block text-sm font-medium text-gray-600 mb-1'}}) }}
+                            {{ form_widget(addressForm.pays, {attr: {class: 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-chocolat transition'}}) }}
+                        </div>
+
+                        {# Par défaut #}
+                        <div class="flex items-center gap-2">
+                            {{ form_widget(addressForm.parDefaut, {attr: {class: 'w-4 h-4 accent-chocolat'}}) }}
+                            {{ form_label(addressForm.parDefaut, null, {label_attr: {class: 'text-sm text-gray-600'}}) }}
+                        </div>
+
+                        {# Boutons #}
+                        <div class="flex gap-3 pt-2">
+                            <button type="submit"
+                                    class="flex-1 bg-chocolat text-white py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition">
+                                {{ editMode is defined and editMode ? 'Enregistrer les modifications' : 'Ajouter l\'adresse' }}
+                            </button>
+                            {% if editMode is defined and editMode %}
+                                <a href="{{ path('app_adresses_index') }}"
+                                   class="flex-1 text-center border border-gray-300 text-gray-500 py-2.5 rounded-full text-sm hover:bg-gray-50 transition">
+                                    Annuler
+                                </a>
+                            {% endif %}
+                        </div>
+
+                    {{ form_end(addressForm) }}
+                </div>
+            </div>
+
+        </div>
+
+        {# Retour #}
+        <div class="mt-8">
+            <a href="{{ path('app_home') }}" class="text-sm text-gray-400 hover:text-chocolat transition">
+                ← Retour à l'accueil
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

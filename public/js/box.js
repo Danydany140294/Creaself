@@ -46,13 +46,11 @@ let selectedCookies = {};
 
 // Ouvrir la modal
 function openModalBoxPerso() {
-    console.log('🚀 Ouverture de la modal');
     const modal = document.getElementById('modalBoxPerso');
     
     if (modal) {
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        console.log('✅ Modal affichée avec succès');
         
         // Reset au cas où
         updateCounter();
@@ -203,8 +201,6 @@ async function validerBoxPerso() {
         cookies: selectedCookies
     };
     
-    console.log('📦 Envoi des données:', data);
-    
     try {
         const response = await fetch('/panier/ajouter-box-personnalisable', {
             method: 'POST',
@@ -247,11 +243,11 @@ document.addEventListener('keydown', function(event) {
 });
 
 // Log au chargement
-console.log('✅ box.js chargé avec succès');
 
 document.addEventListener('DOMContentLoaded', function() {
     if (window.location.hash === '#modalBoxPerso') {
         openModalBoxPerso();
     }
 });
+
 

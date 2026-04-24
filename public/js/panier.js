@@ -271,7 +271,6 @@ function scrollToSummary() {
 // ========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Panier chargé avec succès ✨');
     
     // Animation d'entrée des cart-rows
     const cartRows = document.querySelectorAll('.cart-row');

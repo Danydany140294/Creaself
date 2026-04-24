@@ -209,7 +209,6 @@ if (item.image) {
     imageUrl = `${PANIER_CONFIG.PATHS.uploads}${folder}/${item.image}`;
     
     // Debug : afficher l'URL construite
-    console.log('Image URL construite:', imageUrl);
 }
             
             itemsHTML += `
@@ -447,7 +446,6 @@ let panierModal;
  */
 document.addEventListener('DOMContentLoaded', function() {
     panierModal = new PanierModal();
-    console.log('✅ PanierModal initialisé');
 });
 
 /**

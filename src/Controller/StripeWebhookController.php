@@ -136,17 +136,21 @@ final class StripeWebhookController extends AbstractController
 
         // ✅ Envoyer l'email de confirmation
         if ($commande->getUser()) {
-            $html = $this->twig->render('emails/confirmation_commande.html.twig', [
-                'commande' => $commande
-            ]);
+            try {
+                $html = $this->twig->render('emails/confirmation_commande.html.twig', [
+                    'commande' => $commande
+                ]);
 
-            $emailMessage = (new Email())
-                ->from('noreply@creaself.fr')
-                ->to($commande->getUser()->getEmail())
-                ->subject('Confirmation de votre commande ' . $commande->getNumeroCommande())
-                ->html($html);
+                $emailMessage = (new Email())
+                    ->from('noreply@creaself.fr')
+                    ->to($commande->getUser()->getEmail())
+                    ->subject('Confirmation de votre commande ' . $commande->getNumeroCommande())
+                    ->html($html);
 
-            $this->mailer->send($emailMessage);
+                $this->mailer->send($emailMessage);
+            } catch (\Exception $e) {
+                // Silencieux — ne pas bloquer la commande si l'email échoue
+            }
         }
 
         return new JsonResponse(['status' => 'success']);

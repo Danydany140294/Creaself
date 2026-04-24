@@ -186,8 +186,6 @@
     // INITIALISATION
     // ========================================
     function init() {
-        console.log('✅ Navbar initialisée');
-        console.log('📱 Largeur écran:', window.innerWidth + 'px');
         
         initEventListeners();
         chargerPanier();

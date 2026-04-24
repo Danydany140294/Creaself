@@ -13,11 +13,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\AdresseService;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
-    /**
+   public function __construct(
+    private AdresseService $adresseService
+) {} 
+
+
+
+
+
+/**
      * Liste tous les utilisateurs (admin uniquement)
      */
     #[Route(name: 'app_user_index', methods: ['GET'])]
@@ -75,7 +84,7 @@ final class UserController extends AbstractController
 
         if ($adresseForm->isSubmitted() && $adresseForm->isValid()) {
             if ($adresse->isParDefaut()) {
-                $this->removeDefaultFromOtherAddresses($user, $entityManager);
+                $this->adresseService->removeDefaultFromOtherAddresses($user);
             }
 
             if ($user->getAdresses()->count() === 0) {
@@ -145,16 +154,5 @@ final class UserController extends AbstractController
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    /**
-     * Retire le statut "par défaut" de toutes les adresses de l'utilisateur
-     */
-    private function removeDefaultFromOtherAddresses(User $user, EntityManagerInterface $entityManager): void
-    {
-        foreach ($user->getAdresses() as $addr) {
-            if ($addr->isParDefaut()) {
-                $addr->setParDefaut(false);
-            }
-        }
-        $entityManager->flush();
-    }
+    
 }
