@@ -415,12 +415,33 @@ h1, h2, h3, .serif {
 
 @media (max-width: 430px) {
 
-    /* HERO SECTION */
+    /* ================================
+       GLOBAL
+       ================================ */
+    body, main {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    /* ================================
+       HERO SECTION
+       ================================ */
     .h-screen {
         height: 100svh !important;
     }
 
-    /* BADGE */
+    .h-screen h1 {
+        font-size: 3.25rem !important;
+        line-height: 0.9 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .h-screen p {
+        font-size: 0.95rem !important;
+        margin-bottom: 1.5rem !important;
+        padding: 0 0.5rem !important;
+    }
+
     .h-screen .inline-block {
         padding: 0.3rem 1rem !important;
         margin-bottom: 1rem !important;
@@ -431,21 +452,6 @@ h1, h2, h3, .serif {
         letter-spacing: 0.25em !important;
     }
 
-    /* TITRE */
-    .h-screen h1 {
-        font-size: 3.75rem !important;
-        line-height: 0.9 !important;
-        margin-bottom: 1rem !important;
-    }
-
-    /* DESCRIPTION */
-    .h-screen p {
-        font-size: 0.95rem !important;
-        margin-bottom: 1.5rem !important;
-        padding: 0 0.5rem !important;
-    }
-
-    /* BOUTONS */
     .h-screen .flex.flex-col {
         gap: 1rem !important;
     }
@@ -470,7 +476,6 @@ h1, h2, h3, .serif {
         height: 2.25rem !important;
     }
 
-    /* SCROLL INDICATOR */
     .h-screen .absolute.bottom-10 {
         bottom: 1.25rem !important;
     }
@@ -478,33 +483,20 @@ h1, h2, h3, .serif {
     .h-screen .h-16 {
         height: 2.5rem !important;
     }
-}
 
-@media (max-width: 430px) {
-
-    body, main {
-        overflow-x: hidden;
-        width: 100%;
-    }
-
-    /* HERO */
-    .h-screen h1 { font-size: 3.25rem; }
-    .h-screen p { font-size: 0.95rem; }
-
-    /* COMPOSE */
+    /* ================================
+       COMPOSE SECTION
+       ================================ */
     #compose {
-        padding: 0 !important;
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
+        padding: 1rem 0 !important;
     }
 
     #compose h2 {
-        font-size: 2rem;
-        text-align: center;
+        font-size: 2rem !important;
+        text-align: center !important;
         margin-bottom: 0.5rem !important;
     }
 
-    /* TITRE BLOCK */
     #compose .text-center {
         margin-bottom: 0.75rem !important;
     }
@@ -513,7 +505,6 @@ h1, h2, h3, .serif {
         margin-top: 0.25rem !important;
     }
 
-    /* CONTAINER PRINCIPAL */
     #compose > div > div.grid {
         display: flex !important;
         flex-direction: column !important;
@@ -524,7 +515,41 @@ h1, h2, h3, .serif {
         box-sizing: border-box !important;
     }
 
-    /* WRAPPER BOX */
+    #compose .relative.py-20 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    #compose .space-y-6 {
+        gap: 0.4rem !important;
+    }
+
+    #compose .space-y-6 > h3 {
+        margin-bottom: 0.5rem !important;
+        font-size: 1rem !important;
+    }
+
+    #compose .box-slot {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        aspect-ratio: 1 !important;
+        width: 100% !important;
+        padding: 0.2rem !important;
+    }
+
+    #compose .box-slot span {
+        font-size: 2rem !important;
+    }
+
+    #compose .box-slot img {
+        width: 85% !important;
+        height: 85% !important;
+        object-fit: cover !important;
+        border-radius: 999px !important;
+    }
+
+    /* BOX WRAPPER */
     #box-wrapper {
         width: 100% !important;
         padding: 0.25rem 0 !important;
@@ -532,7 +557,6 @@ h1, h2, h3, .serif {
         justify-content: center !important;
     }
 
-    /* BOX */
     #isometric-box {
         transform: none !important;
         width: 100% !important;
@@ -542,32 +566,12 @@ h1, h2, h3, .serif {
         box-sizing: border-box !important;
     }
 
-    /* py-20 du wrapper isometric */
-    #compose .relative.py-20 {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-
-    /* GRID 3x2 */
     #box-grid {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
         gap: 0.4rem !important;
         width: 100% !important;
         min-height: 180px !important;
-    }
-
-    /* SLOTS */
-    .box-slot {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        aspect-ratio: 1 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-height: 70px !important;
-        border-radius: 0.75rem !important;
-        box-sizing: border-box !important;
     }
 
     #box-grid .box-slot {
@@ -581,7 +585,6 @@ h1, h2, h3, .serif {
         box-sizing: border-box !important;
     }
 
-    /* BADGE */
     #counter-badge {
         top: -8px !important;
         right: 50% !important;
@@ -594,13 +597,13 @@ h1, h2, h3, .serif {
         font-size: 0.65rem !important;
     }
 
-    /* H3 liste */
-    #compose .space-y-6 > h3 {
-        margin-bottom: 0.5rem !important;
-        font-size: 1rem !important;
+    #order-box-btn {
+        padding: 0.85rem !important;
+        font-size: 0.85rem !important;
+        margin-top: 0.5rem !important;
     }
 
-    /* LISTE COOKIES → GRID CARDS */
+    /* LISTE COOKIES */
     .custom-scrollbar {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
@@ -646,63 +649,14 @@ h1, h2, h3, .serif {
         display: none !important;
     }
 
-    /* BOUTON */
-    #order-box-btn {
-        padding: 0.85rem !important;
-        font-size: 0.85rem !important;
-        margin-top: 0.5rem !important;
-    }
-
-    /* TOAST */
-    #toast-container {
-        top: 4.5rem !important;
-        left: 1rem !important;
-        right: 1rem !important;
-    }
-
-    /* IMAGE (quand remplie) */
-    #compose .box-slot img {
-        width: 85% !important;
-        height: 85% !important;
-        object-fit: cover !important;
-        border-radius: 999px !important;
-    }
-
-    /* ICONE + (slot vide) */
-    #compose .box-slot span {
-        font-size: 2rem !important;
-    }
-
-    /* SLOT = STRUCTURE STABLE */
-    #compose .box-slot {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        aspect-ratio: 1 !important;
-        width: 100% !important;
-        padding: 0.2rem !important;
-    }
-
-    /* SPACE-Y interne */
-    #compose .space-y-6 {
-        gap: 0.4rem !important;
-    }
-
-    .magnetic-btn-container {
-        margin-top: 0.5rem !important;
-    }
-}
-
-@media (max-width: 430px) {
-
-    /* SECTION SHOP */
+    /* ================================
+       SHOP SECTION
+       ================================ */
     #shop {
         padding-top: 2.5rem !important;
         padding-bottom: 2.5rem !important;
-        
     }
 
-    /* HEADER DE SECTION */
     #shop .flex.flex-col {
         margin-bottom: 1.5rem !important;
         gap: 0.5rem !important;
@@ -722,38 +676,32 @@ h1, h2, h3, .serif {
         font-size: 0.85rem !important;
     }
 
-    /* GRID CARDS */
     #shop .grid {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
     }
 
-    /* CARD */
     #shop .glass-card {
         padding: 1.25rem !important;
         border-radius: 2rem !important;
     }
 
-    /* IMAGE WRAPPER */
     #shop .relative.mb-12 {
         margin-bottom: 1rem !important;
         height: 9rem !important;
     }
 
-    /* IMAGE */
     #shop .glass-card img {
         width: 7rem !important;
         height: 7rem !important;
     }
 
-    /* BADGE STOCK LIMITE */
     #shop .absolute.-top-4 {
         padding: 0.4rem 0.75rem !important;
         font-size: 0.55rem !important;
         border-radius: 0 0 0 1rem !important;
     }
 
-    /* TEXTES CARD */
     #shop h3 {
         font-size: 1.4rem !important;
         margin-bottom: 0.25rem !important;
@@ -764,7 +712,6 @@ h1, h2, h3, .serif {
         margin-bottom: 0.75rem !important;
     }
 
-    /* PRIX + BOUTON */
     #shop .flex.items-center.justify-between {
         margin-top: 0.5rem !important;
     }
@@ -778,11 +725,10 @@ h1, h2, h3, .serif {
         height: 3rem !important;
         border-radius: 1rem !important;
     }
-}
 
-@media (max-width: 430px) {
-
-    /* TIMER BUBBLE */
+    /* ================================
+       TIMER WIDGET
+       ================================ */
     .fixed.bottom-8.right-8 {
         bottom: 1rem !important;
         right: 1rem !important;
@@ -791,7 +737,6 @@ h1, h2, h3, .serif {
         gap: 0.6rem !important;
     }
 
-    /* ICONE */
     .fixed.bottom-8.right-8 .w-16 {
         width: 2rem !important;
         height: 2rem !important;
@@ -802,26 +747,98 @@ h1, h2, h3, .serif {
         font-size: 1.1rem !important;
     }
 
-    /* PING */
-    .fixed.bottom-8.right-8 .h-4 {
-        height: 0.5rem !important;
-        width: 0.5rem !important;
-    }
-
+    .fixed.bottom-8.right-8 .h-4,
     .fixed.bottom-8.right-8 .w-4 {
         height: 0.5rem !important;
         width: 0.5rem !important;
     }
 
-    /* TEXTE LABEL */
     .fixed.bottom-8.right-8 p {
         font-size: 0.5rem !important;
         margin-bottom: 0.15rem !important;
     }
 
-    /* TIMER CHIFFRES */
     .fixed.bottom-8.right-8 .text-2xl {
         font-size: 0.95rem !important;
         gap: 0.2rem !important;
+    }
+
+    /* ================================
+       TOAST
+       ================================ */
+    #toast-container {
+        top: 4.5rem !important;
+        left: 1rem !important;
+        right: 1rem !important;
+    }
+
+    /* ================================
+       MAGNETIC BTN
+       ================================ */
+    .magnetic-btn-container {
+        margin-top: 0.5rem !important;
+    }
+
+    /* ================================
+       MODAL SUCCÈS PAIEMENT
+       ================================ */
+    #success-modal > div {
+        padding: 2rem 1.25rem 1.5rem !important;
+        border-radius: 2rem !important;
+        margin: 0 1rem !important;
+        max-width: 100% !important;
+    }
+
+    #success-modal .absolute.-top-16 {
+        width: 4rem !important;
+        height: 4rem !important;
+        top: -2rem !important;
+    }
+
+    #success-modal .text-6xl {
+        font-size: 1.75rem !important;
+    }
+
+    #success-modal .pt-20 {
+        padding-top: 2.5rem !important;
+    }
+
+    #success-modal h2 {
+        font-size: 2rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    #success-modal .text-xl {
+        font-size: 0.95rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #success-modal .bg-white\/50 {
+        padding: 1rem !important;
+        border-radius: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #success-modal .bg-white\/50 span {
+        font-size: 0.75rem !important;
+    }
+
+    #success-modal .text-lg {
+        font-size: 0.85rem !important;
+    }
+
+    #success-modal .text-2xl {
+        font-size: 1.1rem !important;
+    }
+
+    #success-modal .text-sm {
+        font-size: 0.7rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #success-modal button {
+        padding: 0.85rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 1.25rem !important;
     }
 }

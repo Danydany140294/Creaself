@@ -29,6 +29,13 @@ final class PaiementController extends AbstractController
         LignePanierRepository $lignePanierRepo
     ): Response
     {
+        
+         if (!$this->getUser()) {
+        $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
+        return $this->redirectToRoute('app_login');
+    }
+
+    
         $session = $this->container->get('request_stack')->getSession();
         $user = $this->getUser();
         $panierData = [
@@ -229,41 +236,46 @@ final class PaiementController extends AbstractController
     }
 
     // ✅ successStripe — affichage uniquement, la commande est créée par le webhook
-    #[Route('/paiement/success-stripe', name: 'app_paiement_success_stripe')]
-    public function successStripe(
-        Request $request,
-        CommandeRepository $commandeRepo
-    ): Response
-    {
-        $sessionId = $request->query->get('session_id');
+// ✅ successStripe — affichage uniquement, la commande est créée par le webhook
+#[Route('/paiement/success-stripe', name: 'app_paiement_success_stripe')]
+public function successStripe(
+    Request $request,
+    CommandeRepository $commandeRepo
+): Response
+{
+    $sessionId = $request->query->get('session_id');
 
-        if (!$sessionId) {
-            $this->addFlash('error', 'Session de paiement invalide');
-            return $this->redirectToRoute('app_home');
-        }
-
-        // Attendre max 3 secondes que le webhook crée la commande
-        $commande = null;
-        for ($i = 0; $i < 3; $i++) {
-            $commande = $commandeRepo->findOneBy(['stripeSessionId' => $sessionId]);
-            if ($commande) break;
-            sleep(1);
-        }
-
-        $session = $this->container->get('request_stack')->getSession();
-
-        if ($commande) {
-            $session->set('commande_success', [
-                'numero' => $commande->getNumeroCommande(),
-                'total' => $commande->getTotalTTC(),
-                'date' => $commande->getDateCommande(),
-                'email' => $commande->getUser()?->getEmail()
-            ]);
-        }
-
-        $user = $this->getUser();
-        return $this->redirectToRoute($user ? 'app_user_dashboard' : 'app_home');
+    if (!$sessionId) {
+        $this->addFlash('error', 'Session de paiement invalide');
+        return $this->redirectToRoute('app_home');
     }
+
+    // ✅ Session définie AVANT le loop
+    $session = $this->container->get('request_stack')->getSession();
+
+    $session->remove('panier');
+
+    // Attendre max 5 secondes que le webhook crée la commande
+    $commande = null;
+    for ($i = 0; $i < 5; $i++) {
+        $commande = $commandeRepo->findOneBy(['stripeSessionId' => $sessionId]);
+        if ($commande) break;
+        sleep(1);
+    }
+
+    
+
+    if ($commande) {
+        $session->set('commande_success', [
+            'numero' => $commande->getNumeroCommande(),
+            'total' => $commande->getTotalTTC(),
+            'date' => $commande->getDateCommande(),
+            'email' => $commande->getUser()?->getEmail()
+        ]);
+    }
+
+    return $this->redirectToRoute('app_home');
+}
 
     #[Route('/paiement/success/{id}', name: 'app_paiement_success')]
     public function success(int $id, EntityManagerInterface $em): Response

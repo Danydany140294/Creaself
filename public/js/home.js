@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', () => {
+
 // =====================================
 // CRUMB PARTICLE EFFECTS
 // =====================================
@@ -89,41 +91,35 @@ function showToast(message, icon = 'check_circle') {
 let cookieCount = 0;
 const maxCookies = 6;
 
+const selectedCookieIds = [];
+
 const slots = document.querySelectorAll('.box-slot');
 const countDisplay = document.getElementById('cookie-count');
 const isoBox = document.getElementById('isometric-box');
 
-function addToBox(name, imgSrc) {
-
+function addToBox(name, imgSrc, id) {
     if (cookieCount >= maxCookies) {
         showToast("Votre coffret est déjà complet !", "error");
         return;
     }
 
     const slot = slots[cookieCount];
-
-    slot.innerHTML = `
-    <img src="${imgSrc}" alt="${name}">
-`;
+    slot.innerHTML = `<img src="${imgSrc}" alt="${name}">`;
+    selectedCookieIds.push(id);
 
     cookieCount++;
     countDisplay.innerText = `${cookieCount}/${maxCookies}`;
 
-    // 🔥 SCROLL AUTO MOBILE (FIX UX)
     if (window.innerWidth < 768) {
-        isoBox.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
+        isoBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     showToast(`${name} ajouté au coffret !`, 'cookie');
 }
 
-// CLICK ITEMS
 document.querySelectorAll('.js-cookie-item').forEach(item => {
     item.addEventListener('click', (e) => {
-        addToBox(item.dataset.name, item.dataset.img);
+        addToBox(item.dataset.name, item.dataset.img, item.dataset.id);
         createCrumbs(e.clientX, e.clientY);
     });
 });
@@ -135,12 +131,50 @@ const orderBoxBtn = document.getElementById('order-box-btn');
 
 if (orderBoxBtn) {
     orderBoxBtn.addEventListener('click', () => {
-        if (cookieCount > 0) {
-            showToast("Préparation de votre coffret...", "oven_gen");
-        } else {
+        if (cookieCount === 0) {
             showToast("Votre coffret est vide !", "warning");
+            return;
         }
+
+        if (cookieCount < maxCookies) {
+            showToast(`Ajoutez encore ${maxCookies - cookieCount} cookie(s) !`, "warning");
+            return;
+        }
+
+        const cookiesData = {};
+        selectedCookieIds.forEach(id => {
+            const key = `produit_${id}`;
+            cookiesData[key] = (cookiesData[key] || 0) + 1;
+        });
+
+        console.log('Cookies envoyés :', cookiesData);
+        showToast("Ajout au panier en cours...", "hourglass_top");
+
+        fetch('/panier/ajouter-box-personnalisable', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cookies: cookiesData })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Réponse serveur :', data);
+            if (data.success) {
+                showToast("Coffret ajouté au panier ! 🎉", "check_circle");
+                slots.forEach(slot => {
+                    slot.innerHTML = '<span class="material-symbols-outlined text-white/40 text-5xl">add</span>';
+                });
+                cookieCount = 0;
+                selectedCookieIds.length = 0;
+                countDisplay.innerText = `0/${maxCookies}`;
+            } else {
+                showToast(data.message || "Erreur lors de l'ajout", "error");
+            }
+        })
+        .catch(err => {
+            console.error('Erreur fetch :', err);
+            showToast("Erreur réseau", "error");
+        });
     });
 }
 
-
+}); // fin DOMContentLoaded
