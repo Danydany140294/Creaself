@@ -78,9 +78,14 @@ function initTabSystem() {
      * Gérer l'onglet initial depuis l'URL
      */
     function initTabFromURL() {
-        const hash = window.location.hash.substring(1);
-        switchTab(hash || 'profil');
+    const hash = window.location.hash.substring(1);
+    const validTabs = ['profil', 'commandes', 'informations', 'adresses', 'paiement'];
+    if (hash && validTabs.includes(hash)) {
+        switchTab(hash);
+    } else {
+        switchTab('profil');
     }
+}
     
     /**
      * Gérer le bouton retour du navigateur
@@ -290,6 +295,7 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
+            if (this.hasAttribute('data-tab')) return;
             if (href !== '#' && href.length > 1) {
                 const target = document.querySelector(href);
                 if (target) {

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AdresseRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\PanierRepository;
 use App\Repository\LignePanierRepository;
@@ -26,16 +27,15 @@ final class PaiementController extends AbstractController
     #[Route('/paiement', name: 'app_paiement')]
     public function index(
         PanierRepository $panierRepo,
-        LignePanierRepository $lignePanierRepo
+        LignePanierRepository $lignePanierRepo,
+        AdresseRepository $adresseRepo
     ): Response
     {
-        
-         if (!$this->getUser()) {
-        $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
-        return $this->redirectToRoute('app_login');
-    }
+        if (!$this->getUser()) {
+            $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
+            return $this->redirectToRoute('app_login');
+        }
 
-    
         $session = $this->container->get('request_stack')->getSession();
         $user = $this->getUser();
         $panierData = [
@@ -65,39 +65,6 @@ final class PaiementController extends AbstractController
                     'is_empty' => empty($lignes)
                 ];
             }
-        } else {
-            $panierSession = $session->get('panier', [
-                'produits' => [],
-                'boxes' => [],
-                'boxes_perso' => []
-            ]);
-
-            $total = 0;
-            $nbArticles = 0;
-
-            foreach ($panierSession['produits'] ?? [] as $item) {
-                $total += $item['produit']->getPrix() * $item['quantite'];
-                $nbArticles += $item['quantite'];
-            }
-
-            foreach ($panierSession['boxes'] ?? [] as $item) {
-                $total += $item['box']->getPrix() * $item['quantite'];
-                $nbArticles += $item['quantite'];
-            }
-
-            foreach ($panierSession['boxes_perso'] ?? [] as $item) {
-                $total += $item['box']->getPrix();
-                $nbArticles += 1;
-            }
-
-            $panierData = [
-                'produits' => $panierSession['produits'] ?? [],
-                'boxes' => $panierSession['boxes'] ?? [],
-                'boxes_perso' => $panierSession['boxes_perso'] ?? [],
-                'total' => $total,
-                'nombre_articles' => $nbArticles,
-                'is_empty' => $total == 0
-            ];
         }
 
         if ($panierData['is_empty']) {
@@ -109,12 +76,16 @@ final class PaiementController extends AbstractController
         $totalFinal = $panierData['total'] + $fraisLivraison;
         $stripePublicKey = $_ENV['STRIPE_PUBLIC_KEY'] ?? '';
 
+        // ✅ Récupérer les adresses de l'user (par défaut en premier)
+        $adresses = $adresseRepo->findBy(['user' => $user], ['parDefaut' => 'DESC']);
+
         return $this->render('Page/paiement.html.twig', [
             'show_success_modal' => false,
             'panier' => $panierData,
             'frais_livraison' => $fraisLivraison,
             'total_final' => $totalFinal,
             'stripe_public_key' => $stripePublicKey,
+            'adresses' => $adresses,
         ]);
     }
 
@@ -219,6 +190,11 @@ final class PaiementController extends AbstractController
                 return new JsonResponse(['error' => 'Aucun article à commander'], 400);
             }
 
+            // ✅ Récupérer l'adresse choisie depuis la session
+            $session = $this->container->get('request_stack')->getSession();
+            $adresseId = $session->get('adresse_livraison_id');
+            $session->set('adresse_livraison_id', $adresseId);
+
             $checkoutSession = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
@@ -236,46 +212,44 @@ final class PaiementController extends AbstractController
     }
 
     // ✅ successStripe — affichage uniquement, la commande est créée par le webhook
-// ✅ successStripe — affichage uniquement, la commande est créée par le webhook
-#[Route('/paiement/success-stripe', name: 'app_paiement_success_stripe')]
-public function successStripe(
-    Request $request,
-    CommandeRepository $commandeRepo
-): Response
-{
-    $sessionId = $request->query->get('session_id');
+    #[Route('/paiement/success-stripe', name: 'app_paiement_success_stripe')]
+    public function successStripe(
+        Request $request,
+        CommandeRepository $commandeRepo
+    ): Response
+    {
+        $sessionId = $request->query->get('session_id');
 
-    if (!$sessionId) {
-        $this->addFlash('error', 'Session de paiement invalide');
+        if (!$sessionId) {
+            $this->addFlash('error', 'Session de paiement invalide');
+            return $this->redirectToRoute('app_home');
+        }
+
+        $session = $this->container->get('request_stack')->getSession();
+        $session->remove('panier');
+
+        // Attendre max 5 secondes que le webhook crée la commande
+        $commande = null;
+        for ($i = 0; $i < 5; $i++) {
+            $commande = $commandeRepo->findOneBy(['stripeSessionId' => $sessionId]);
+            if ($commande) break;
+            sleep(1);
+        }
+
+        if ($commande) {
+            $session->set('commande_success', [
+                'numero' => $commande->getNumeroCommande(),
+                'total' => $commande->getTotalTTC(),
+                'date' => $commande->getDateCommande(),
+                'email' => $commande->getUser()?->getEmail()
+            ]);
+        }
+
+        // ✅ Nettoyer l'adresse de session
+        $session->remove('adresse_livraison_id');
+
         return $this->redirectToRoute('app_home');
     }
-
-    // ✅ Session définie AVANT le loop
-    $session = $this->container->get('request_stack')->getSession();
-
-    $session->remove('panier');
-
-    // Attendre max 5 secondes que le webhook crée la commande
-    $commande = null;
-    for ($i = 0; $i < 5; $i++) {
-        $commande = $commandeRepo->findOneBy(['stripeSessionId' => $sessionId]);
-        if ($commande) break;
-        sleep(1);
-    }
-
-    
-
-    if ($commande) {
-        $session->set('commande_success', [
-            'numero' => $commande->getNumeroCommande(),
-            'total' => $commande->getTotalTTC(),
-            'date' => $commande->getDateCommande(),
-            'email' => $commande->getUser()?->getEmail()
-        ]);
-    }
-
-    return $this->redirectToRoute('app_home');
-}
 
     #[Route('/paiement/success/{id}', name: 'app_paiement_success')]
     public function success(int $id, EntityManagerInterface $em): Response
@@ -311,5 +285,22 @@ public function successStripe(
     {
         $this->addFlash('warning', 'Le paiement a été annulé');
         return $this->redirectToRoute('app_panier_index');
+    }
+
+    // ✅ Sauvegarder l'adresse choisie en session
+    #[Route('/paiement/choisir-adresse', name: 'app_paiement_choisir_adresse', methods: ['POST'])]
+    public function choisirAdresse(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $adresseId = $data['adresse_id'] ?? null;
+
+        if (!$adresseId) {
+            return new JsonResponse(['error' => 'Adresse invalide'], 400);
+        }
+
+        $session = $this->container->get('request_stack')->getSession();
+        $session->set('adresse_livraison_id', $adresseId);
+
+        return new JsonResponse(['success' => true]);
     }
 }

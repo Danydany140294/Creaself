@@ -342,7 +342,11 @@ class PanierService
     /**
      * Ajoute une box personnalisable avec les cookies choisis
      */
-    public function ajouterBoxPersonnalisable(Box $box, array $cookiesChoisis): void
+    public function ajouterBoxPersonnalisable(
+    Box $box,
+    array $cookiesChoisis,
+    int $nombreAttendu = 12
+): void
     {
         if ($box->getType() !== 'personnalisable') {
             throw new \Exception("Cette box n'est pas personnalisable");
@@ -351,9 +355,11 @@ class PanierService
         // Vérifier qu'on a exactement 12 cookies au total
         $totalCookies = array_sum($cookiesChoisis);
         
-        if ($totalCookies !== 12) {
-            throw new \Exception("Une box personnalisable doit contenir exactement 12 cookies (actuellement: {$totalCookies})");
-        }
+        if ($totalCookies !== $nombreAttendu) {
+    throw new \Exception(
+        "Cette box doit contenir exactement {$nombreAttendu} cookies (actuellement : {$totalCookies})"
+    );
+}
 
         // Vérifier le stock de chaque cookie
         foreach ($cookiesChoisis as $produitId => $quantite) {

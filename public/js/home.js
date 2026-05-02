@@ -150,7 +150,7 @@ if (orderBoxBtn) {
         console.log('Cookies envoyés :', cookiesData);
         showToast("Ajout au panier en cours...", "hourglass_top");
 
-        fetch('/panier/ajouter-box-personnalisable', {
+        fetch('/panier/ajouter-coffret-6', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cookies: cookiesData })

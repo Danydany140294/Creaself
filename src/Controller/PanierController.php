@@ -238,6 +238,66 @@ public function index(): Response
         }
     }
 
+    #[Route('/ajouter-coffret-6', name: 'app_panier_ajouter_coffret_6', methods: ['POST'])]
+public function ajouterCoffret6(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    if (!$data || empty($data['cookies'])) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Aucun cookie sélectionné'
+        ]);
+    }
+
+    $cookiesIds = [];
+
+    foreach ($data['cookies'] as $key => $quantite) {
+        $produitId = (int) str_replace('produit_', '', $key);
+        $cookiesIds[$produitId] = (int) $quantite;
+    }
+
+    if (array_sum($cookiesIds) !== 6) {
+        return $this->json([
+            'success' => false,
+            'message' => 'Le coffret doit contenir exactement 6 cookies'
+        ]);
+    }
+
+    try {
+        $boxTemplate = $this->entityManager
+            ->getRepository(Box::class)
+            ->findOneBy(['type' => 'personnalisable']);
+
+//         $this->panierService->ajouterBoxPersonnalisableSession(
+//             $boxTemplate,
+//             $cookiesIds
+//         );
+
+//         $this->panierService->ajouterBoxPersonnalisable(
+//     $boxTemplate,
+//     $cookiesIds,
+//     6
+// );
+
+$this->panierService->ajouterBoxPersonnalisable(
+    $boxTemplate,
+    $cookiesIds,
+    12
+);
+
+        return $this->json([
+            'success' => true
+        ]);
+
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
     /**
      * API : Supprimer un article du panier
      */

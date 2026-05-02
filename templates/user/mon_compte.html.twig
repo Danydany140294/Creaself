@@ -474,6 +474,13 @@
                                     <span class="material-symbols-outlined">delete</span>
                                     Supprimer
                                 </a>
+
+                                {# ✅ BOUTON LIVRER ICI #}
+                                <button onclick="choisirAdresse({{ adresse.id }})" 
+                                        class="btn btn-sm btn-primary">
+                                    <span class="material-symbols-outlined">local_shipping</span>
+                                    Livrer ici
+                                </button>
                             </div>
                         </div>
                     {% endfor %}
@@ -594,4 +601,15 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/perline-dashboard.js') }}"></script>
+    <script>
+    function choisirAdresse(id) {
+        fetch('{{ path('app_paiement_choisir_adresse') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adresse_id: id })
+        }).then(() => {
+            window.location.href = '{{ path('app_paiement') }}';
+        });
+    }
+    </script>
 {% endblock %}

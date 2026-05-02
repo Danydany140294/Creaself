@@ -715,96 +715,137 @@ html {
 }
 
     /* Bloc user connecté */
-   .mobile-user-section {
-    background: var(--color-bg);
-    border-radius: 12px;
-    overflow: visible;
+/* ========================================
+   MOBILE USER SECTION (REMPLACEMENT)
+======================================== */
+
+.mobile-user-section {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
     box-shadow: var(--shadow-medium);
 }
 
-    .mobile-user-header {
+.mobile-user-header {
+    background: var(--color-primary-dark);
     display: flex;
     align-items: center;
-    justify-content: center;  /* ← centrage horizontal */
     gap: 12px;
-    padding: 15px;
-    border-bottom: 1px solid var(--color-border);
+    padding: 18px 16px;
+    border-bottom: none;
 }
 
-    .mobile-user-header i {
-        font-size: 28px;
-        color: var(--color-primary-dark);
-    }
+.mobile-user-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
 
-    .mobile-user-info .user-name {
-        font-weight: 700;
-        font-size: 14px;
-        color: var(--color-text);
-        text-align: center;
-    }
+.mobile-user-info .user-name {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    color: #ffffff;
+    text-align: left;
+    margin-bottom: 2px;
+}
 
-    .mobile-user-info .user-email {
-        font-size: 11px;
-        color: #888;
-        text-align: center;
-    }
+.mobile-user-info .user-email {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+    text-align: left;
+}
 
-    /* Grille 2 colonnes pour les liens user */
-    .mobile-user-links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-    }
+/* GRID LINKS */
+.mobile-user-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: #fff;
+}
 
-    .mobile-user-links a {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-align: center !important;
-        gap: 8px !important;
-        padding: 16px 10px !important;
-    }
+.mobile-user-links a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    padding: 18px 10px !important;
+    border-right: 1px solid #f0e8e0 !important;
+    border-bottom: 1px solid #f0e8e0 !important;
+    text-align: center !important;
+}
 
-    .mobile-user-links a span {
-        display: block !important;
-        width: 100% !important;
-    }
+.mobile-user-links a:nth-child(2n) {
+    border-right: none !important;
+}
 
-    .mobile-user-links a:hover {
-        background: rgba(197, 163, 135, 0.15);
-    }
+.mobile-user-links a:nth-last-child(-n+2):not(.logout) {
+    border-bottom: none !important;
+}
 
-    .mobile-user-links a i {
-        display: block !important;
-        font-size: 22px !important;
-        width: auto !important;
-        margin: 0 !important;
-         color: var(--color-primary-dark) !important;
-    }
+/* ICON STYLE */
+.mobile-user-links a i {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    background: #fdf6f0 !important;
+    font-size: 17px !important;
+    color: var(--color-primary-dark) !important;
+    margin: 0 !important;
+}
 
-    .btn-panier span:not(.cart-badge) {
-        display: none !important;
-    }
+.mobile-user-links a span {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--color-primary-dark) !important;
+    display: block !important;
+}
 
-    /* Déconnexion sur toute la largeur */
-    .mobile-user-links a.logout {
-        grid-column: 1 / -1;
-        flex-direction: row;
-        justify-content: center;
-        color: var(--color-accent);
-        font-weight: 700;
-        border-top: 2px solid var(--color-border);
-        border-right: none;
-        border-bottom: none;
-        padding: 14px;
-        gap: 10px;
-    }
+.mobile-user-links a:hover {
+    background: #fdf6f0;
+}
 
-    .mobile-user-links a.logout i {
-        color: var(--color-accent);
-        font-size: 16px;
-    }
+/* LOGOUT */
+.mobile-user-links a.logout {
+    grid-column: 1 / -1;
+    flex-direction: row !important;
+    justify-content: center !important;
+    background: #fff5f6;
+    border-top: 1px solid #fddde1 !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    padding: 13px !important;
+    gap: 8px !important;
+    color: var(--color-accent) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+
+.mobile-user-links a.logout i {
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    font-size: 15px !important;
+    color: var(--color-accent) !important;
+}
+
+.mobile-user-links a.logout span {
+    color: var(--color-accent) !important;
+    font-size: 13px !important;
+}
 
     /* --- Bandeau promo --- */
     .promo-banner {
