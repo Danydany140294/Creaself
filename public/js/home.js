@@ -65,18 +65,34 @@ const toastContainer = document.getElementById('toast-container');
 function showToast(message, icon = 'check_circle') {
     if (!toastContainer) return;
 
-    const toast = document.createElement('div');
-    toast.className = 'toast-notification glass-card flex items-center gap-4 p-4 rounded-2xl shadow-2xl border-l-4 border-l-or';
+    const isMobile = window.innerWidth < 768;
 
-    toast.innerHTML = `
-        <div class="bg-or/20 text-or p-2 rounded-xl">
-            <span class="material-symbols-outlined">${icon}</span>
-        </div>
-        <div>
-            <p class="text-chocolat font-bold">${message}</p>
-            <p class="text-chocolat/50 text-[10px] uppercase font-bold tracking-widest">Délice enregistré</p>
-        </div>
-    `;
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification glass-card flex items-center shadow-2xl border-l-4 border-l-or';
+
+    if (isMobile) {
+        toast.style.cssText = 'gap: 8px; padding: 8px 10px; border-radius: 12px; max-width: 220px;';
+        toast.innerHTML = `
+            <div style="background: rgba(204,167,72,0.2); color: #CCA748; padding: 4px; border-radius: 8px; flex-shrink: 0;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold" style="font-size: 11px; line-height: 1.2;">${message}</p>
+                <p class="text-chocolat/50 uppercase font-bold tracking-widest" style="font-size: 8px;">Délice enregistré</p>
+            </div>
+        `;
+    } else {
+        toast.style.cssText = 'gap: 16px; padding: 16px; border-radius: 16px;';
+        toast.innerHTML = `
+            <div class="bg-or/20 text-or p-2 rounded-xl">
+                <span class="material-symbols-outlined">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold">${message}</p>
+                <p class="text-chocolat/50 text-[10px] uppercase font-bold tracking-widest">Délice enregistré</p>
+            </div>
+        `;
+    }
 
     toastContainer.appendChild(toast);
 
@@ -176,5 +192,34 @@ if (orderBoxBtn) {
         });
     });
 }
+
+document.querySelectorAll('.js-add-to-cart').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+
+        showToast(`${name} ajouté au panier !`, 'add_shopping_cart');
+
+        fetch(`/panier/ajouter-produit/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'quantite=1'
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Erreur réseau');
+            // Mettre à jour le badge panier
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                const current = parseInt(badge.innerText) || 0;
+                badge.innerText = current + 1;
+                badge.classList.add('show');
+            }
+        })
+        .catch(err => {
+            console.error('Erreur :', err);
+            showToast("Erreur lors de l'ajout", "error");
+        });
+    });
+});
 
 }); // fin DOMContentLoaded

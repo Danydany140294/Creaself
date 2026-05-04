@@ -283,7 +283,7 @@ public function ajouterCoffret6(Request $request): JsonResponse
 $this->panierService->ajouterBoxPersonnalisable(
     $boxTemplate,
     $cookiesIds,
-    12
+    6
 );
 
         return $this->json([
