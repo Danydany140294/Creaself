@@ -44,10 +44,18 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    
 }
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 /* ========================================
@@ -630,28 +638,27 @@ html {
     }
 
     /* --- Menu mobile : pleine largeur --- */
-    .nav-links {
-        position: fixed;
-        top: var(--navbar-height-mobile);
-        right: -100%;
-        width: 100%;
-        height: auto;
-        max-height: calc(100vh - var(--navbar-height-mobile));
-        overflow-y: auto;
-        padding: 0;
-        background: var(--color-bg);
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-        z-index: 99;
-        flex-direction: column;
-        gap: 0;
-        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        text-align: center;
-    }
+   .nav-links {
+    position: fixed;
+    top: var(--navbar-height-mobile);
+    right: -60%;
+    width: 60%;
+    height: auto;
+    max-height: calc(100vh - var(--navbar-height-mobile));
+    overflow-y: auto;
+    padding: 0;
+    background: var(--color-bg);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 99;
+    flex-direction: column;
+    gap: 0;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+}
 
-    .nav-links.active {
-        right: 0;
-
-    }
+.nav-links.active {
+    right: 0;
+}
 
     .nav-links li {
         width: 100%;
@@ -662,7 +669,7 @@ html {
         display: block;
         padding: 18px 25px;
         font-family: Arial, sans-serif;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 600;
         color: var(--color-text);
     }
@@ -679,11 +686,11 @@ html {
 
     /* --- Section auth mobile --- */
     .mobile-auth-section {
-        display: block;
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        padding: 20px;
-        border-top: 3px solid var(--color-primary-dark);
-    }
+    display: block;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    padding: 10px 12px;
+    border-top: 3px solid var(--color-primary-dark);
+}
 
     /* Bouton login (non connecté) */
     .mobile-login-btn {
@@ -778,8 +785,8 @@ html {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 7px !important;
-    padding: 18px 10px !important;
+    gap: 4px !important;
+    padding: 10px 8px !important;
     border-right: 1px solid #f0e8e0 !important;
     border-bottom: 1px solid #f0e8e0 !important;
     text-align: center !important;
@@ -798,20 +805,26 @@ html {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 12px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
     background: #fdf6f0 !important;
-    font-size: 17px !important;
+    font-size: 14px !important;
     color: var(--color-primary-dark) !important;
     margin: 0 !important;
 }
 
 .mobile-user-links a span {
-    font-size: 11px !important;
+    font-size: 10px !important;
     font-weight: 600 !important;
     color: var(--color-primary-dark) !important;
     display: block !important;
+}
+
+.mobile-user-header span,
+.mobile-user-header div {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
 .mobile-user-links a:hover {

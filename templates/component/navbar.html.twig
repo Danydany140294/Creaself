@@ -33,11 +33,16 @@
         <li class="mobile-auth-section">
             {% if app.user %}
                 <div class="mobile-user-section">
-                    <div class="mobile-user-header">
-    <i class="fas fa-user-circle"></i>
-    <span style="-webkit-text-fill-color: red !important; font-size: 20px !important; position: relative; z-index: 9999;">
-        {{ app.user.prenom }} {{ app.user.nom }}
-    </span>
+    <div class="mobile-user-header">
+        <i class="fas fa-user-circle" style="color: white; font-size: 28px; flex-shrink: 0;"></i>
+        <div style="display: flex; flex-direction: column; margin-left: 10px;">
+            <span style="color: #ffffff; -webkit-text-fill-color: #ffffff; font-size: 14px; font-weight: 700; line-height: 1.2; font-family: Arial, sans-serif; text-align: left;">
+                {{ app.user.prenom }} {{ app.user.nom }}
+            </span>
+            <span style="color: #ffffff; -webkit-text-fill-color: rgba(255,255,255,0.8); font-size: 11px; line-height: 1.2; font-family: Arial, sans-serif; text-align: left;">
+                {{ app.user.email }}
+            </span>
+        </div>
 </div>
                     
                     <nav class="mobile-user-links">
