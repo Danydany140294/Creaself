@@ -1,29 +1,15 @@
-// Effet interactif sur le bouton LOGIN
-document.querySelector('.enter').addEventListener('mouseenter', function() {
-    document.querySelectorAll('.floating-elements div').forEach(function(bubble) {
-        bubble.style.animationDuration = '8s';
-    });
-});
+// Toggle affichage mot de passe
+function togglePass() {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('togglePassword');
 
-document.querySelector('.enter').addEventListener('mouseleave', function() {
-    document.querySelectorAll('.floating-elements div').forEach(function(bubble, index) {
-        bubble.style.animationDuration = (12 + index) + 's';
-    });
-});
-
-// Effet sur le bouton BACK
-const backBtn = document.querySelector('.back-btn');
-
-if (backBtn) {
-    backBtn.addEventListener('mouseenter', function() {
-        document.querySelectorAll('.floating-elements div').forEach(function(bubble) {
-            bubble.style.animationDuration = '6s';
-        });
-    });
-
-    backBtn.addEventListener('mouseleave', function() {
-        document.querySelectorAll('.floating-elements div').forEach(function(bubble, index) {
-            bubble.style.animationDuration = (12 + index) + 's';
-        });
-    });
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
 }

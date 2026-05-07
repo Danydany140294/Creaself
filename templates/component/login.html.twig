@@ -4,25 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - LOGIX</title>
+
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
     <a href="{{ path('app_home') }}" class="back-btn">BACK</a>
-    
+
     <div class="container">
-        <div class="floating-elements">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
         <div class="form">
+
             <div class="logo">
                 <a href="{{ path('app_home') }}">
-                    <img src="{{ asset('asset/perline.jpg') }}" alt="Logo" style="max-width: 150px; height: auto; border-radius: 10px;">
+                    <img
+                        src="{{ asset('asset/perline.jpg') }}"
+                        alt="Logo"
+                        style="max-width:150px; height:auto; border-radius:10px;"
+                    >
                 </a>
             </div>
+
             <form method="post" action="{{ path('app_login') }}">
 
                 {% if error %}
@@ -39,16 +41,46 @@
                     <div class="alert alert-success">{{ message }}</div>
                 {% endfor %}
 
+                <!-- EMAIL -->
                 <div class="inputBox">
-                    <input type="email" name="email" value="{{ last_username }}" required="required">
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ last_username }}"
+                        placeholder=" "
+                        autocomplete="email"
+                        required
+                    >
                     <span>Email</span>
                 </div>
-                <div class="inputBox">
-                    <input type="password" name="password" required="required">
+
+                <!-- PASSWORD -->
+                <div class="inputBox" style="position:relative;">
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder=" "
+                        autocomplete="current-password"
+                        required
+                        style="padding-right:45px;"
+                    >
+
                     <span>Password</span>
+
+                    <i
+                        class="fas fa-eye"
+                        id="togglePassword"
+                        onclick="togglePass()"
+                        style="position:absolute; right:15px; top:17px; cursor:pointer; color:#666; font-size:1.1em; z-index:999;"
+                    ></i>
                 </div>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <input
+                    type="hidden"
+                    name="_csrf_token"
+                    value="{{ csrf_token('authenticate') }}"
+                >
 
                 <button type="submit" class="enter">LOGIN</button>
 
@@ -62,5 +94,6 @@
     </div>
 
     <script src="{{ asset('js/login.js') }}"></script>
+
 </body>
 </html>
