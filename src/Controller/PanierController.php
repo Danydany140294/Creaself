@@ -124,7 +124,7 @@ public function index(): Response
             $type = $data['type'] ?? null;
             $change = $data['change'] ?? 0;
             
-            if (!$id || !$type) {
+            if ($id === null || !$type) {
                 return $this->json([
                     'success' => false, 
                     'message' => 'Données invalides'
@@ -220,8 +220,8 @@ public function index(): Response
             }
             
             // Réindexer et sauvegarder
-            $panier['produits'] = array_values($panier['produits'] ?? []);
-            $panier['boxes'] = array_values($panier['boxes'] ?? []);
+            // $panier['produits'] = array_values($panier['produits'] ?? []);
+            // $panier['boxes'] = array_values($panier['boxes'] ?? []);
             
             $request->getSession()->set('panier', $panier);
             
@@ -308,9 +308,9 @@ $this->panierService->ajouterBoxPersonnalisable(
             $data = json_decode($request->getContent(), true);
             
             $id = $data['id'] ?? null;
-            $type = $data['type'] ?? null;
-            
-            if (!$id || !$type) {
+$type = $data['type'] ?? null;
+
+if ($id === null || !$type) {
                 return $this->json([
                     'success' => false, 
                     'message' => 'Données invalides'
@@ -357,34 +357,52 @@ $this->panierService->ajouterBoxPersonnalisable(
             
             // Visiteur - Supprimer dans la session
             $panier = $this->panierService->getPanier();
-            $initialCount = count($panier['produits'] ?? []) + count($panier['boxes'] ?? []);
-            
+            $itemFound = false;
+
             // Supprimer des produits
-            $panier['produits'] = array_filter($panier['produits'] ?? [], function($item) use ($id, $type) {
-                return !($item['produit']->getId() == $id && $type === 'Cookie');
+            $panier['produits'] = array_filter($panier['produits'] ?? [], function($item) use ($id, $type, &$itemFound) {
+                $shouldRemove = ($item['produit']->getId() == $id && $type === 'Cookie');
+                if ($shouldRemove) $itemFound = true;
+                return !$shouldRemove;
             });
-            
+
+            // // Supprimer des boxes fixes
+            // $panier['boxes'] = array_filter($panier['boxes'] ?? [], function($item) use ($id, $type, &$itemFound) {
+            //     $shouldRemove = ($item['box']->getId() == $id && strpos($type, 'Box') === 0);
+            //     if ($shouldRemove) $itemFound = true;
+            //     return !$shouldRemove;
+            // });
+
+            // if (!$itemFound) {
+            //     return $this->json([
+            //         'success' => false,
+            //         'message' => 'Article non trouvé dans le panier'
+            //     ], 404);
+            // }
+
             // Supprimer des boxes fixes
-            $panier['boxes'] = array_filter($panier['boxes'] ?? [], function($item) use ($id, $type) {
-                return !($item['box']->getId() == $id && strpos($type, 'Box') === 0);
-            });
-            
-            // Supprimer des boxes perso (si besoin - utiliser l'index)
-            // Note : les boxes perso n'ont pas vraiment d'ID fixe dans la session
-            
-            $finalCount = count($panier['produits']) + count($panier['boxes']);
-            
-            if ($initialCount === $finalCount) {
-                return $this->json([
-                    'success' => false, 
-                    'message' => 'Article non trouvé dans le panier'
-                ], 404);
-            }
-            
-            // Réindexer et sauvegarder
-            $panier['produits'] = array_values($panier['produits']);
-            $panier['boxes'] = array_values($panier['boxes']);
-            
+$panier['boxes'] = array_filter($panier['boxes'] ?? [], function($item) use ($id, $type, &$itemFound) {
+    $shouldRemove = ($item['box']->getId() == $id && strpos($type, 'Box') === 0);
+    if ($shouldRemove) $itemFound = true;
+    return !$shouldRemove;
+});
+
+// Supprimer des boxes personnalisées
+if (!$itemFound && $type === 'Box Personnalisée') {
+    if (isset($panier['boxes_perso'][$id])) {
+        unset($panier['boxes_perso'][$id]);
+        $itemFound = true;
+    }
+}
+
+if (!$itemFound) {
+    return $this->json([
+        'success' => false,
+        'message' => 'Article non trouvé dans le panier'
+    ], 404);
+}
+
+            // Sauvegarder (sans réindexer pour conserver les clés = IDs)
             $request->getSession()->set('panier', $panier);
             
             return $this->json([

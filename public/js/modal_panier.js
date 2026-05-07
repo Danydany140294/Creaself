@@ -348,12 +348,9 @@ if (item.image) {
      * Supprimer un article
      */
     async removeItem(itemId, itemType) {
-        if (!confirm('Êtes-vous sûr de vouloir retirer cet article ?')) {
-            return;
-        }
         
         // Animation de suppression
-        const card = document.querySelector(`.cart-card[data-id="${itemId}"][data-type="${itemType}"]`);
+       const card = document.querySelector(`.cart-card[data-id="${itemId}"]`);
         if (card) {
             card.style.transform = 'translateX(50px)';
             card.style.opacity = '0';
