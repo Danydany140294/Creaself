@@ -10,6 +10,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/paiement.css') }}">
 {% endblock %}
 
@@ -76,80 +77,89 @@
    PAGE DE PAIEMENT NORMALE
    ======================================== #}
 
-<div class="container my-5" style="max-width: 800px;">
-    <h1 class="mb-4">Finaliser ma commande</h1>
+<div class="paiement-experience">
+    <div class="paiement-container">
 
-    {# ===== ADRESSE DE LIVRAISON ===== #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">📍 Adresse de livraison</h5>
-        </div>
-        <div class="card-body">
-            {% if adresses is empty %}
-                <div class="alert alert-warning">
-                    Vous n'avez pas encore d'adresse enregistrée.
-                    <a href="{{ path('app_user_dashboard') }}">Ajouter une adresse</a>
+        <header class="paiement-header">
+            <h1>Finaliser ma <span class="pink-text italic">Commande</span></h1>
+        </header>
+
+        <div class="paiement-layout">
+
+            {# ===== ADRESSE DE LIVRAISON ===== #}
+            <div class="paiement-card">
+                <div class="paiement-card-header">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <h5>Adresse de livraison</h5>
                 </div>
-            {% else %}
-                <div class="row g-3" id="adresses-container">
-                    {% for adresse in adresses %}
-                    <div class="col-md-6">
-                        <div class="adresse-card border rounded p-3 {{ adresse.parDefaut ? 'border-success selected' : '' }}"
-                             data-id="{{ adresse.id }}"
-                             onclick="selectAdresse(this, {{ adresse.id }})">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <strong>{{ adresse.nom }}</strong>
-                                {% if adresse.parDefaut %}
-                                    <span class="badge bg-success">Par défaut</span>
-                                {% endif %}
-                            </div>
-                            <p class="mb-0 text-muted small">
-                                {{ adresse.rue }}<br>
-                                {% if adresse.complement %}{{ adresse.complement }}<br>{% endif %}
-                                {{ adresse.codePostal }} {{ adresse.ville }}<br>
-                                {{ adresse.pays }}
-                            </p>
+                <div class="paiement-card-body">
+                    {% if adresses is empty %}
+                        <div class="paiement-alert">
+                            Vous n'avez pas encore d'adresse enregistrée.
+                            <a href="{{ path('app_user_dashboard') }}#adresses">Ajouter une adresse</a>
                         </div>
-                    </div>
-                    {% endfor %}
+                    {% else %}
+                        <div class="adresses-grid" id="adresses-container">
+                            {% for adresse in adresses %}
+                            <div class="adresse-card {{ adresse.parDefaut ? 'selected' : '' }}"
+                                 data-id="{{ adresse.id }}"
+                                 onclick="selectAdresse(this, {{ adresse.id }})">
+                                <div class="adresse-card-top">
+                                    <strong>{{ adresse.nom }}</strong>
+                                    {% if adresse.parDefaut %}
+                                        <span class="badge-default">Par défaut</span>
+                                    {% endif %}
+                                </div>
+                                <p class="adresse-detail">
+                                    {{ adresse.rue }}<br>
+                                    {% if adresse.complement %}{{ adresse.complement }}<br>{% endif %}
+                                    {{ adresse.codePostal }} {{ adresse.ville }}<br>
+                                    {{ adresse.pays }}
+                                </p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <a href="{{ path('app_user_dashboard') }}#adresses" class="btn-add-adresse">
+                            + Ajouter une adresse
+                        </a>
+                    {% endif %}
                 </div>
-                <a href="{{ path('app_user_dashboard') }}" class="btn btn-outline-secondary btn-sm mt-3">
-                    + Ajouter une adresse
-                </a>
-            {% endif %}
-        </div>
-    </div>
-
-    {# ===== RÉCAPITULATIF ===== #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">🛒 Récapitulatif</h5>
-        </div>
-        <div class="card-body">
-            <div class="d-flex justify-content-between">
-                <span>Sous-total</span>
-                <span>{{ panier.total|number_format(2, ',', ' ') }} €</span>
             </div>
-            <div class="d-flex justify-content-between">
-                <span>Frais de livraison</span>
-                <span>{{ frais_livraison == 0 ? 'Offerts' : frais_livraison|number_format(2, ',', ' ') ~ ' €' }}</span>
+
+            {# ===== RÉCAPITULATIF ===== #}
+            <div class="paiement-card">
+                <div class="paiement-card-header">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <h5>Récapitulatif</h5>
+                </div>
+                <div class="paiement-card-body">
+                    <div class="recap-line">
+                        <span>Sous-total</span>
+                        <span>{{ panier.total|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                    <div class="recap-line">
+                        <span>Frais de livraison</span>
+                        <span>{{ frais_livraison == 0 ? 'Offerts 🎉' : frais_livraison|number_format(2, ',', ' ') ~ ' €' }}</span>
+                    </div>
+                    <div class="recap-line recap-total">
+                        <span>Total</span>
+                        <span class="total-amount">{{ total_final|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                </div>
             </div>
-            <hr>
-            <div class="d-flex justify-content-between fw-bold fs-5">
-                <span>Total</span>
-                <span>{{ total_final|number_format(2, ',', ' ') }} €</span>
+
+            {# ===== BOUTON PAYER ===== #}
+            <button id="checkout-btn" class="btn-payer {% if adresses is empty %}btn-payer-disabled{% endif %}"
+                    {% if adresses is empty %}disabled{% endif %}>
+                💳 Payer {{ total_final|number_format(2, ',', ' ') }} €
+                <span class="btn-sparkle">✨</span>
+            </button>
+
+            <div id="adresse-warning" class="paiement-warning hidden">
+                Veuillez sélectionner une adresse de livraison.
             </div>
+
         </div>
-    </div>
-
-    {# ===== BOUTON PAYER ===== #}
-    <button id="checkout-btn" class="btn btn-success w-100 py-3 fs-5"
-            {% if adresses is empty %}disabled{% endif %}>
-        💳 Payer {{ total_final|number_format(2, ',', ' ') }} €
-    </button>
-
-    <div id="adresse-warning" class="alert alert-danger mt-3 d-none">
-        Veuillez sélectionner une adresse de livraison.
     </div>
 </div>
 
