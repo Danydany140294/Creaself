@@ -61,6 +61,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+
+    
         $user = $token->getUser();
 
         // ✅ Migration automatique du panier session → BDD
@@ -70,6 +72,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         if ($panierSession) {
             $this->panierService->migrerSessionVersBDD($user);
         }
+         
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
@@ -79,7 +82,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('app_quisommesnous'));
+        return new RedirectResponse($this->urlGenerator->generate('app_user_dashboard') . '#profil');
     }
 
     protected function getLoginUrl(Request $request): string

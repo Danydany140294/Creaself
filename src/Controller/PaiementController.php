@@ -13,9 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 final class PaiementController extends AbstractController
 {
+    use TargetPathTrait; // ← ajouter cette ligne
+
     private string $stripeSecretKey;
 
     public function __construct()
@@ -28,13 +31,19 @@ final class PaiementController extends AbstractController
     public function index(
         PanierRepository $panierRepo,
         LignePanierRepository $lignePanierRepo,
-        AdresseRepository $adresseRepo
+        AdresseRepository $adresseRepo,
+        Request $request     
     ): Response
     {
-        if (!$this->getUser()) {
-            $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
-            return $this->redirectToRoute('app_login');
-        }
+       if (!$this->getUser()) {
+    $this->saveTargetPath(
+        $request->getSession(),
+        'main',
+        $this->generateUrl('app_user_dashboard') . '#adresses'
+    );
+    $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
+    return $this->redirectToRoute('app_login');
+}
 
         $session = $this->container->get('request_stack')->getSession();
         $user = $this->getUser();
