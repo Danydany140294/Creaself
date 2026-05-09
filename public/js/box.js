@@ -1,25 +1,103 @@
+// ========== NOTIFICATION TOAST GLASS ==========
+function showNotification(message, type = 'success') {
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+
+    const isMobile = window.innerWidth < 768;
+    const icon = type === 'success' ? 'add_shopping_cart' : 'error';
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification glass-card flex items-center shadow-2xl border-l-4 border-l-or';
+    toast.style.pointerEvents = 'auto';
+
+    if (isMobile) {
+        toast.style.cssText = 'gap: 8px; padding: 8px 10px; border-radius: 12px; max-width: 220px; pointer-events: auto;';
+        toast.innerHTML = `
+            <div style="background: rgba(204,167,72,0.2); color: #CCA748; padding: 4px; border-radius: 8px; flex-shrink: 0;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold" style="font-size: 11px; line-height: 1.2;">${message}</p>
+                <p class="text-chocolat/50 uppercase font-bold tracking-widest" style="font-size: 8px;">Délice enregistré</p>
+            </div>
+        `;
+    } else {
+        toast.style.cssText = 'gap: 16px; padding: 16px; border-radius: 16px; pointer-events: auto;';
+        toast.innerHTML = `
+            <div class="bg-or/20 text-or p-2 rounded-xl">
+                <span class="material-symbols-outlined">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold">${message}</p>
+                <p class="text-chocolat/50 text-[10px] uppercase font-bold tracking-widest">Délice enregistré</p>
+            </div>
+        `;
+    }
+
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
 // ========== GESTION DES QUANTITÉS BOXES FIXES ==========
 function updateBoxQty(inputId, delta, min, max) {
     const input = document.getElementById(inputId);
     if (!input) return;
-    
+
     let currentValue = parseInt(input.value) || min;
     let newValue = currentValue + delta;
-    
-    // Limiter entre min et max
+
     if (newValue >= min && newValue <= max) {
         input.value = newValue;
     }
 }
 
+// ========== AJOUT AU PANIER BOXES FIXES VIA AJAX ==========
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.box-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const url = form.action;
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(() => {
+                showNotification('Box ajoutée au panier !', 'success');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter';
+
+                const badge = document.getElementById('cartBadge');
+                if (badge) {
+                    const current = parseInt(badge.innerText) || 0;
+                    badge.innerText = current + 1;
+                    badge.classList.add('show');
+                }
+            })
+            .catch(err => {
+                console.error('Erreur :', err);
+                showNotification("Erreur lors de l'ajout", 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter';
+            });
+        });
+    });
+});
+
 // ========== ANIMATION AU SCROLL ==========
 document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.box-card');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
-                // Animation décalée pour chaque carte
                 setTimeout(() => {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
@@ -32,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -50px 0px'
     });
 
-    // Préparer les cartes pour l'animation
     cards.forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
@@ -44,22 +121,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // ========== GESTION MODAL BOX PERSONNALISABLE ==========
 let selectedCookies = {};
 
-// Ouvrir la modal
 function openModalBoxPerso() {
     const modal = document.getElementById('modalBoxPerso');
-    
     if (modal) {
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        
-        // Reset au cas où
         updateCounter();
-    } else {
-        console.error('❌ Modal #modalBoxPerso introuvable dans le DOM !');
     }
 }
 
-// Fermer la modal
 function closeModalBoxPerso() {
     const modal = document.getElementById('modalBoxPerso');
     if (modal) {
@@ -69,185 +139,124 @@ function closeModalBoxPerso() {
     }
 }
 
-// Réinitialiser la sélection
 function resetSelection() {
     selectedCookies = {};
-    
-    // Reset tous les inputs
     document.querySelectorAll('.cookie-qty-input').forEach(input => {
         input.value = 0;
         const produitId = input.id.replace('qty_', '');
         updateButtonStates(produitId, 0);
     });
-    
     updateCounter();
 }
 
-// Mettre à jour la quantité d'un cookie
 function updateCookieQty(produitId, delta, maxStock) {
     const input = document.getElementById(`qty_${produitId}`);
-    if (!input) {
-        console.error(`Input qty_${produitId} non trouvé`);
-        return;
-    }
-    
+    if (!input) return;
+
     let currentQty = parseInt(input.value) || 0;
     let newQty = currentQty + delta;
-    
-    // Calculer le total actuel sans ce cookie
     let totalCookies = getTotalCookies() - currentQty;
-    
-    // Contraintes
+
     if (newQty < 0) newQty = 0;
     if (newQty > maxStock) newQty = maxStock;
     if (totalCookies + newQty > 12) newQty = 12 - totalCookies;
-    
-    // Mettre à jour l'input
+
     input.value = newQty;
-    
-    // Mettre à jour l'objet selectedCookies
+
     if (newQty > 0) {
         selectedCookies[`produit_${produitId}`] = newQty;
     } else {
         delete selectedCookies[`produit_${produitId}`];
     }
-    
-    // Mettre à jour les états des boutons
+
     updateButtonStates(produitId, newQty);
-    
-    // Mettre à jour le compteur global
     updateCounter();
 }
 
-// Mettre à jour les états des boutons +/-
 function updateButtonStates(produitId, qty) {
     const card = document.querySelector(`[data-produit-id="${produitId}"]`);
     if (!card) return;
-    
+
     const minusBtn = card.querySelector('.btn-minus');
     const plusBtn = card.querySelector('.btn-plus');
-    
-    // Bouton moins : désactivé si qty = 0
-    if (minusBtn) {
-        minusBtn.disabled = qty === 0;
-    }
-    
-    // Bouton plus : désactivé si total >= 12
-    if (plusBtn) {
-        const totalCookies = getTotalCookies();
-        plusBtn.disabled = totalCookies >= 12;
-    }
+
+    if (minusBtn) minusBtn.disabled = qty === 0;
+    if (plusBtn) plusBtn.disabled = getTotalCookies() >= 12;
 }
 
-// Calculer le total de cookies sélectionnés
 function getTotalCookies() {
     return Object.values(selectedCookies).reduce((sum, qty) => sum + qty, 0);
 }
 
-// Mettre à jour le compteur et la barre de progression
 function updateCounter() {
     const total = getTotalCookies();
     const counterElement = document.getElementById('cookiesSelected');
     const progressBar = document.getElementById('progressBar');
     const btnValider = document.getElementById('btnValiderBox');
-    
-    if (!counterElement || !progressBar || !btnValider) {
-        console.error('Éléments manquants pour le compteur');
-        return;
-    }
-    
-    // Mettre à jour le compteur
+
+    if (!counterElement || !progressBar || !btnValider) return;
+
     counterElement.textContent = total;
-    
-    // Mettre à jour la barre de progression
-    const percentage = (total / 12) * 100;
-    progressBar.style.width = `${percentage}%`;
-    
-    // Changer la couleur selon l'état
+    progressBar.style.width = `${(total / 12) * 100}%`;
+
     if (total === 12) {
-        progressBar.style.backgroundColor = '#10b981'; // Vert
+        progressBar.style.backgroundColor = '#10b981';
         btnValider.disabled = false;
     } else if (total > 12) {
-        progressBar.style.backgroundColor = '#ef4444'; // Rouge
+        progressBar.style.backgroundColor = '#ef4444';
         btnValider.disabled = true;
     } else {
-        progressBar.style.backgroundColor = '#3b82f6'; // Bleu
+        progressBar.style.backgroundColor = '#3b82f6';
         btnValider.disabled = true;
     }
-    
-    // Mettre à jour tous les boutons plus
+
     document.querySelectorAll('.cookie-card').forEach(card => {
         const produitId = card.getAttribute('data-produit-id');
         const input = document.getElementById(`qty_${produitId}`);
-        if (input) {
-            const currentQty = parseInt(input.value) || 0;
-            updateButtonStates(produitId, currentQty);
-        }
+        if (input) updateButtonStates(produitId, parseInt(input.value) || 0);
     });
 }
 
-// Valider et ajouter la box personnalisée au panier
 async function validerBoxPerso() {
     const total = getTotalCookies();
-    
-    // Vérifier qu'on a exactement 12 cookies
+
     if (total !== 12) {
-        alert('Vous devez sélectionner exactement 12 cookies !');
+        showNotification('Sélectionnez exactement 12 cookies !', 'error');
         return;
     }
-    
-    // Préparer les données
-    const data = {
-        cookies: selectedCookies
-    };
-    
+
     try {
         const response = await fetch('/panier/ajouter-box-personnalisable', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cookies: selectedCookies })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             closeModalBoxPerso();
-            alert(result.message || 'Box personnalisée ajoutée au panier !');
-            
-            // Recharger la page pour mettre à jour le panier
-            location.reload();
+            showNotification(result.message || 'Box ajoutée au panier !', 'success');
+            setTimeout(() => window.location.href = window.location.pathname, 1500);
         } else {
-            alert(result.message || 'Une erreur est survenue');
+            showNotification(result.message || 'Une erreur est survenue', 'error');
         }
     } catch (error) {
-        console.error('❌ Erreur lors de l\'ajout au panier:', error);
-        alert('Une erreur est survenue lors de l\'ajout au panier');
+        console.error('Erreur:', error);
+        showNotification("Erreur lors de l'ajout au panier", 'error');
     }
 }
 
-// Fermer la modal en cliquant à l'extérieur
+// ========== FERMETURE MODAL ==========
 window.addEventListener('click', function(event) {
     const modal = document.getElementById('modalBoxPerso');
-    if (modal && event.target === modal) {
-        closeModalBoxPerso();
-    }
+    if (modal && event.target === modal) closeModalBoxPerso();
 });
 
-// Fermer la modal avec la touche Échap
 document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeModalBoxPerso();
-    }
+    if (event.key === 'Escape') closeModalBoxPerso();
 });
-
-// Log au chargement
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.hash === '#modalBoxPerso') {
-        openModalBoxPerso();
-    }
+    if (window.location.hash === '#modalBoxPerso') openModalBoxPerso();
 });
-
-
