@@ -20,7 +20,7 @@
    MODAL DE SUCCÈS
    ======================================== #}
 {% if show_success_modal is defined and show_success_modal %}
-    <div class="modal-overlay" id="successModal">
+    <div class="modal-overlay" id="successModal" style="display: flex;">
         <div class="confetti"></div>
         <div class="confetti"></div>
         <div class="confetti"></div>
@@ -242,17 +242,4 @@
 
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    {% if show_success_modal is defined and show_success_modal %}
-        <script src="{{ asset('js/paiement.js') }}"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const modal = document.getElementById('successModal');
-                if (modal) {
-                    modal.style.display = 'flex';
-                }
-            });
-        </script>
-    {% endif %}
-{% endblock %}
+
