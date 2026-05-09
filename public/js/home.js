@@ -126,9 +126,7 @@ function addToBox(name, imgSrc, id) {
     cookieCount++;
     countDisplay.innerText = `${cookieCount}/${maxCookies}`;
 
-    if (window.innerWidth < 768) {
-        isoBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+   
 
     showToast(`${name} ajouté au coffret !`, 'cookie');
 }
