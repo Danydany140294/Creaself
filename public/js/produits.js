@@ -117,43 +117,41 @@ document.addEventListener('DOMContentLoaded', function() {
    ======================================== */
 
 function showNotification(message, type = 'success', duration = 3000) {
-    // Retirer les toasts existants
-    document.querySelectorAll('.nc-toast').forEach(t => t.remove());
-    
-    // Créer le nouveau toast
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+
+    const isMobile = window.innerWidth < 768;
+    const icon = type === 'success' ? 'add_shopping_cart' : 'error';
+
     const toast = document.createElement('div');
-    toast.className = `nc-toast nc-toast-${type}`;
-    toast.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    // Styles inline pour le toast
-    Object.assign(toast.style, {
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        background: type === 'success' ? 'var(--perline-dore)' : '#e74c3c',
-        color: type === 'success' ? 'var(--texte-principal)' : 'white',
-        padding: '16px 24px',
-        borderRadius: 'var(--radius-md)',
-        boxShadow: 'var(--ombre-forte)',
-        zIndex: '9999',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        fontWeight: '600',
-        animation: 'slideInRight 0.3s ease',
-        maxWidth: '400px'
-    });
-    
-    document.body.appendChild(toast);
-    
-    // Retirer après le délai
-    setTimeout(() => {
-        toast.style.animation = 'slideOutRight 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-    }, duration);
+    toast.className = 'toast-notification glass-card flex items-center shadow-2xl border-l-4 border-l-or';
+
+    if (isMobile) {
+        toast.style.cssText = 'gap: 8px; padding: 8px 10px; border-radius: 12px; max-width: 220px;';
+        toast.innerHTML = `
+            <div style="background: rgba(204,167,72,0.2); color: #CCA748; padding: 4px; border-radius: 8px; flex-shrink: 0;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold" style="font-size: 11px; line-height: 1.2;">${message}</p>
+                <p class="text-chocolat/50 uppercase font-bold tracking-widest" style="font-size: 8px;">Délice enregistré</p>
+            </div>
+        `;
+    } else {
+        toast.style.cssText = 'gap: 16px; padding: 16px; border-radius: 16px;';
+        toast.innerHTML = `
+            <div class="bg-or/20 text-or p-2 rounded-xl">
+                <span class="material-symbols-outlined">${icon}</span>
+            </div>
+            <div>
+                <p class="text-chocolat font-bold">${message}</p>
+                <p class="text-chocolat/50 text-[10px] uppercase font-bold tracking-widest">Délice enregistré</p>
+            </div>
+        `;
+    }
+
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.remove(), duration);
 }
 
 /* ========================================

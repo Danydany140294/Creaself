@@ -4,9 +4,8 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {# Swiper CSS #}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    {# CSS personnalisé Perline #}
     <link rel="stylesheet" href="{{ asset('css/produits.css') }}">
 {% endblock %}
 
@@ -209,6 +208,7 @@
         </div>
     </section>
 {% endif %} #}
+<div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
 
 {% endblock %}
 
