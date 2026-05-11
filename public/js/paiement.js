@@ -26,7 +26,7 @@ function closeSuccessModal() {
         modal.classList.remove('show');
         setTimeout(() => {
             modal.style.display = 'none';
-        }, 8);
+        }, 300);
     }
 }
 
