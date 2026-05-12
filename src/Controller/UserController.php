@@ -131,6 +131,50 @@ final class UserController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
+    #[Route('/mon-compte/update-avatar', name: 'app_user_update_avatar', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function updateAvatar(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+
+        $file = $request->files->get('avatar');
+
+        if (!$file) {
+            return new JsonResponse(['success' => false, 'error' => 'Aucun fichier reçu'], 400);
+        }
+
+        // Vérifier le type via l'extension (sans dépendance à l'extension fileinfo)
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        $extension = strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $allowedExtensions)) {
+            return new JsonResponse(['success' => false, 'error' => 'Format non autorisé'], 400);
+        }
+
+        // Supprimer l'ancien avatar si ce n'est pas le défaut
+        $ancienAvatar = $user->getAvatar();
+        if ($ancienAvatar && $ancienAvatar !== 'avatar.jpg') {
+            $ancienChemin = $this->getParameter('kernel.project_dir') . '/public/asset/images/home/' . $ancienAvatar;
+            if (file_exists($ancienChemin)) {
+                unlink($ancienChemin);
+            }
+        }
+
+        // Générer un nom unique et déplacer le fichier
+        $nouveauNom = uniqid('avatar_') . '.' . $extension;
+        $destination = $this->getParameter('kernel.project_dir') . '/public/asset/images/home/';
+        $file->move($destination, $nouveauNom);
+
+        // Sauvegarder en base
+        $user->setAvatar($nouveauNom);
+        $entityManager->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'avatarUrl' => '/asset/images/home/' . $nouveauNom
+        ]);
+    }
+
     // ========================================
     // ROUTES DYNAMIQUES /{id} (après les routes fixes)
     // ========================================

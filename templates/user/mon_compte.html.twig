@@ -19,12 +19,16 @@
             <aside class="dashboard-sidebar">
                 <div class="sidebar-content">
                     <div class="user-header">
-                        <div class="user-avatar-wrapper">
-                            <div class="user-avatar" style="background-image: url('{{ app.user.avatar ? asset('asset/images/home/' ~ app.user.avatar) : asset('asset/images/home/avatar.jpg') }}');"></div>
-                            <div class="user-badge">
-                                <span class="material-symbols-outlined">verified</span>
-                            </div>
-                        </div>
+                        <div class="user-avatar-wrapper" style="cursor:pointer" onclick="document.getElementById('input-avatar').click()">
+    <div class="user-avatar" id="avatar-preview" style="background-image: url('{{ app.user.avatar ? asset('asset/images/home/' ~ app.user.avatar) : asset('asset/images/home/avatar.jpg') }}');"></div>
+    <div class="user-badge">
+        <span class="material-symbols-outlined">verified</span>
+    </div>
+    <div class="avatar-overlay">
+        <span class="material-symbols-outlined">photo_camera</span>
+    </div>
+    <input type="file" id="input-avatar" accept="image/*" style="display:none">
+</div>
                         <div class="user-info">
                             <h1 class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</h1>
                             <p class="user-title">Client Perline</p>
@@ -576,7 +580,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ asset('js/perline-dashboard.js') }}"></script>
-   <script>
+<script>
 function choisirAdresse(id) {
     fetch('{{ path('app_paiement_choisir_adresse') }}', {
         method: 'POST',
@@ -628,9 +632,7 @@ function initInlineEditProfil() {
             body: JSON.stringify(payload)
         })
         .then(res => {
-            if (!res.ok) {
-                throw new Error('Statut HTTP : ' + res.status);
-            }
+            if (!res.ok) throw new Error('Statut HTTP : ' + res.status);
             return res.json();
         })
         .then(data => {
@@ -657,8 +659,43 @@ function initInlineEditProfil() {
     });
 }
 
+function initAvatarUpload() {
+    const input = document.getElementById('input-avatar');
+    if (!input) return;
+
+    input.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        fetch('{{ path('app_user_update_avatar') }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Statut HTTP : ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                document.getElementById('avatar-preview').style.backgroundImage = `url('${data.avatarUrl}?t=' + Date.now())`;
+                showNotification('Photo de profil mise à jour !', 'success');
+            } else {
+                showNotification(data.error || 'Erreur lors de l\'upload', 'error');
+            }
+        })
+        .catch((err) => {
+            console.error('Erreur avatar :', err);
+            showNotification('Erreur : ' + err.message, 'error');
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initInlineEditProfil();
+    initAvatarUpload();
 });
 </script>
 {% endblock %}
