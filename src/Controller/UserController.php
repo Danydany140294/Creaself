@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\AdresseService;
@@ -18,18 +20,18 @@ use App\Service\AdresseService;
 #[Route('/user')]
 final class UserController extends AbstractController
 {
-   public function __construct(
-    private AdresseService $adresseService
-) {} 
+    public function __construct(
+        private AdresseService $adresseService
+    ) {}
 
+    // ========================================
+    // ROUTES FIXES (avant les routes /{id})
+    // ========================================
 
-
-
-
-/**
+    /**
      * Liste tous les utilisateurs (admin uniquement)
      */
-    #[Route(name: 'app_user_index', methods: ['GET'])]
+    #[Route('', name: 'app_user_index', methods: ['GET'])]
     #[IsGranted('ROLE_ADMIN')]
     public function index(UserRepository $userRepository): Response
     {
@@ -64,7 +66,7 @@ final class UserController extends AbstractController
 
     /**
      * Dashboard de l'utilisateur connecté avec gestion des adresses
-     * ⚠️ IMPORTANT : Cette route doit être AVANT /{id} pour éviter les conflits
+     * ⚠️ Doit être AVANT /{id} pour éviter les conflits
      */
     #[Route('/mon-compte', name: 'app_user_dashboard', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -104,6 +106,34 @@ final class UserController extends AbstractController
             'adresseForm' => $adresseForm->createView(),
         ]);
     }
+
+    /**
+     * Mise à jour du profil en AJAX (inline edit)
+     * ⚠️ Doit être AVANT /{id} pour éviter les conflits
+     */
+    #[Route('/mon-compte/update-profil', name: 'app_user_update_profil', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function updateProfil(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+
+        $data = json_decode($request->getContent(), true);
+
+        if (isset($data['nom']))       $user->setNom($data['nom']);
+        if (isset($data['prenom']))    $user->setPrenom($data['prenom']);
+        if (isset($data['telephone'])) $user->setTelephone($data['telephone']);
+        if (isset($data['dateNaissance']) && $data['dateNaissance']) {
+            $user->setDateNaissance(new \DateTime($data['dateNaissance']));
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    // ========================================
+    // ROUTES DYNAMIQUES /{id} (après les routes fixes)
+    // ========================================
 
     /**
      * Afficher un utilisateur spécifique (admin uniquement)
@@ -153,6 +183,4 @@ final class UserController extends AbstractController
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    
 }
