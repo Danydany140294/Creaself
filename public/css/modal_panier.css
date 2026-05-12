@@ -801,9 +801,22 @@
     }
 
     /* ========== BILL DETAILS ========== */
-    .bill-details {
-        display: none !important;
-    }
+    /* ========== BILL DETAILS ========== */
+.bill-details {
+    display: block !important;
+    margin: 0 !important;
+}
+
+.bill-line {
+    display: none !important;
+    padding: 0.2rem 0 !important;
+    font-size: 0.7rem !important;
+}
+
+/* Afficher uniquement la ligne livraison */
+.bill-line:nth-child(2) {
+    display: flex !important;
+}
 
     /* ========== TOTAL ========== */
     .total-section {
