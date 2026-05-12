@@ -599,6 +599,20 @@ body {
     position: relative;
 }
 
+.user-avatar-initiales {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white-chips);
+    color: var(--chocolate-dark);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: 'Quicksand', sans-serif;
+    text-transform: uppercase;
+    user-select: none;
+}
+
 .avatar-overlay {
     position: absolute;
     inset: 0;

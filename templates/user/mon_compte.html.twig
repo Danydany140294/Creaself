@@ -19,16 +19,26 @@
             <aside class="dashboard-sidebar">
                 <div class="sidebar-content">
                     <div class="user-header">
+
+                        {# Avatar : photo si dispo, sinon initiales #}
                         <div class="user-avatar-wrapper" style="cursor:pointer" onclick="document.getElementById('input-avatar').click()">
-    <div class="user-avatar" id="avatar-preview" style="background-image: url('{{ app.user.avatar ? asset('asset/images/home/' ~ app.user.avatar) : asset('asset/images/home/avatar.jpg') }}');"></div>
-    <div class="user-badge">
-        <span class="material-symbols-outlined">verified</span>
-    </div>
-    <div class="avatar-overlay">
-        <span class="material-symbols-outlined">photo_camera</span>
-    </div>
-    <input type="file" id="input-avatar" accept="image/*" style="display:none">
-</div>
+                            {% if app.user.avatar %}
+                                <div class="user-avatar" id="avatar-preview"
+                                     style="background-image: url('{{ asset('asset/images/home/' ~ app.user.avatar) }}');"></div>
+                            {% else %}
+                                <div class="user-avatar user-avatar-initiales" id="avatar-preview">
+                                    {{ app.user.initiales }}
+                                </div>
+                            {% endif %}
+                            <div class="user-badge">
+                                <span class="material-symbols-outlined">verified</span>
+                            </div>
+                            <div class="avatar-overlay">
+                                <span class="material-symbols-outlined">photo_camera</span>
+                            </div>
+                            <input type="file" id="input-avatar" accept="image/*" style="display:none">
+                        </div>
+
                         <div class="user-info">
                             <h1 class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</h1>
                             <p class="user-title">Client Perline</p>
@@ -680,7 +690,11 @@ function initAvatarUpload() {
         })
         .then(data => {
             if (data.success) {
-                document.getElementById('avatar-preview').style.backgroundImage = `url('${data.avatarUrl}?t=' + Date.now())`;
+                const preview = document.getElementById('avatar-preview');
+                // Remplace les initiales par la photo uploadée
+                preview.textContent = '';
+                preview.classList.remove('user-avatar-initiales');
+                preview.style.backgroundImage = `url('${data.avatarUrl}?t=${Date.now()}')`;
                 showNotification('Photo de profil mise à jour !', 'success');
             } else {
                 showNotification(data.error || 'Erreur lors de l\'upload', 'error');

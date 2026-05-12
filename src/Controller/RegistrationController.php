@@ -14,26 +14,41 @@ use Symfony\Component\Routing\Attribute\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
 
             // Hash le mot de passe
+            /** @var string $plainPassword */
+            $plainPassword = $form->get('plainPassword')->getData();
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            // 🔥 AJOUTE CETTE LIGNE - Définir le rôle par défaut
+            // Rôle par défaut
             $user->setRoles(['ROLE_USER']);
+
+            // Avatar optionnel
+            $avatarFile = $form->get('avatarFile')->getData();
+            if ($avatarFile) {
+                $extension = strtolower(pathinfo($avatarFile->getClientOriginalName(), PATHINFO_EXTENSION));
+                $nouveauNom = uniqid('avatar_') . '.' . $extension;
+                $avatarFile->move(
+                    $this->getParameter('kernel.project_dir') . '/public/asset/images/home/',
+                    $nouveauNom
+                );
+                $user->setAvatar($nouveauNom);
+            }
+            // Si pas de fichier → avatar reste null (pas de photo)
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Message de succès (optionnel)
             $this->addFlash('success', 'Votre compte a été créé avec succès !');
 
             return $this->redirectToRoute('app_login');
