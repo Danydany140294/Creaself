@@ -76,40 +76,52 @@
                 {# ONGLET 1 : Mon Profil (Dashboard principal) #}
                 <div id="tab-profil" class="tab-content active">
                     <div class="cards-grid">
-                        {# Carte Dernière commande #}
-                        <div class="card card-order">
-                            <div class="card-body">
-                                <div class="card-header-flex">
-                                    <div>
-                                        <h3 class="card-title">Dernière commande</h3>
-                                        <p class="card-subtitle">N° 84920 — 14 Mars 2024</p>
-                                    </div>
-                                    <span class="badge badge-success">
-                                        <span class="badge-dot"></span>
-                                        Expédiée
-                                    </span>
-                                </div>
-                                
-                                <div class="order-preview">
-                                    <div class="order-images">
-                                        <img src="{{ asset('asset/images/produits/cookie-pistache-cannelle.png') }}" alt="Cookie 1" class="order-img">
-                                        <img src="{{ asset('asset/images/produits/cookie-peche-caramel.png') }}" alt="Cookie 2" class="order-img">
-                                        <div class="order-img-more">+2</div>
-                                    </div>
-                                    <div class="order-info">
-                                        <p class="order-name">Boîte Signature & Pépites</p>
-                                        <p class="order-delivery">Livraison prévue demain</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button class="btn btn-primary btn-full">
-                                <span class="material-symbols-outlined">local_shipping</span>
-                                Suivre ma livraison
-                            </button>
-                            
-                            <span class="card-icon-bg material-symbols-outlined">package</span>
-                        </div>
+                       {# Carte Dernière commande #}
+{% set derniereCommande = app.user.commandes|last %}
+<div class="card card-order">
+    <div class="card-body">
+        {% if derniereCommande %}
+            <div class="card-header-flex">
+                <div>
+                    <h3 class="card-title">Dernière commande</h3>
+                    <p class="card-subtitle">{{ derniereCommande.numeroCommande }} — {{ derniereCommande.dateCommande|date('d M Y') }}</p>
+                </div>
+                <span class="badge badge-success">
+                    <span class="badge-dot"></span>
+                    {{ derniereCommande.statutLabel }}
+                </span>
+            </div>
+
+            <div class="order-preview">
+                <div class="order-images">
+                    {% for ligne in derniereCommande.lignesCommande|slice(0, 2) %}
+                        {% if ligne.produit %}
+                            <img src="{{ asset('asset/images/produits/' ~ ligne.produit.image) }}" alt="{{ ligne.produit.name }}" class="order-img">
+                        {% endif %}
+                    {% endfor %}
+                    {% if derniereCommande.lignesCommande|length > 2 %}
+                        <div class="order-img-more">+{{ derniereCommande.lignesCommande|length - 2 }}</div>
+                    {% endif %}
+                </div>
+                <div class="order-info">
+                    <p class="order-name">{{ derniereCommande.totalTTC|number_format(2, ',', ' ') }}€</p>
+                    <p class="order-delivery">{{ derniereCommande.statutLabel }}</p>
+                </div>
+            </div>
+        {% else %}
+            <p class="empty-state">Vous n'avez pas encore passé de commande.</p>
+        {% endif %}
+    </div>
+
+    {% if derniereCommande %}
+        <button class="btn btn-primary btn-full">
+            <span class="material-symbols-outlined">local_shipping</span>
+            Suivre ma livraison
+        </button>
+    {% endif %}
+
+    <span class="card-icon-bg material-symbols-outlined">package</span>
+</div>
 
                         {# Carte Points de fidélité #}
                         <div class="card card-loyalty">
