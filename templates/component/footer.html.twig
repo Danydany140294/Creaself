@@ -41,7 +41,7 @@
                 <li><a href="#">Nos Box</a></li>
                 <li><a href="{{ path('app_contact') }}">Contactez-nous</a></li>
                 {% if app.user %}
-                    <li><a href="{{ path('app_mon_compte') }}">Mon Compte</a></li>
+                    <li><a href="{{ path('app_user_dashboard') }}">Mon Compte</a></li>
                 {% else %}
                     <li><a href="{{ path('app_login') }}">Se connecter</a></li>
                 {% endif %}
