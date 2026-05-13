@@ -1,0 +1,287 @@
+/* ============================================================
+   perline-footer.css — Compact, discret, responsive
+   ============================================================ */
+
+:root {
+    --footer-bg:          #2C1810;
+    --footer-bg-light:    #3D2314;
+    --footer-gold:        #C8873A;
+    --footer-cream:       #F5E6D3;
+    --footer-cream-muted: rgba(245, 230, 211, 0.5);
+    --footer-salmon:      #E8896A;
+    --footer-border:      rgba(200, 135, 58, 0.18);
+    --footer-transition:  0.25s ease;
+}
+
+
+
+/* ---- Footer ---- */
+.perline-footer {
+    background-color: var(--footer-bg);
+    font-family: 'Quicksand', sans-serif;
+    color: var(--footer-cream);
+}
+
+/* ---- Grille ---- */
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 24px 20px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ---- Brand ---- */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.footer-logo-link {
+    display: inline-block;
+    transition: opacity var(--footer-transition);
+}
+.footer-logo-link:hover { opacity: 0.8; }
+
+.footer-logo {
+    height: 96px;
+    width: auto;
+    object-fit: contain;
+   
+}
+
+.footer-tagline {
+    font-family: 'Pacifico', cursive;
+    font-size: 0.78rem;
+    color: var(--footer-gold);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ---- Socials ---- */
+.footer-socials {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--footer-bg-light);
+    border: 1px solid var(--footer-border);
+    color: var(--footer-cream-muted);
+    transition: all var(--footer-transition);
+    text-decoration: none;
+}
+.social-link svg { width: 15px; height: 15px; }
+.social-link:hover {
+    background: var(--footer-gold);
+    border-color: var(--footer-gold);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* ---- Titres colonnes ---- */
+.footer-col-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--footer-gold);
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--footer-border);
+    /* Reset bouton */
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    cursor: default;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Chevron visible uniquement sur mobile */
+.footer-chevron {
+    display: none !important;
+}
+
+/* ---- Liens ---- */
+.footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.footer-links a,
+.footer-links span:not(.contact-icon):not(.material-symbols-outlined) {
+    color: var(--footer-cream-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: color var(--footer-transition), padding-left var(--footer-transition);
+}
+
+.footer-links a:hover {
+    color: var(--footer-cream);
+    padding-left: 5px;
+}
+
+/* ---- Contact spécifique ---- */
+.footer-contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--footer-cream-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.contact-icon {
+    font-size: 15px !important;
+    color: var(--footer-gold);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.footer-contact-list a {
+    color: var(--footer-cream-muted);
+    text-decoration: none;
+    transition: color var(--footer-transition);
+    word-break: break-word;
+}
+.footer-contact-list a:hover { color: var(--footer-salmon); }
+
+/* ---- Bas de footer ---- */
+.footer-bottom {
+    border-top: 1px solid var(--footer-border);
+    background: rgba(0,0,0,0.15);
+}
+
+.footer-bottom-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    text-align: center;
+}
+
+.footer-copyright {
+    font-size: 0.74rem;
+    color: var(--footer-cream-muted);
+    margin: 0;
+}
+
+.footer-brand-name {
+    font-family: 'Pacifico', cursive;
+    color: var(--footer-gold);
+    font-size: 0.78rem;
+}
+
+
+
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablette */
+@media (max-width: 1024px) {
+    .footer-inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    .footer-brand {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--footer-border);
+    }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+
+    .footer-wave svg { height: 24px; }
+
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 25px 20px 8px;
+    }
+
+    /* Brand centré */
+    .footer-brand {
+        grid-column: 1;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--footer-border);
+        margin-bottom: 4px;
+    }
+
+    .footer-logo { height: 58px; }
+
+    /* Colonnes : titre cliquable avec chevron */
+    .footer-col {
+        border-bottom: 1px solid var(--footer-border);
+    }
+
+    .footer-col-title {
+        cursor: pointer;
+        margin-bottom: 0;
+        padding: 12px 0;
+        border-bottom: none;
+    }
+
+    .footer-chevron {
+        display: block !important;
+    }
+
+    .footer-col-title[aria-expanded="true"] .footer-chevron {
+        transform: rotate(180deg);
+    }
+
+    /* Liens cachés par défaut sur mobile */
+    .footer-links {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        padding-bottom: 0;
+    }
+
+    /* Liens visibles quand ouvert */
+    .footer-col-title[aria-expanded="true"] + .footer-links {
+        max-height: 300px;
+        padding-bottom: 12px;
+    }
+
+    /* Bas footer centré sur mobile */
+    .footer-bottom-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    text-align: center;
+}
+}

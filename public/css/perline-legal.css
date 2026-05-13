@@ -1,0 +1,369 @@
+/* ============================================================
+   perline-legal.css — Pages légales Perline Cookies
+   ============================================================ */
+
+.legal-wrapper {
+    background-color: #f5ede4;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+.legal-container {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ---- En-tête ---- */
+.legal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #C8873A;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: gap 0.2s ease;
+    width: fit-content;
+}
+
+.legal-back .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.legal-back:hover {
+    gap: 10px;
+    color: #a06828;
+}
+
+.legal-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 2rem;
+    color: #2C1810;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.legal-date {
+    font-size: 0.8rem;
+    color: #a08070;
+    margin: 0;
+}
+
+/* ---- Contenu principal ---- */
+.legal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 48px;
+    box-shadow: 0 2px 16px rgba(44, 24, 16, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.legal-intro {
+    font-size: 0.95rem;
+    color: #5a3e35;
+    line-height: 1.7;
+    padding: 16px 20px;
+    background: #fdf6f0;
+    border-left: 3px solid #C8873A;
+    border-radius: 0 8px 8px 0;
+    margin: 0;
+}
+
+/* ---- Sections ---- */
+.legal-section {
+    padding: 28px 0;
+    border-bottom: 1px solid #f0e4d8;
+}
+
+.legal-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.legal-section:first-child {
+    padding-top: 0;
+}
+
+.legal-section p {
+    font-size: 0.9rem;
+    color: #4a3328;
+    line-height: 1.75;
+    margin: 0 0 12px;
+}
+
+.legal-section p:last-child {
+    margin-bottom: 0;
+}
+
+.legal-section a {
+    color: #C8873A;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.legal-section a:hover {
+    color: #a06828;
+    text-decoration: underline;
+}
+
+.legal-section-title {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2C1810;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legal-section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: #C8873A;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* ---- Listes ---- */
+.legal-list {
+    margin: 12px 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legal-list li {
+    font-size: 0.88rem;
+    color: #4a3328;
+    line-height: 1.6;
+    padding-left: 18px;
+    position: relative;
+}
+
+.legal-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #C8873A;
+    font-weight: 700;
+}
+
+.legal-list a {
+    color: #C8873A;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.legal-list a:hover {
+    text-decoration: underline;
+}
+
+/* ---- Encadré highlight ---- */
+.legal-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fdf6f0;
+    border: 1px solid #f0d8c0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 16px 0;
+}
+
+.legal-highlight .material-symbols-outlined {
+    font-size: 22px;
+    color: #C8873A;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.legal-highlight p {
+    margin: 0 !important;
+    font-size: 0.88rem;
+    color: #4a3328;
+}
+
+/* ---- Cartes cookies ---- */
+.legal-cookie-card {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+}
+
+.legal-cookie-card.essential {
+    background: #f0faf4;
+    border-color: #b8e0c8;
+}
+
+.legal-cookie-card.functional {
+    background: #fdf6f0;
+    border-color: #f0d8c0;
+}
+
+.legal-cookie-card.analytics {
+    background: #f0f4fa;
+    border-color: #c0cce8;
+}
+
+.legal-cookie-card.payment {
+    background: #f8f0fa;
+    border-color: #dcc0e8;
+}
+
+.cookie-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.cookie-card-header .material-symbols-outlined {
+    font-size: 20px;
+    color: #2C1810;
+}
+
+.cookie-card-header h3 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #2C1810;
+    margin: 0;
+    flex: 1;
+}
+
+.cookie-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cookie-badge.always {
+    background: #d4edda;
+    color: #155724;
+}
+
+.cookie-badge.optional {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.legal-cookie-card p {
+    font-size: 0.85rem;
+    color: #4a3328;
+    line-height: 1.6;
+    margin: 0 0 10px;
+}
+
+.cookie-duration {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem !important;
+    color: #7a5a50 !important;
+    margin-top: 10px !important;
+}
+
+.cookie-duration .material-symbols-outlined {
+    font-size: 15px;
+}
+
+/* ---- Navigation légale en bas ---- */
+.legal-nav {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(44, 24, 16, 0.05);
+}
+
+.legal-nav-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #a08070;
+    margin: 0 0 12px;
+}
+
+.legal-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.legal-nav-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4a3328;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e8d8cc;
+    transition: all 0.2s ease;
+    background: #fdf6f0;
+}
+
+.legal-nav-link:hover,
+.legal-nav-link.active {
+    background: #2C1810;
+    color: #F5E6D3;
+    border-color: #2C1810;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .legal-wrapper {
+        padding: 28px 16px 60px;
+    }
+
+    .legal-content {
+        padding: 24px 20px;
+    }
+
+    .legal-title {
+        font-size: 1.5rem;
+    }
+
+    .cookie-card-header {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .legal-content {
+        padding: 20px 16px;
+    }
+
+    .legal-nav-links {
+        flex-direction: column;
+    }
+
+    .legal-nav-link {
+        text-align: center;
+    }
+}

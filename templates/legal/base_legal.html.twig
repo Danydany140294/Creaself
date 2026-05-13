@@ -1,0 +1,50 @@
+{# templates/legal/base_legal.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/perline-legal.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="legal-wrapper">
+
+    <div class="legal-container">
+
+        {# En-tête de page #}
+        <div class="legal-header">
+            <a href="{{ path('app_home') }}" class="legal-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Retour à l'accueil
+            </a>
+            <h1 class="legal-title">{% block legal_title %}{% endblock %}</h1>
+            <p class="legal-date">Dernière mise à jour : {% block legal_date %}{% endblock %}</p>
+        </div>
+
+        {# Contenu #}
+        <div class="legal-content">
+            {% block legal_content %}{% endblock %}
+        </div>
+
+        {# Navigation entre pages légales #}
+        <nav class="legal-nav">
+            <p class="legal-nav-title">Autres informations légales</p>
+            <div class="legal-nav-links">
+                <a href="{{ path('app_mentions_legales') }}" class="legal-nav-link {% if app.request.attributes.get('_route') == 'app_mentions_legales' %}active{% endif %}">
+                    Mentions légales
+                </a>
+                <a href="{{ path('app_cgv') }}" class="legal-nav-link {% if app.request.attributes.get('_route') == 'app_cgv' %}active{% endif %}">
+                    CGV
+                </a>
+                <a href="{{ path('app_politique_confidentialite') }}" class="legal-nav-link {% if app.request.attributes.get('_route') == 'app_politique_confidentialite' %}active{% endif %}">
+                    Confidentialité
+                </a>
+                <a href="{{ path('app_gestion_cookies') }}" class="legal-nav-link {% if app.request.attributes.get('_route') == 'app_gestion_cookies' %}active{% endif %}">
+                    Cookies
+                </a>
+            </div>
+        </nav>
+
+    </div>
+</div>
+{% endblock %}

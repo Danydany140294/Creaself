@@ -1,72 +1,88 @@
-{% extends 'base.html.twig' %}
+{# templates/legal/cgv.html.twig #}
+{% extends 'legal/base_legal.html.twig' %}
 
-{% block title %}CGV — Perline Cookies{% endblock %}
+{% block title %}Conditions Générales de Vente — Perline Cookies{% endblock %}
 
-{% block body %}
-<div class="max-w-3xl mx-auto px-6 py-16">
-    <h1 class="text-3xl font-bold text-chocolat mb-8">Conditions Générales de Vente</h1>
+{% block legal_title %}Conditions Générales de Vente{% endblock %}
+{% block legal_date %}1er janvier 2025{% endblock %}
 
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">1. Objet</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Les présentes CGV régissent les ventes de produits effectuées sur le site Perline Cookies. 
-            Toute commande implique l'acceptation sans réserve des présentes conditions.
-        </p>
-    </section>
+{% block legal_content %}
 
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">2. Produits</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Les produits proposés sont des cookies artisanaux. Les photos sont non contractuelles. 
-            Perline Cookies se réserve le droit de modifier sa gamme de produits à tout moment.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">3. Prix</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Les prix sont indiqués en euros TTC. Les frais de livraison sont offerts à partir de 50€ d'achat, 
-            et de 4,50€ en dessous de ce montant.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">4. Commande</h2>
-        <p class="text-gray-700 leading-relaxed">
-            La commande est validée après confirmation du paiement. Un email de confirmation est envoyé 
-            à l'adresse indiquée lors de la commande.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">5. Paiement</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Le paiement s'effectue en ligne via Stripe (carte bancaire). 
-            Les transactions sont sécurisées et cryptées.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">6. Livraison</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Les commandes sont expédiées sous 2 à 5 jours ouvrés. 
-            Perline Cookies ne peut être tenu responsable des délais liés aux transporteurs.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">7. Droit de rétractation</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Conformément à l'article L221-28 du Code de la consommation, les produits alimentaires 
-            périssables ne sont pas soumis au droit de rétractation.
-        </p>
-    </section>
-
-    <section class="mb-8">
-        <h2 class="text-xl font-bold text-chocolat mb-3">8. Contact</h2>
-        <p class="text-gray-700 leading-relaxed">
-            Pour toute réclamation : <a href="mailto:cookie@gmail.com" class="text-chocolat underline">cookie@gmail.com</a>
-        </p>
-    </section>
+<div class="legal-section">
+    <h2 class="legal-section-title">1. Objet</h2>
+    <p>Les présentes Conditions Générales de Vente (CGV) régissent les ventes de produits effectuées par Perline Cookies SAS (ci-après "le Vendeur") via le site <strong>perlinecookies.com</strong>. Tout achat implique l'acceptation sans réserve des présentes CGV par l'acheteur (ci-après "le Client").</p>
 </div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">2. Produits</h2>
+    <p>Les produits proposés à la vente sont des cookies artisanaux fabriqués à la main dans notre atelier de Montpellier. Les photographies présentées sur le site sont aussi fidèles que possible aux produits, cependant de légères variations peuvent exister en raison du caractère artisanal de notre fabrication.</p>
+    <p>Nos produits sont fabriqués dans un atelier pouvant contenir des traces de :</p>
+    <ul class="legal-list">
+        <li>Gluten (blé)</li>
+        <li>Œufs</li>
+        <li>Lait et produits laitiers</li>
+        <li>Fruits à coque (noix, noisettes, amandes, noix de macadamia)</li>
+        <li>Soja</li>
+    </ul>
+    <p>Les personnes souffrant d'allergies sont invitées à nous contacter avant toute commande.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">3. Prix</h2>
+    <p>Les prix sont indiqués en euros (€) toutes taxes comprises (TTC). La TVA applicable est de 5,5 % pour les produits alimentaires. Perline Cookies SAS se réserve le droit de modifier ses prix à tout moment. Les produits seront facturés sur la base des tarifs en vigueur au moment de la validation de la commande.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">4. Commandes</h2>
+    <p>Le Client passe commande directement sur le site. La commande est définitivement validée après :</p>
+    <ul class="legal-list">
+        <li>Sélection des produits et ajout au panier</li>
+        <li>Renseignement de l'adresse de livraison</li>
+        <li>Choix du mode de paiement et validation du paiement</li>
+        <li>Réception d'un email de confirmation de commande</li>
+    </ul>
+    <p>Perline Cookies SAS se réserve le droit d'annuler toute commande en cas de problème d'approvisionnement, de litige avec le Client ou de suspicion de fraude.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">5. Paiement</h2>
+    <p>Le paiement s'effectue en ligne par carte bancaire (Visa, Mastercard) via notre prestataire de paiement sécurisé Stripe. Les données bancaires sont cryptées et ne transitent pas sur nos serveurs. Le débit est effectué au moment de la validation de la commande.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">6. Livraison</h2>
+    <p>Les commandes sont expédiées en France métropolitaine uniquement. Les délais de livraison sont indicatifs :</p>
+    <ul class="legal-list">
+        <li><strong>Colissimo :</strong> 2 à 5 jours ouvrés</li>
+        <li><strong>Chronopost :</strong> 1 à 2 jours ouvrés</li>
+    </ul>
+    <p>Les frais de livraison sont calculés en fonction du poids de la commande et affichés avant la validation. La livraison est <strong>offerte à partir de 40 € d'achat</strong>.</p>
+    <p>Perline Cookies SAS ne pourra être tenu responsable des retards de livraison dus au transporteur ou à des circonstances exceptionnelles.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">7. Droit de rétractation</h2>
+    <div class="legal-highlight">
+        <span class="material-symbols-outlined">info</span>
+        <p>Conformément à l'article L.221-18 du Code de la Consommation, le Client dispose d'un délai de <strong>14 jours calendaires</strong> à compter de la réception de sa commande pour exercer son droit de rétractation, sans avoir à justifier de motifs ni à payer de pénalités.</p>
+    </div>
+    <p>Toutefois, conformément à l'article L.221-28 du Code de la Consommation, <strong>le droit de rétractation ne peut être exercé pour les denrées alimentaires périssables</strong>. En raison de la nature artisanale et périssable de nos cookies, les commandes ne peuvent pas faire l'objet d'un retour ou d'un remboursement sauf en cas de défaut avéré du produit.</p>
+    <p>En cas de produit défectueux ou non-conforme, merci de nous contacter dans les 48h suivant la réception à <a href="mailto:Perlecook@perline-cookies.com">Perlecook@perline-cookies.com</a> avec photos à l'appui.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">8. Service client</h2>
+    <p>Pour toute question relative à votre commande, notre service client est disponible :</p>
+    <ul class="legal-list">
+        <li><strong>Email :</strong> <a href="mailto:Perlecook@perline-cookies.com">Perlecook@perline-cookies.com</a></li>
+        <li><strong>Horaires :</strong> du lundi au vendredi, de 9h à 18h</li>
+    </ul>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">9. Litiges</h2>
+    <p>En cas de litige, le Client peut recourir à une médiation conventionnelle ou à tout autre mode alternatif de règlement des différends. Le Client peut également saisir la plateforme de résolution des litiges en ligne mise en place par la Commission européenne à l'adresse : <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a></p>
+    <p>Les présentes CGV sont soumises au droit français. En cas de litige persistant, les tribunaux de Montpellier seront seuls compétents.</p>
+</div>
+
 {% endblock %}

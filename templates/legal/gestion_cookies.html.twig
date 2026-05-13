@@ -1,0 +1,104 @@
+{# templates/legal/gestion_cookies.html.twig #}
+{% extends 'legal/base_legal.html.twig' %}
+
+{% block title %}Gestion des Cookies — Perline Cookies{% endblock %}
+
+{% block legal_title %}Gestion des Cookies{% endblock %}
+{% block legal_date %}1er janvier 2025{% endblock %}
+
+{% block legal_content %}
+
+<div class="legal-section">
+    <p class="legal-intro">Lors de votre visite sur perlinecookies.com, des cookies peuvent être déposés sur votre navigateur. Cette page vous explique ce que sont les cookies, lesquels nous utilisons et comment les gérer.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">1. Qu'est-ce qu'un cookie ?</h2>
+    <p>Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, smartphone, tablette) lors de la visite d'un site web. Il permet au site de mémoriser des informations sur votre visite, comme vos préférences ou votre panier d'achat, afin de vous offrir une expérience personnalisée lors de vos prochaines visites.</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">2. Les cookies que nous utilisons</h2>
+
+    <div class="legal-cookie-card essential">
+        <div class="cookie-card-header">
+            <span class="material-symbols-outlined">lock</span>
+            <h3>Cookies strictement nécessaires</h3>
+            <span class="cookie-badge always">Toujours actifs</span>
+        </div>
+        <p>Ces cookies sont indispensables au fonctionnement du site. Ils ne peuvent pas être désactivés.</p>
+        <ul class="legal-list">
+            <li><strong>Session Symfony :</strong> maintient votre session utilisateur (connexion, panier)</li>
+            <li><strong>CSRF Token :</strong> protège les formulaires contre les attaques</li>
+            <li><strong>Préférences de cookies :</strong> mémorise vos choix de consentement</li>
+        </ul>
+        <p class="cookie-duration"><span class="material-symbols-outlined">schedule</span> Durée : session ou jusqu'à 1 an</p>
+    </div>
+
+    <div class="legal-cookie-card functional">
+        <div class="cookie-card-header">
+            <span class="material-symbols-outlined">settings</span>
+            <h3>Cookies fonctionnels</h3>
+            <span class="cookie-badge optional">Optionnels</span>
+        </div>
+        <p>Ces cookies améliorent votre expérience sur le site en mémorisant vos préférences.</p>
+        <ul class="legal-list">
+            <li><strong>Langue :</strong> mémorise votre langue préférée</li>
+            <li><strong>Panier persistant :</strong> conserve votre panier entre les visites</li>
+            <li><strong>Produits récents :</strong> mémorise les produits consultés</li>
+        </ul>
+        <p class="cookie-duration"><span class="material-symbols-outlined">schedule</span> Durée : 30 jours</p>
+    </div>
+
+    <div class="legal-cookie-card analytics">
+        <div class="cookie-card-header">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <h3>Cookies analytiques</h3>
+            <span class="cookie-badge optional">Optionnels</span>
+        </div>
+        <p>Ces cookies nous aident à comprendre comment les visiteurs utilisent le site, afin de l'améliorer.</p>
+        <ul class="legal-list">
+            <li><strong>Google Analytics :</strong> mesure d'audience anonymisée (pages vues, durée de visite, provenance)</li>
+        </ul>
+        <p class="cookie-duration"><span class="material-symbols-outlined">schedule</span> Durée : 13 mois maximum</p>
+    </div>
+
+    <div class="legal-cookie-card payment">
+        <div class="cookie-card-header">
+            <span class="material-symbols-outlined">credit_card</span>
+            <h3>Cookies de paiement</h3>
+            <span class="cookie-badge always">Nécessaires au paiement</span>
+        </div>
+        <p>Ces cookies sont déposés par notre prestataire de paiement Stripe lors du processus de commande.</p>
+        <ul class="legal-list">
+            <li><strong>Stripe :</strong> sécurisation et traitement des transactions bancaires</li>
+        </ul>
+        <p class="cookie-duration"><span class="material-symbols-outlined">schedule</span> Durée : session</p>
+    </div>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">3. Comment gérer vos cookies ?</h2>
+    <p>Vous pouvez à tout moment modifier vos préférences en matière de cookies :</p>
+
+    <div class="legal-highlight">
+        <span class="material-symbols-outlined">manage_history</span>
+        <p>Utilisez notre bandeau de gestion des cookies disponible en bas de chaque page pour accepter ou refuser les cookies optionnels.</p>
+    </div>
+
+    <p>Vous pouvez également configurer votre navigateur pour bloquer ou supprimer les cookies. Voici les liens vers les paramètres des principaux navigateurs :</p>
+    <ul class="legal-list">
+        <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></li>
+        <li><a href="https://support.mozilla.org/fr/kb/activer-desactiver-cookies" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+        <li><a href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Safari</a></li>
+        <li><a href="https://support.microsoft.com/fr-fr/windows/supprimer-et-g%C3%A9rer-les-cookies" target="_blank" rel="noopener">Microsoft Edge</a></li>
+    </ul>
+    <p>Attention : la désactivation de certains cookies peut affecter le fonctionnement du site (connexion, panier, paiement).</p>
+</div>
+
+<div class="legal-section">
+    <h2 class="legal-section-title">4. Contact</h2>
+    <p>Pour toute question concernant notre politique de gestion des cookies, contactez-nous à : <a href="mailto:Perlecook@perline-cookies.com">Perlecook@perline-cookies.com</a></p>
+</div>
+
+{% endblock %}
