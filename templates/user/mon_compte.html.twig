@@ -677,36 +677,79 @@ function initAvatarUpload() {
         const file = this.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('avatar', file);
+        // Redimensionne et compresse avant envoi
+        compressImage(file, 800, 0.85).then(blob => {
+            const formData = new FormData();
+            formData.append('avatar', blob, file.name);
 
-        fetch('{{ path('app_user_update_avatar') }}', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => {
-            if (!res.ok) throw new Error('Statut HTTP : ' + res.status);
-            return res.json();
-        })
-        .then(data => {
-            if (data.success) {
-                const preview = document.getElementById('avatar-preview');
-                // Remplace les initiales par la photo uploadée
-                preview.textContent = '';
-                preview.classList.remove('user-avatar-initiales');
-                preview.style.backgroundImage = `url('${data.avatarUrl}?t=${Date.now()}')`;
-                showNotification('Photo de profil mise à jour !', 'success');
-            } else {
-                showNotification(data.error || 'Erreur lors de l\'upload', 'error');
-            }
-        })
-        .catch((err) => {
-            console.error('Erreur avatar :', err);
-            showNotification('Erreur : ' + err.message, 'error');
+            fetch('{{ path('app_user_update_avatar') }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Statut HTTP : ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const preview = document.getElementById('avatar-preview');
+                    preview.textContent = '';
+                    preview.classList.remove('user-avatar-initiales');
+                    preview.style.backgroundImage = `url('${data.avatarUrl}?t=${Date.now()}')`;
+                    showNotification('Photo de profil mise à jour !', 'success');
+                } else {
+                    showNotification(data.error || 'Erreur lors de l\'upload', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Erreur avatar :', err);
+                showNotification('Erreur : ' + err.message, 'error');
+            });
         });
     });
 }
 
+
+function compressImage(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+
+            let { width, height } = img;
+
+            // Calcul du ratio pour ne pas dépasser maxSize
+            if (width > height && width > maxSize) {
+                height = Math.round((height * maxSize) / width);
+                width  = maxSize;
+            } else if (height > width && height > maxSize) {
+                width  = Math.round((width * maxSize) / height);
+                height = maxSize;
+            } else if (width > maxSize) {
+                height = maxSize;
+                width  = maxSize;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width  = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(
+                blob => blob ? resolve(blob) : reject(new Error('Compression échouée')),
+                'image/jpeg',
+                quality
+            );
+        };
+
+        img.onerror = () => reject(new Error('Impossible de lire l\'image'));
+        img.src = url;
+    });
+}
 document.addEventListener('DOMContentLoaded', function () {
     initInlineEditProfil();
     initAvatarUpload();
