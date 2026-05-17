@@ -15,6 +15,13 @@
 <!-- Overlay pour menu mobile -->
 <div class="nav-overlay" id="navOverlay"></div>
 
+<!-- Logo Desktop -->
+<div class="logo-section logo-desktop">
+    <a href="{{ path('app_home') }}">
+        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
+    </a>
+</div>
+
 <!-- Navbar -->
 <nav class="navbar" id="mainNavbar">
     <!-- Logo mobile -->
@@ -43,7 +50,7 @@
                 {{ app.user.email }}
             </span>
         </div>
-</div>
+    </div>
                     
                     <nav class="mobile-user-links">
                         <a href="{{ path('app_user_dashboard') }}">
@@ -139,11 +146,6 @@
     </div>
 </nav>
 
-<!-- Logo Desktop -->
-<div class="logo-section logo-desktop">
-    <a href="{{ path('app_home') }}">
-        <img src="{{ asset('asset/perline.jpg') }}" alt="Logo Premium Cookie Shop">
-    </a>
-</div>
+
 
 <script src="{{ asset('js/navbar.js') }}"></script>
