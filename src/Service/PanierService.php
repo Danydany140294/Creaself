@@ -17,6 +17,16 @@ class PanierService
 {
     private const SESSION_KEY = 'panier';
 
+    /** Tailles autorisées */
+    private const TAILLES_BOX_PERSO = [6, 12, 24];
+
+    /** Prix fixes par taille */
+    private const PRIX_BOX_PERSO = [
+        6  => 12.00,
+        12 => 24.00,
+        24 => 30.00,
+    ];
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PanierRepository $panierRepository,
@@ -24,52 +34,44 @@ class PanierService
         private Security $security
     ) {}
 
-    /**
-     * Récupère le panier (session ou BDD selon si connecté)
-     */
+    // ======================================================
+    // PANIER GLOBAL
+    // ======================================================
+
     public function getPanier(): array
     {
         $user = $this->security->getUser();
 
-        if ($user instanceof User) {
-            // Utilisateur connecté : panier en BDD
-            return $this->getPanierBDD($user);
-        } else {
-            // Visiteur : panier en session
-            return $this->getPanierSession();
-        }
+        return $user instanceof User
+            ? $this->getPanierBDD($user)
+            : $this->getPanierSession();
     }
 
-    /**
-     * Panier en session (format tableau)
-     */
     private function getPanierSession(): array
     {
         $session = $this->requestStack->getSession();
+
         $panier = $session->get(self::SESSION_KEY, [
-            'produits' => [],
-            'boxes' => [],
-            'boxes_perso' => [],
-            'date_expiration' => new \DateTime('+10 minutes')
+            'produits'        => [],
+            'boxes'           => [],
+            'boxes_perso'     => [],
+            'date_expiration' => new \DateTime('+10 minutes'),
         ]);
 
-        // Vérifier l'expiration
-        if (isset($panier['date_expiration']) && $panier['date_expiration'] < new \DateTime()) {
+        if ($panier['date_expiration'] < new \DateTime()) {
             $this->viderPanierSession();
+
             return [
-                'produits' => [],
-                'boxes' => [],
-                'boxes_perso' => [],
-                'date_expiration' => new \DateTime('+10 minutes')
+                'produits'        => [],
+                'boxes'           => [],
+                'boxes_perso'     => [],
+                'date_expiration' => new \DateTime('+10 minutes'),
             ];
         }
 
         return $panier;
     }
 
-    /**
-     * Panier en BDD (format entité)
-     */
     private function getPanierBDD(User $user): array
     {
         $panier = $this->panierRepository->findByUser($user);
@@ -79,673 +81,285 @@ class PanierService
             $panier->setUser($user);
             $this->entityManager->persist($panier);
             $this->entityManager->flush();
-        } elseif ($panier->isExpire()) {
+        }
+
+        if ($panier->isExpire()) {
             $this->viderPanierBDD($panier);
         } else {
             $panier->rafraichirExpiration();
             $this->entityManager->flush();
         }
 
-        // Formater les lignes pour éviter les références circulaires
-        $lignesFormatees = [];
+        $lignes = [];
+
         foreach ($panier->getLignesPanier() as $ligne) {
-            $ligneData = [
-                'id' => $ligne->getId(),
-                'quantite' => $ligne->getQuantite(),
-                'sous_total' => $ligne->getSousTotal(),
+
+            $data = [
+                'id'            => $ligne->getId(),
+                'quantite'      => $ligne->getQuantite(),
                 'prix_unitaire' => $ligne->getPrixUnitaire(),
-                'nom_article' => $ligne->getNomArticle(),
-                'is_box_perso' => $ligne->isBoxPersonnalisable()
+                'sous_total'    => $ligne->getSousTotal(),
+                'is_box_perso'  => $ligne->isBoxPersonnalisable(),
+                'taille_box'    => $ligne->getTailleBox(),
             ];
 
             if ($ligne->getProduit()) {
-                $ligneData['produit'] = [
-                    'id' => $ligne->getProduit()->getId(),
-                    'name' => $ligne->getProduit()->getName(),
-                    'prix' => $ligne->getProduit()->getPrix(),
-                    'image' => $ligne->getProduit()->getImage(),
-                    'stock' => $ligne->getProduit()->getStock()
+                $data['produit'] = [
+                    'id'    => $ligne->getProduit()->getId(),
+                    'name'  => $ligne->getProduit()->getName(),
+                    'prix'  => $ligne->getProduit()->getPrix(),
                 ];
             }
 
             if ($ligne->getBox()) {
-                $ligneData['box'] = [
-                    'id' => $ligne->getBox()->getId(),
-                    'nom' => $ligne->getBox()->getNom(),
+                $data['box'] = [
+                    'id'   => $ligne->getBox()->getId(),
+                    'nom'  => $ligne->getBox()->getNom(),
                     'prix' => $ligne->getBox()->getPrix(),
-                    'image' => $ligne->getBox()->getImage(),
-                    'stock' => $ligne->getBox()->getStock(),
-                    'type' => $ligne->getBox()->getType()
                 ];
             }
 
             if ($ligne->isBoxPersonnalisable()) {
-                $compositions = [];
-                foreach ($ligne->getCompositionsPanier() as $compo) {
-                    $compositions[] = [
+                $compo = [];
+
+                foreach ($ligne->getCompositionsPanier() as $c) {
+                    $compo[] = [
                         'produit' => [
-                            'id' => $compo->getProduit()->getId(),
-                            'name' => $compo->getProduit()->getName(),
-                            'prix' => $compo->getProduit()->getPrix()
+                            'id'   => $c->getProduit()->getId(),
+                            'name' => $c->getProduit()->getName(),
+                            'prix' => $c->getProduit()->getPrix(),
                         ],
-                        'quantite' => $compo->getQuantite()
+                        'quantite' => $c->getQuantite(),
                     ];
                 }
-                $ligneData['compositions'] = $compositions;
+
+                $data['compositions'] = $compo;
             }
 
-            $lignesFormatees[] = $ligneData;
+            $lignes[] = $data;
         }
 
         return [
             'panier_id' => $panier->getId(),
-            'user_id' => $panier->getUser()->getId(),
-            'date_creation' => $panier->getDateCreation(),
-            'date_expiration' => $panier->getDateExpiration(),
-            'lignes' => $lignesFormatees,
-            'total' => $panier->getTotal(),
-            'nombre_articles' => $panier->getNombreArticles(),
-            'is_empty' => $panier->isEmpty()
+            'lignes'    => $lignes,
+            'total'     => $panier->getTotal(),
         ];
     }
 
-    /**
-     * Ajoute un produit au panier
-     */
+    // ======================================================
+    // PRODUITS
+    // ======================================================
+
     public function ajouterProduit(Produit $produit, int $quantite = 1): void
     {
         if ($quantite <= 0) {
-            throw new \Exception("La quantité doit être supérieure à 0");
-        }
-
-        if ($produit->getStock() < $quantite) {
-            throw new \Exception("Stock insuffisant pour {$produit->getName()}");
+            throw new \Exception("Quantité invalide");
         }
 
         if (!$produit->isDisponible()) {
-            throw new \Exception("Le produit {$produit->getName()} n'est pas disponible");
+            throw new \Exception("Produit indisponible");
+        }
+
+        if ($produit->getStock() < $quantite) {
+            throw new \Exception("Stock insuffisant");
         }
 
         $user = $this->security->getUser();
 
-        if ($user instanceof User) {
-            $this->ajouterProduitBDD($user, $produit, $quantite);
-        } else {
-            $this->ajouterProduitSession($produit, $quantite);
-        }
+        $user instanceof User
+            ? $this->ajouterProduitBDD($user, $produit, $quantite)
+            : $this->ajouterProduitSession($produit, $quantite);
     }
 
-    /**
-     * Ajoute un produit en session
-     */
     private function ajouterProduitSession(Produit $produit, int $quantite): void
     {
         $session = $this->requestStack->getSession();
-        $panier = $this->getPanierSession();
+        $panier  = $this->getPanierSession();
 
-        $produitId = $produit->getId();
+        $id = $produit->getId();
 
-        if (isset($panier['produits'][$produitId])) {
-            $nouvelleQuantite = $panier['produits'][$produitId]['quantite'] + $quantite;
-            
-            if ($produit->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant pour {$produit->getName()}");
-            }
-            
-            $panier['produits'][$produitId]['quantite'] = $nouvelleQuantite;
-        } else {
-            $panier['produits'][$produitId] = [
-                'produit' => $produit,
-                'quantite' => $quantite
-            ];
-        }
+        $panier['produits'][$id]['quantite'] =
+            ($panier['produits'][$id]['quantite'] ?? 0) + $quantite;
+
+        $panier['produits'][$id]['produit'] = $produit;
 
         $panier['date_expiration'] = new \DateTime('+10 minutes');
+
         $session->set(self::SESSION_KEY, $panier);
     }
 
-    /**
-     * Ajoute un produit en BDD
-     */
     private function ajouterProduitBDD(User $user, Produit $produit, int $quantite): void
     {
-        $panierEntity = $this->panierRepository->findByUser($user);
-        
-        if (!$panierEntity) {
-            $panierEntity = new Panier();
-            $panierEntity->setUser($user);
-            $this->entityManager->persist($panierEntity);
+        $panier = $this->panierRepository->findByUser($user);
+
+        if (!$panier) {
+            $panier = new Panier();
+            $panier->setUser($user);
+            $this->entityManager->persist($panier);
         }
 
-        // Vérifier si le produit existe déjà
-        foreach ($panierEntity->getLignesPanier() as $ligne) {
-            if ($ligne->getProduit() && $ligne->getProduit()->getId() === $produit->getId()) {
-                $nouvelleQuantite = $ligne->getQuantite() + $quantite;
-                if ($produit->getStock() < $nouvelleQuantite) {
-                    throw new \Exception("Stock insuffisant pour {$produit->getName()}");
-                }
-                $ligne->setQuantite($nouvelleQuantite);
-                $panierEntity->rafraichirExpiration();
+        foreach ($panier->getLignesPanier() as $ligne) {
+            if ($ligne->getProduit() && $ligne->getProduit() === $produit) {
+                $ligne->setQuantite($ligne->getQuantite() + $quantite);
                 $this->entityManager->flush();
                 return;
             }
         }
 
-        // Créer une nouvelle ligne
-        $lignePanier = new LignePanier();
-        $lignePanier->setPanier($panierEntity);
-        $lignePanier->setProduit($produit);
-        $lignePanier->setQuantite($quantite);
+        $ligne = new LignePanier();
+        $ligne->setPanier($panier);
+        $ligne->setProduit($produit);
+        $ligne->setQuantite($quantite);
 
-        $panierEntity->addLignePanier($lignePanier);
-        $panierEntity->rafraichirExpiration();
-        
-        $this->entityManager->persist($lignePanier);
+        $this->entityManager->persist($ligne);
         $this->entityManager->flush();
     }
 
-    /**
-     * Ajoute une box au panier
-     */
+
     public function ajouterBox(Box $box, int $quantite = 1): void
-    {
-        if ($quantite <= 0) {
-            throw new \Exception("La quantité doit être supérieure à 0");
-        }
+{
+    $user = $this->security->getUser();
 
-        if ($box->getType() === 'personnalisable') {
-            throw new \Exception("Utilisez ajouterBoxPersonnalisable() pour les box personnalisables");
-        }
-
-        if ($box->getStock() < $quantite) {
-            throw new \Exception("Stock insuffisant pour {$box->getNom()}");
-        }
-
-        $user = $this->security->getUser();
-
-        if ($user instanceof User) {
-            $this->ajouterBoxBDD($user, $box, $quantite);
-        } else {
-            $this->ajouterBoxSession($box, $quantite);
-        }
-    }
-
-    /**
-     * Ajoute une box en session
-     */
-    private function ajouterBoxSession(Box $box, int $quantite): void
-    {
-        $session = $this->requestStack->getSession();
-        $panier = $this->getPanierSession();
-
-        $boxId = $box->getId();
-
-        if (isset($panier['boxes'][$boxId])) {
-            $nouvelleQuantite = $panier['boxes'][$boxId]['quantite'] + $quantite;
-            
-            if ($box->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant pour {$box->getNom()}");
-            }
-            
-            $panier['boxes'][$boxId]['quantite'] = $nouvelleQuantite;
-        } else {
-            $panier['boxes'][$boxId] = [
-                'box' => $box,
-                'quantite' => $quantite
-            ];
-        }
-
-        $panier['date_expiration'] = new \DateTime('+10 minutes');
-        $session->set(self::SESSION_KEY, $panier);
-    }
-
-    /**
-     * Ajoute une box en BDD
-     */
-    private function ajouterBoxBDD(User $user, Box $box, int $quantite): void
-    {
-        $panierEntity = $this->panierRepository->findByUser($user);
-        
-        if (!$panierEntity) {
-            $panierEntity = new Panier();
-            $panierEntity->setUser($user);
-            $this->entityManager->persist($panierEntity);
-        }
-
-        // Vérifier si la box existe déjà
-        foreach ($panierEntity->getLignesPanier() as $ligne) {
-            if ($ligne->getBox() && $ligne->getBox()->getId() === $box->getId() && !$ligne->isBoxPersonnalisable()) {
-                $nouvelleQuantite = $ligne->getQuantite() + $quantite;
-                if ($box->getStock() < $nouvelleQuantite) {
-                    throw new \Exception("Stock insuffisant pour {$box->getNom()}");
-                }
-                $ligne->setQuantite($nouvelleQuantite);
-                $panierEntity->rafraichirExpiration();
-                $this->entityManager->flush();
-                return;
-            }
-        }
-
-        // Créer une nouvelle ligne
-        $lignePanier = new LignePanier();
-        $lignePanier->setPanier($panierEntity);
-        $lignePanier->setBox($box);
-        $lignePanier->setQuantite($quantite);
-
-        $panierEntity->addLignePanier($lignePanier);
-        $panierEntity->rafraichirExpiration();
-        
-        $this->entityManager->persist($lignePanier);
-        $this->entityManager->flush();
-    }
-
-    /**
-     * Ajoute une box personnalisable avec les cookies choisis
-     */
-    public function ajouterBoxPersonnalisable(
-    Box $box,
-    array $cookiesChoisis,
-    int $nombreAttendu = 12
-): void
-    {
-        if ($box->getType() !== 'personnalisable') {
-            throw new \Exception("Cette box n'est pas personnalisable");
-        }
-
-        // Vérifier qu'on a exactement 12 cookies au total
-        $totalCookies = array_sum($cookiesChoisis);
-        
-        if ($totalCookies !== $nombreAttendu) {
-    throw new \Exception(
-        "Cette box doit contenir exactement {$nombreAttendu} cookies (actuellement : {$totalCookies})"
-    );
+    $user instanceof User
+        ? $this->ajouterBoxBDD($user, $box, $quantite)
+        : $this->ajouterBoxSession($box, $quantite);
 }
 
-        // Vérifier le stock de chaque cookie
-        foreach ($cookiesChoisis as $produitId => $quantite) {
-            if ($quantite < 1) {
-                continue;
-            }
+private function ajouterBoxSession(Box $box, int $quantite): void
+{
+    $session = $this->requestStack->getSession();
+    $panier  = $this->getPanierSession();
 
-            $produit = $this->entityManager->getRepository(Produit::class)->find($produitId);
-            
-            if (!$produit) {
-                throw new \Exception("Produit introuvable (ID: {$produitId})");
-            }
+    $id = $box->getId();
 
-            if ($produit->getStock() < $quantite) {
-                throw new \Exception("Stock insuffisant pour {$produit->getName()}");
-            }
+    $panier['boxes'][$id]['quantite'] =
+        ($panier['boxes'][$id]['quantite'] ?? 0) + $quantite;
 
-            if (!$produit->isDisponible()) {
-                throw new \Exception("Le produit {$produit->getName()} n'est pas disponible");
-            }
-        }
+    $panier['boxes'][$id]['box'] = $box;
+    $panier['date_expiration']   = new \DateTime('+10 minutes');
 
-        // Vérifier le stock de la box
-        if ($box->getStock() < 1) {
-            throw new \Exception("Box personnalisable en rupture de stock");
-        }
+    $session->set(self::SESSION_KEY, $panier);
+}
 
-        $user = $this->security->getUser();
+private function ajouterBoxBDD(User $user, Box $box, int $quantite): void
+{
+    $panier = $this->panierRepository->findByUser($user);
 
-        if ($user instanceof User) {
-            $this->ajouterBoxPersonnalisableBDD($user, $box, $cookiesChoisis);
-        } else {
-            $this->ajouterBoxPersonnalisableSession($box, $cookiesChoisis);
+    if (!$panier) {
+        $panier = new Panier();
+        $panier->setUser($user);
+        $this->entityManager->persist($panier);
+    }
+
+    foreach ($panier->getLignesPanier() as $ligne) {
+        if ($ligne->getBox() && $ligne->getBox() === $box && !$ligne->isBoxPersonnalisable()) {
+            $ligne->setQuantite($ligne->getQuantite() + $quantite);
+            $this->entityManager->flush();
+            return;
         }
     }
 
-    /**
-     * Ajoute une box personnalisable en session
-     */
-    private function ajouterBoxPersonnalisableSession(Box $box, array $cookiesChoisis): void
-    {
-        $session = $this->requestStack->getSession();
-        $panier = $this->getPanierSession();
+    $ligne = new LignePanier();
+    $ligne->setPanier($panier);
+    $ligne->setBox($box);
+    $ligne->setQuantite($quantite);
 
-        // Créer un identifiant unique basé sur la composition
-        ksort($cookiesChoisis);
-        $compositionKey = md5(json_encode($cookiesChoisis));
+    $this->entityManager->persist($ligne);
+    $this->entityManager->flush();
+}
+    // ======================================================
+    // BOX PERSONNALISÉE
+    // ======================================================
 
-        if (!isset($panier['boxes_perso'])) {
-            $panier['boxes_perso'] = [];
+    public function ajouterBoxPersonnalisable(
+        Box $box,
+        array $cookies,
+        int $taille
+    ): void {
+
+        if (!in_array($taille, self::TAILLES_BOX_PERSO)) {
+            throw new \Exception("Taille invalide");
         }
 
-        // Ajouter la box perso
+        if (array_sum($cookies) !== $taille) {
+            throw new \Exception("La box doit contenir {$taille} cookies");
+        }
+
+        $prix = self::PRIX_BOX_PERSO[$taille] ?? $box->getPrix();
+
+        $user = $this->security->getUser();
+
+        $user instanceof User
+            ? $this->ajouterBoxPersoBDD($user, $box, $cookies, $taille, $prix)
+            : $this->ajouterBoxPersoSession($box, $cookies, $taille, $prix);
+    }
+
+    private function ajouterBoxPersoSession(Box $box, array $cookies, int $taille, float $prix): void
+    {
+        $session = $this->requestStack->getSession();
+        $panier  = $this->getPanierSession();
+
         $panier['boxes_perso'][] = [
-            'box' => $box,
-            'quantite' => 1,
-            'composition' => $cookiesChoisis,
-            'composition_key' => $compositionKey
+            'box'      => $box,
+            'cookies'  => $cookies,
+            'taille'   => $taille,
+            'prix'     => $prix,
         ];
 
         $panier['date_expiration'] = new \DateTime('+10 minutes');
-        $session->set(self::SESSION_KEY, $panier);
-    }
-
-    /**
-     * Ajoute une box personnalisable en BDD
-     */
-    private function ajouterBoxPersonnalisableBDD(User $user, Box $box, array $cookiesChoisis): void
-    {
-        $panierEntity = $this->panierRepository->findByUser($user);
-        
-        if (!$panierEntity) {
-            $panierEntity = new Panier();
-            $panierEntity->setUser($user);
-            $this->entityManager->persist($panierEntity);
-        }
-
-        // Créer une nouvelle ligne de panier
-        $lignePanier = new LignePanier();
-        $lignePanier->setPanier($panierEntity);
-        $lignePanier->setBox($box);
-        $lignePanier->setQuantite(1);
-
-        // Ajouter les compositions (les cookies choisis)
-        foreach ($cookiesChoisis as $produitId => $quantite) {
-            if ($quantite < 1) {
-                continue;
-            }
-
-            $produit = $this->entityManager->getRepository(Produit::class)->find($produitId);
-            
-            if (!$produit) {
-                continue;
-            }
-
-            $composition = new CompositionPanierPersonnalisable();
-            $composition->setLignePanier($lignePanier);
-            $composition->setProduit($produit);
-            $composition->setQuantite($quantite);
-
-            $lignePanier->addCompositionPanier($composition);
-            $this->entityManager->persist($composition);
-        }
-
-        $panierEntity->addLignePanier($lignePanier);
-        $panierEntity->rafraichirExpiration();
-        
-        $this->entityManager->persist($lignePanier);
-        $this->entityManager->flush();
-    }
-
-    /**
-     * Modifie la quantité d'un élément du panier
-     */
-    public function modifierQuantite(string $type, int $id, int $nouvelleQuantite): void
-    {
-        if ($nouvelleQuantite <= 0) {
-            $this->retirerElement($type, $id);
-            return;
-        }
-
-        $user = $this->security->getUser();
-
-        if ($user instanceof User) {
-            $this->modifierQuantiteBDD($id, $nouvelleQuantite);
-        } else {
-            $this->modifierQuantiteSession($type, $id, $nouvelleQuantite);
-        }
-    }
-
-    /**
-     * Modifie la quantité en session
-     */
-    private function modifierQuantiteSession(string $type, int $id, int $nouvelleQuantite): void
-    {
-        $session = $this->requestStack->getSession();
-        $panier = $this->getPanierSession();
-
-        if ($type === 'produit' && isset($panier['produits'][$id])) {
-            $produit = $panier['produits'][$id]['produit'];
-            if ($produit->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant");
-            }
-            $panier['produits'][$id]['quantite'] = $nouvelleQuantite;
-        } elseif ($type === 'box' && isset($panier['boxes'][$id])) {
-            $box = $panier['boxes'][$id]['box'];
-            if ($box->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant");
-            }
-            $panier['boxes'][$id]['quantite'] = $nouvelleQuantite;
-        }
-
-        $panier['date_expiration'] = new \DateTime('+7 days');
-        $session->set(self::SESSION_KEY, $panier);
-    }
-
-    /**
-     * Modifie la quantité en BDD
-     */
-    private function modifierQuantiteBDD(int $ligneId, int $nouvelleQuantite): void
-    {
-        $ligne = $this->entityManager->getRepository(LignePanier::class)->find($ligneId);
-        
-        if (!$ligne) {
-            throw new \Exception("Ligne de panier introuvable");
-        }
-
-        if ($ligne->getProduit()) {
-            if ($ligne->getProduit()->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant");
-            }
-        } elseif ($ligne->getBox() && !$ligne->isBoxPersonnalisable()) {
-            if ($ligne->getBox()->getStock() < $nouvelleQuantite) {
-                throw new \Exception("Stock insuffisant");
-            }
-        } elseif ($ligne->isBoxPersonnalisable()) {
-            throw new \Exception("Impossible de modifier la quantité d'une box personnalisable");
-        }
-
-        $ligne->setQuantite($nouvelleQuantite);
-        $ligne->getPanier()->rafraichirExpiration();
-        
-        $this->entityManager->flush();
-    }
-
-    /**
-     * Retire un élément du panier
-     */
-    public function retirerElement(string $type, int $id): void
-    {
-        $user = $this->security->getUser();
-
-        if ($user instanceof User) {
-            $this->retirerElementBDD($id);
-        } else {
-            $this->retirerElementSession($type, $id);
-        }
-    }
-
-    /**
-     * Retire un élément de la session
-     */
-    private function retirerElementSession(string $type, int $id): void
-    {
-        $session = $this->requestStack->getSession();
-        $panier = $this->getPanierSession();
-
-        if ($type === 'produit') {
-            unset($panier['produits'][$id]);
-        } elseif ($type === 'box') {
-            unset($panier['boxes'][$id]);
-        } elseif ($type === 'box_perso') {
-            unset($panier['boxes_perso'][$id]);
-        }
 
         $session->set(self::SESSION_KEY, $panier);
     }
 
-    /**
-     * Retire une ligne de la BDD
-     */
-    private function retirerElementBDD(int $ligneId): void
+    private function ajouterBoxPersoBDD(User $user, Box $box, array $cookies, int $taille, float $prix): void
     {
-        $ligne = $this->entityManager->getRepository(LignePanier::class)->find($ligneId);
-        
-        if (!$ligne) {
-            throw new \Exception("Ligne de panier introuvable");
+        $panier = $this->panierRepository->findByUser($user);
+
+        if (!$panier) {
+            $panier = new Panier();
+            $panier->setUser($user);
+            $this->entityManager->persist($panier);
         }
 
-        $panier = $ligne->getPanier();
-        $panier->removeLignePanier($ligne);
-        $panier->rafraichirExpiration();
-        
-        $this->entityManager->remove($ligne);
+        $ligne = new LignePanier();
+        $ligne->setPanier($panier);
+        $ligne->setBox($box);
+        $ligne->setQuantite(1);
+        $ligne->setTailleBox($taille);
+
+        foreach ($cookies as $id => $qte) {
+            $produit = $this->entityManager->getRepository(Produit::class)->find($id);
+
+            if (!$produit) continue;
+
+            $compo = new CompositionPanierPersonnalisable();
+            $compo->setLignePanier($ligne);
+            $compo->setProduit($produit);
+            $compo->setQuantite($qte);
+
+            $ligne->addCompositionPanier($compo);
+            $this->entityManager->persist($compo);
+        }
+
+        $this->entityManager->persist($ligne);
         $this->entityManager->flush();
     }
 
-    /**
-     * Vide le panier
-     */
-    public function viderPanier(): void
-    {
-        $user = $this->security->getUser();
+    // ======================================================
+    // UTILITAIRES
+    // ======================================================
 
-        if ($user instanceof User) {
-            $panierEntity = $this->panierRepository->findByUser($user);
-            if ($panierEntity) {
-                $this->viderPanierBDD($panierEntity);
-            }
-        } else {
-            $this->viderPanierSession();
-        }
-    }
-
-    /**
-     * Vide le panier en session
-     */
     private function viderPanierSession(): void
     {
-        $session = $this->requestStack->getSession();
-        $session->remove(self::SESSION_KEY);
+        $this->requestStack->getSession()->remove(self::SESSION_KEY);
     }
 
-    /**
-     * Vide le panier en BDD
-     */
     private function viderPanierBDD(Panier $panier): void
     {
         foreach ($panier->getLignesPanier() as $ligne) {
             $this->entityManager->remove($ligne);
         }
-        
-        $panier->getLignesPanier()->clear();
-        $panier->rafraichirExpiration();
-        
+
         $this->entityManager->flush();
-    }
-
-    /**
-     * Migre le panier session vers la BDD lors de la connexion
-     */
-    public function migrerSessionVersBDD(User $user): void
-    {
-        // Récupérer directement depuis RequestStack
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return;
-        }
-        
-        $session = $request->getSession();
-        $panierSessionData = $session->get(self::SESSION_KEY, null);
-        
-        if (!$panierSessionData || (empty($panierSessionData['produits']) && empty($panierSessionData['boxes']))) {
-            return; // Rien à migrer
-        }
-
-        // Récupérer ou créer le panier BDD
-        $panierBDD = $this->panierRepository->findByUser($user);
-        if (!$panierBDD) {
-            $panierBDD = new Panier();
-            $panierBDD->setUser($user);
-            $this->entityManager->persist($panierBDD);
-        }
-
-        // Migrer les produits
-        foreach ($panierSessionData['produits'] as $item) {
-            try {
-                $produitId = $item['produit']->getId();
-                $quantite = $item['quantite'];
-                
-                $produit = $this->entityManager->getRepository(Produit::class)->find($produitId);
-                if (!$produit) {
-                    continue;
-                }
-                
-                // Vérifier si le produit existe déjà dans le panier BDD
-                $ligneExistante = null;
-                foreach ($panierBDD->getLignesPanier() as $ligne) {
-                    if ($ligne->getProduit() && $ligne->getProduit()->getId() === $produit->getId()) {
-                        $ligneExistante = $ligne;
-                        break;
-                    }
-                }
-                
-                if ($ligneExistante) {
-                    $ligneExistante->setQuantite($ligneExistante->getQuantite() + $quantite);
-                } else {
-                    $lignePanier = new LignePanier();
-                    $lignePanier->setPanier($panierBDD);
-                    $lignePanier->setProduit($produit);
-                    $lignePanier->setQuantite($quantite);
-                    $panierBDD->addLignePanier($lignePanier);
-                    $this->entityManager->persist($lignePanier);
-                }
-            } catch (\Exception $e) {
-                continue;
-            }
-        }
-
-        // Migrer les boxes
-        foreach ($panierSessionData['boxes'] as $item) {
-            try {
-                $boxId = $item['box']->getId();
-                $quantite = $item['quantite'];
-                
-                $box = $this->entityManager->getRepository(Box::class)->find($boxId);
-                if (!$box) {
-                    continue;
-                }
-                
-                // Vérifier si la box existe déjà dans le panier BDD
-                $ligneExistante = null;
-                foreach ($panierBDD->getLignesPanier() as $ligne) {
-                    if ($ligne->getBox() && $ligne->getBox()->getId() === $box->getId() && !$ligne->isBoxPersonnalisable()) {
-                        $ligneExistante = $ligne;
-                        break;
-                    }
-                }
-                
-                if ($ligneExistante) {
-                    $ligneExistante->setQuantite($ligneExistante->getQuantite() + $quantite);
-                } else {
-                    $lignePanier = new LignePanier();
-                    $lignePanier->setPanier($panierBDD);
-                    $lignePanier->setBox($box);
-                    $lignePanier->setQuantite($quantite);
-                    $panierBDD->addLignePanier($lignePanier);
-                    $this->entityManager->persist($lignePanier);
-                }
-            } catch (\Exception $e) {
-                continue;
-            }
-        }
-
-        $panierBDD->rafraichirExpiration();
-        $this->entityManager->flush();
-
-        // Vider la session après migration réussie
-        $session->remove(self::SESSION_KEY);
-    }
-
-    /**
-     * Nettoie les paniers expirés
-     */
-    public function nettoyerPaniersExpires(): int
-    {
-        return $this->panierRepository->deleteExpired();
     }
 }

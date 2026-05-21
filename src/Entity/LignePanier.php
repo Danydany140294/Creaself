@@ -28,6 +28,9 @@ class LignePanier
     #[ORM\Column]
     private ?int $quantite = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $tailleBox = null;
+
     /**
      * @var Collection<int, CompositionPanierPersonnalisable>
      */
@@ -92,6 +95,18 @@ class LignePanier
         return $this;
     }
 
+    public function getTailleBox(): ?int
+    {
+        return $this->tailleBox;
+    }
+
+    public function setTailleBox(?int $tailleBox): static
+    {
+        $this->tailleBox = $tailleBox;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, CompositionPanierPersonnalisable>
      */
@@ -124,26 +139,18 @@ class LignePanier
     /**
      * Calcule le sous-total de cette ligne
      */
-    public function getSousTotal(): float
-    {
-        if ($this->produit) {
-            return $this->quantite * $this->produit->getPrix();
-        }
-        
-        if ($this->box) {
-            return $this->quantite * $this->box->getPrix();
-        }
-        
-        return 0;
-    }
+   public function getSousTotal(): float
+{
+    return $this->quantite * $this->getPrixUnitaire();
+}
 
     /**
      * Vérifie si cette ligne est une box personnalisable
      */
     public function isBoxPersonnalisable(): bool
     {
-        return $this->box !== null && 
-               $this->box->getType() === 'personnalisable' && 
+        return $this->box !== null &&
+               $this->box->getType() === 'personnalisable' &&
                !$this->compositionsPanier->isEmpty();
     }
 
@@ -155,27 +162,37 @@ class LignePanier
         if ($this->produit) {
             return $this->produit->getName();
         }
-        
+
         if ($this->box) {
             return $this->box->getNom();
         }
-        
+
         return 'Article inconnu';
     }
 
     /**
      * Récupère le prix unitaire
      */
-    public function getPrixUnitaire(): float
-    {
-        if ($this->produit) {
-            return $this->produit->getPrix();
-        }
-        
-        if ($this->box) {
-            return $this->box->getPrix();
-        }
-        
-        return 0;
+    private const PRIX_BOX_PERSO = [
+    6  => 12.00,
+    12 => 24.00,
+    24 => 30.00,
+];
+
+public function getPrixUnitaire(): float
+{
+    if ($this->produit) {
+        return $this->produit->getPrix();
     }
+
+    if ($this->box) {
+        // Box personnalisable avec taille connue → prix dynamique
+        if ($this->box->getType() === 'personnalisable' && $this->tailleBox !== null) {
+            return self::PRIX_BOX_PERSO[$this->tailleBox] ?? $this->box->getPrix();
+        }
+        return $this->box->getPrix();
+    }
+
+    return 0;
+}
 }

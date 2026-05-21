@@ -33,6 +33,9 @@ class Box
     #[ORM\Column(length: 50)]
     private ?string $type = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $taille = null;
+
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
@@ -123,6 +126,17 @@ class Box
     public function setType(string $type): static
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getTaille(): ?int
+    {
+        return $this->taille;
+    }
+
+    public function setTaille(?int $taille): static
+    {
+        $this->taille = $taille;
         return $this;
     }
 

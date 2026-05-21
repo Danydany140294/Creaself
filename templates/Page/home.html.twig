@@ -12,12 +12,13 @@
 
     {# ===================================================
        HERO
-       Visuel : nouveau front (Doc7)
-       Boutons : routes Symfony fonctionnelles (Doc5)
     =================================================== #}
     <section class="hero">
         <div class="hero__content">
-            <p class="hero__eyebrow">Cookies artisanaux</p>
+
+            <p class="hero__eyebrow">
+                Cookies artisanaux
+            </p>
 
             <h1 class="hero__title">
                 <span class="hero__title-line">Cookies</span>
@@ -29,25 +30,35 @@
             </p>
 
             <div class="hero__actions">
-                <a href="{{ path('app_produits') }}" class="btn btn--primary">Commander</a>
-                <a href="{{ path('app_box') }}" class="btn btn--secondary">Composer ma box</a>
+                <a href="{{ path('app_produits') }}" class="btn btn--primary">
+                    Commander
+                </a>
+
+                <a href="{{ path('app_box') }}" class="btn btn--secondary">
+                    Composer ma box
+                </a>
             </div>
+
         </div>
 
         <div class="hero__visual">
             <div class="hero__image-wrap">
-                <img src="{{ asset('asset/images/Cookiebackhome.png') }}" alt="Assortiment de cookies artisanaux">
+                <img
+                    src="{{ asset('asset/images/Cookiebackhome.png') }}"
+                    alt="Assortiment de cookies artisanaux"
+                >
             </div>
         </div>
     </section>
 
     {# ===================================================
        REASSURANCE
-       Statique — pas de données backend nécessaires
     =================================================== #}
     <section class="reassurance">
+
         <article class="reassurance__item">
             <div class="reassurance__icon">🚚</div>
+
             <div>
                 <strong>Livraison rapide</strong>
                 <span>en 48/72h</span>
@@ -56,6 +67,7 @@
 
         <article class="reassurance__item">
             <div class="reassurance__icon">👩‍🍳</div>
+
             <div>
                 <strong>Fabrication artisanale</strong>
                 <span>en France</span>
@@ -64,244 +76,444 @@
 
         <article class="reassurance__item">
             <div class="reassurance__icon">⭐</div>
+
             <div>
                 <strong>4,9/5</strong>
                 <span>+ de 2000 avis clients</span>
             </div>
         </article>
+
     </section>
 
     {# ===================================================
        COLLECTIONS
-       Visuel : nouveau front (Doc7)
-       Données : dynamiques Symfony (Doc5)
-       Bouton + : js-add-to-cart avec data-id / data-name
     =================================================== #}
     <section class="collections">
+
         <div class="section-heading">
-            <h2>Nos <span>Collections</span></h2>
-            <p>Des cookies gourmands pour chaque envie.</p>
+            <h2>
+                Nos <span>Collections</span>
+            </h2>
+
+            <p>
+                Des cookies gourmands pour chaque envie.
+            </p>
         </div>
 
         <div class="collections__grid">
+
             {% if produits is defined and produits|length > 0 %}
+
                 {% for produit in produits|slice(0, 3) %}
-                <article class="cookie-card">
 
-                    {# Badge : premier produit = Best-seller, stock faible = Stock limité, sinon Nouveau #}
-                    {% if loop.first %}
-                        <div class="cookie-card__badge cookie-card__badge--pink">Best-seller</div>
-                    {% elseif produit.stock > 0 and produit.stock < 5 %}
-                        <div class="cookie-card__badge cookie-card__badge--brown">Stock limité</div>
-                    {% else %}
-                        <div class="cookie-card__badge cookie-card__badge--beige">Nouveau</div>
-                    {% endif %}
+                    <article class="cookie-card">
 
-                    <div class="cookie-card__media">
-                        <img
-                            src="{{ asset('asset/images/produits/' ~ produit.image) }}"
-                            alt="{{ produit.name }}"
-                        >
-                    </div>
+                        {# Badge #}
+                        {% if loop.first %}
+                            <div class="cookie-card__badge cookie-card__badge--pink">
+                                Best-seller
+                            </div>
 
-                    <div class="cookie-card__body">
-                        <h3>{{ produit.name }}</h3>
-                        <p>{{ produit.description|default('Cookie artisanal fait maison avec amour.') }}</p>
+                        {% elseif produit.stock > 0 and produit.stock < 5 %}
+                            <div class="cookie-card__badge cookie-card__badge--brown">
+                                Stock limité
+                            </div>
 
-                        <div class="cookie-card__footer">
-                            <strong>{{ produit.prix|number_format(2, ',', ' ') }} €</strong>
+                        {% else %}
+                            <div class="cookie-card__badge cookie-card__badge--beige">
+                                Nouveau
+                            </div>
+                        {% endif %}
 
-                            {% if produit.stock > 0 %}
-                                {# js-add-to-cart → écouté dans home.js pour le fetch panier #}
-                                <button
-                                    type="button"
-                                    class="cookie-card__add js-add-to-cart"
-                                    data-id="{{ produit.id }}"
-                                    data-name="{{ produit.name }}"
-                                >+</button>
-                            {% else %}
-                                <button type="button" class="cookie-card__add cookie-card__add--disabled" disabled>✕</button>
-                            {% endif %}
+                        <div class="cookie-card__media">
+                            <img
+                                src="{{ asset('asset/images/produits/' ~ produit.image) }}"
+                                alt="{{ produit.name }}"
+                            >
                         </div>
-                    </div>
 
-                </article>
+                        <div class="cookie-card__body">
+
+                            <h3>{{ produit.name }}</h3>
+
+                            <p>
+                                {{ produit.description|default('Cookie artisanal fait maison avec amour.') }}
+                            </p>
+
+                            <div class="cookie-card__footer">
+
+                                <strong>
+                                    {{ produit.prix|number_format(2, ',', ' ') }} €
+                                </strong>
+
+                                {% if produit.stock > 0 %}
+
+                                    <button
+                                        type="button"
+                                        class="cookie-card__add js-add-to-cart"
+                                        data-id="{{ produit.id }}"
+                                        data-name="{{ produit.name }}"
+                                    >
+                                        +
+                                    </button>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="cookie-card__add cookie-card__add--disabled"
+                                        disabled
+                                    >
+                                        ✕
+                                    </button>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
                 {% endfor %}
+
             {% endif %}
+
         </div>
 
         <div class="collections__cta">
-            <a href="{{ path('app_produits') }}" class="btn btn--ghost">Découvrir toutes les collections</a>
+            <a href="{{ path('app_produits') }}" class="btn btn--ghost">
+                Découvrir toutes les collections
+            </a>
         </div>
+
     </section>
 
     {# ===================================================
        STORY
-       Statique — contenu éditorial fixe
     =================================================== #}
     <section class="story">
+
         <div class="story__media">
-            <img src="{{ asset('asset/images/CuisineHome.png') }}" alt="Assortiment de cookies artisanaux">
+            <img
+                src="{{ asset('asset/images/CuisineHome.png') }}"
+                alt="Assortiment de cookies artisanaux"
+            >
         </div>
 
         <div class="story__content">
-            <p class="story__eyebrow">Notre histoire</p>
-            <h2>L'artisanat au cœur de chaque bouchée</h2>
+
+            <p class="story__eyebrow">
+                Notre histoire
+            </p>
+
+            <h2>
+                L'artisanat au cœur de chaque bouchée
+            </h2>
+
             <p class="story__text">
                 Chez Perline, chaque cookie est imaginé et fabriqué à la main
                 avec des ingrédients sélectionnés avec soin.
             </p>
 
             <div class="story__review">
-                <div class="story__stars">★★★★★ <span>4,9/5</span></div>
-                <p>"Des cookies incroyables, on sent la qualité des ingrédients et tout l'amour du fait maison."</p>
+
+                <div class="story__stars">
+                    ★★★★★ <span>4,9/5</span>
+                </div>
+
+                <p>
+                    "Des cookies incroyables, on sent la qualité des ingrédients
+                    et tout l'amour du fait maison."
+                </p>
+
                 <strong>Claire D.</strong>
                 <span>• Cliente vérifiée</span>
+
             </div>
+
         </div>
+
     </section>
 
     {# ===================================================
        MEDIA BLOCK
-       Statique — gif / vidéo de fabrication
     =================================================== #}
     <section class="media-block">
+
         <div class="media-block__content">
-            <p class="media-block__eyebrow">Un aperçu gourmand</p>
-            <h2>Un moment de fabrication, en images</h2>
-            <p>Ajoute ici ton gif, une courte vidéo ou une animation de préparation
-               pour renforcer l'univers de marque.</p>
+
+            <p class="media-block__eyebrow">
+                Un aperçu gourmand
+            </p>
+
+            <h2>
+                Un moment de fabrication, en images
+            </h2>
+
+            <p>
+                Ajoute ici ton gif, une courte vidéo ou une animation de préparation
+                pour renforcer l'univers de marque.
+            </p>
+
         </div>
 
         <div class="media-block__frame">
-    <video autoplay muted loop playsinline>
-        <source src="{{ asset('asset/CookieGif.mp4') }}" type="video/mp4">
-        Votre navigateur ne supporte pas la vidéo.
-    </video>
-</div>
+
+            <video autoplay muted loop playsinline>
+                <source
+                    src="{{ asset('asset/CookieGif.mp4') }}"
+                    type="video/mp4"
+                >
+
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
+
+        </div>
+
     </section>
 
     {# ===================================================
        FAQ
-       Statique — accordion géré dans home.js
     =================================================== #}
     <section class="faq" aria-labelledby="faq-title">
+
         <div class="section-heading">
-            <h2 id="faq-title">Questions fréquentes</h2>
-            <p>Les réponses aux questions les plus posées.</p>
+            <h2 id="faq-title">
+                Questions fréquentes
+            </h2>
+
+            <p>
+                Les réponses aux questions les plus posées.
+            </p>
         </div>
 
         <div class="faq__list">
+
             <article class="faq-item">
-                <button class="faq-item__btn" type="button" aria-expanded="false" aria-controls="faq-1" id="faq-btn-1">
+
+                <button
+                    class="faq-item__btn"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq-1"
+                    id="faq-btn-1"
+                >
                     Quels sont les délais de livraison ?
                     <span>+</span>
                 </button>
-                <div class="faq-item__panel" id="faq-1" role="region" aria-labelledby="faq-btn-1" hidden>
-                    <p>La préparation est rapide et la livraison dépend de la zone, généralement sous 48/72h.</p>
+
+                <div
+                    class="faq-item__panel"
+                    id="faq-1"
+                    role="region"
+                    aria-labelledby="faq-btn-1"
+                    hidden
+                >
+                    <p>
+                        La préparation est rapide et la livraison dépend de la zone,
+                        généralement sous 48/72h.
+                    </p>
                 </div>
+
             </article>
 
             <article class="faq-item">
-                <button class="faq-item__btn" type="button" aria-expanded="false" aria-controls="faq-2" id="faq-btn-2">
+
+                <button
+                    class="faq-item__btn"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq-2"
+                    id="faq-btn-2"
+                >
                     Comment composer ma box ?
                     <span>+</span>
                 </button>
-                <div class="faq-item__panel" id="faq-2" role="region" aria-labelledby="faq-btn-2" hidden>
-                    <p>Tu choisis tes saveurs, tu valides ton panier et ta box est préparée avec soin.</p>
+
+                <div
+                    class="faq-item__panel"
+                    id="faq-2"
+                    role="region"
+                    aria-labelledby="faq-btn-2"
+                    hidden
+                >
+                    <p>
+                        Tu choisis tes saveurs, tu valides ton panier
+                        et ta box est préparée avec soin.
+                    </p>
                 </div>
+
             </article>
 
             <article class="faq-item">
-                <button class="faq-item__btn" type="button" aria-expanded="false" aria-controls="faq-3" id="faq-btn-3">
+
+                <button
+                    class="faq-item__btn"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq-3"
+                    id="faq-btn-3"
+                >
                     Les cookies sont-ils artisanaux ?
                     <span>+</span>
                 </button>
-                <div class="faq-item__panel" id="faq-3" role="region" aria-labelledby="faq-btn-3" hidden>
-                    <p>Oui, les cookies sont fabriqués de façon artisanale avec des ingrédients sélectionnés.</p>
+
+                <div
+                    class="faq-item__panel"
+                    id="faq-3"
+                    role="region"
+                    aria-labelledby="faq-btn-3"
+                    hidden
+                >
+                    <p>
+                        Oui, les cookies sont fabriqués de façon artisanale
+                        avec des ingrédients sélectionnés.
+                    </p>
                 </div>
+
             </article>
 
             <article class="faq-item">
-                <button class="faq-item__btn" type="button" aria-expanded="false" aria-controls="faq-4" id="faq-btn-4">
+
+                <button
+                    class="faq-item__btn"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq-4"
+                    id="faq-btn-4"
+                >
                     Peut-on offrir une box ?
                     <span>+</span>
                 </button>
-                <div class="faq-item__panel" id="faq-4" role="region" aria-labelledby="faq-btn-4" hidden>
-                    <p>Oui, la box est idéale pour offrir et peut être présentée comme un cadeau gourmand.</p>
+
+                <div
+                    class="faq-item__panel"
+                    id="faq-4"
+                    role="region"
+                    aria-labelledby="faq-btn-4"
+                    hidden
+                >
+                    <p>
+                        Oui, la box est idéale pour offrir
+                        et peut être présentée comme un cadeau gourmand.
+                    </p>
                 </div>
+
             </article>
+
         </div>
+
     </section>
 
     {# ===================================================
        TOAST CONTAINER
-       Les toasts sont injectés dynamiquement par home.js
     =================================================== #}
     <div id="toast-container" aria-live="polite"></div>
 
     {# ===================================================
-       MODAL DE FÉLICITATION APRÈS PAIEMENT
-       Logique inchangée (Doc5) — session Symfony
-       Style adapté au CSS custom (sans Tailwind)
+       MODAL SUCCÈS PAIEMENT
+       VERSION ISOLÉE
     =================================================== #}
     {% if app.session.get('commande_success') %}
-    <div class="modal-overlay" id="success-modal">
-        <div class="modal">
 
-            <div class="modal__icon">✓</div>
+        <div class="home-modal-overlay" id="success-modal">
 
-            <div class="modal__body">
-                <h2 class="modal__title">Félicitations !</h2>
-                <p class="modal__subtitle">Votre commande a été confirmée avec succès 🎉</p>
+            <div class="home-modal">
 
-                <div class="modal__details">
-                    <div class="modal__row">
-                        <span>Numéro de commande</span>
-                        <strong>{{ app.session.get('commande_success').numero }}</strong>
-                    </div>
-                    <div class="modal__row">
-                        <span>Montant total</span>
-                        <strong class="modal__total">
-                            {{ app.session.get('commande_success').total|number_format(2, ',', ' ') }} €
-                        </strong>
-                    </div>
-                    <div class="modal__row">
-                        <span>Date</span>
-                        <strong>{{ app.session.get('commande_success').date|date('d/m/Y à H:i') }}</strong>
-                    </div>
+                <div class="home-modal__icon">
+                    ✓
                 </div>
 
-                <p class="modal__email">
-                    {% if app.session.get('commande_success').email %}
-                        Un email de confirmation a été envoyé à
-                        <strong>{{ app.session.get('commande_success').email }}</strong>
-                    {% else %}
-                        Merci pour votre confiance ! Vos cookies seront préparés avec amour.
-                    {% endif %}
-                </p>
+                <div class="home-modal__body">
 
-                <button onclick="closeSuccessModal()" class="btn btn--primary modal__btn">
-                    Continuer mes achats
-                </button>
+                    <h2 class="home-modal__title">
+                        Félicitations !
+                    </h2>
+
+                    <p class="home-modal__subtitle">
+                        Votre commande a été confirmée avec succès 🎉
+                    </p>
+
+                    <div class="home-modal__details">
+
+                        <div class="home-modal__row">
+                            <span>Numéro de commande</span>
+
+                            <strong>
+                                {{ app.session.get('commande_success').numero }}
+                            </strong>
+                        </div>
+
+                        <div class="home-modal__row">
+                            <span>Montant total</span>
+
+                            <strong class="home-modal__total">
+                                {{ app.session.get('commande_success').total|number_format(2, ',', ' ') }} €
+                            </strong>
+                        </div>
+
+                        <div class="home-modal__row">
+                            <span>Date</span>
+
+                            <strong>
+                                {{ app.session.get('commande_success').date|date('d/m/Y à H:i') }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <p class="home-modal__email">
+
+                        {% if app.session.get('commande_success').email %}
+
+                            Un email de confirmation a été envoyé à
+                            <strong>
+                                {{ app.session.get('commande_success').email }}
+                            </strong>
+
+                        {% else %}
+
+                            Merci pour votre confiance !
+                            Vos cookies seront préparés avec amour.
+
+                        {% endif %}
+
+                    </p>
+
+                    <button
+                        onclick="closeSuccessModal()"
+                        class="btn btn--primary home-modal__btn"
+                    >
+                        Continuer mes achats
+                    </button>
+
+                </div>
+
             </div>
 
         </div>
-    </div>
 
-    <script>
-        /* Ferme la modal et efface la session côté serveur */
-        function closeSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            modal.classList.add('modal-overlay--hiding');
-            setTimeout(() => {
-                fetch('{{ path('app_clear_commande_session') }}', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(() => modal.remove());
-            }, 300);
-        }
-    </script>
+        <script>
+            function closeSuccessModal() {
+
+                const modal = document.getElementById('success-modal');
+
+                modal.classList.add('home-modal-overlay--hiding');
+
+                setTimeout(() => {
+
+                    fetch('{{ path('app_clear_commande_session') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(() => modal.remove());
+
+                }, 300);
+            }
+        </script>
+
     {% endif %}
 
 </main>
@@ -309,5 +521,6 @@
 
 {% block javascripts %}
     {{ parent() }}
+
     <script src="{{ asset('js/home.js') }}" defer></script>
 {% endblock %}

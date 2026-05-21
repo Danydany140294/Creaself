@@ -1,227 +1,215 @@
-// ========== NOTIFICATION TOAST GLASS ==========
+// ========================================
+// CONFIG BOX PERSONNALISÉE (DYNAMIQUE)
+// ========================================
+
+// Valeur par défaut (fallback)
+let MAX_COOKIES = 12;
+
+let selectedCookies = {};
+
+// ========================================
+// INITIALISATION (option future Twig)
+// ========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const el = document.body;
+
+    // Si tu veux brancher Twig plus tard :
+    // <body data-max-cookies="6|12|24">
+    if (el.dataset.maxCookies) {
+        const value = parseInt(el.dataset.maxCookies);
+        if (!isNaN(value)) {
+            MAX_COOKIES = value;
+        }
+    }
+
+    updateCounter();
+});
+
+// ========================================
+// SET BOX SIZE (6 / 12 / 24)
+// ========================================
+function setBoxSize(size) {
+    const newSize = parseInt(size);
+
+    if (isNaN(newSize)) return;
+
+    MAX_COOKIES = newSize;
+
+    // Mettre à jour la classe active sur les boutons
+    document.querySelectorAll('.switch-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (parseInt(btn.textContent.trim()) === newSize) {
+            btn.classList.add('active');
+        }
+    });
+
+    resetSelection();
+    updateCounter();
+}
+
+// ========================================
+// TOAST NOTIFICATION
+// ========================================
 function showNotification(message, type = 'success') {
     const toastContainer = document.getElementById('toast-container');
     if (!toastContainer) return;
 
-    const isMobile = window.innerWidth < 768;
-    const icon = type === 'success' ? 'add_shopping_cart' : 'error';
+    const icon = type === 'success' ? 'check_circle' : 'error';
 
     const toast = document.createElement('div');
-    toast.className = 'toast-notification glass-card flex items-center shadow-2xl border-l-4 border-l-or';
-    toast.style.pointerEvents = 'auto';
+    toast.className = 'toast-notification glass-card';
 
-    if (isMobile) {
-        toast.style.cssText = 'gap: 8px; padding: 8px 10px; border-radius: 12px; max-width: 220px; pointer-events: auto;';
-        toast.innerHTML = `
-            <div style="background: rgba(204,167,72,0.2); color: #CCA748; padding: 4px; border-radius: 8px; flex-shrink: 0;">
-                <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
-            </div>
+    toast.innerHTML = `
+        <div style="display:flex; gap:10px; align-items:center;">
+            <span class="material-symbols-outlined">${icon}</span>
             <div>
-                <p class="text-chocolat font-bold" style="font-size: 11px; line-height: 1.2;">${message}</p>
-                <p class="text-chocolat/50 uppercase font-bold tracking-widest" style="font-size: 8px;">Délice enregistré</p>
+                <strong>${message}</strong>
             </div>
-        `;
-    } else {
-        toast.style.cssText = 'gap: 16px; padding: 16px; border-radius: 16px; pointer-events: auto;';
-        toast.innerHTML = `
-            <div class="bg-or/20 text-or p-2 rounded-xl">
-                <span class="material-symbols-outlined">${icon}</span>
-            </div>
-            <div>
-                <p class="text-chocolat font-bold">${message}</p>
-                <p class="text-chocolat/50 text-[10px] uppercase font-bold tracking-widest">Délice enregistré</p>
-            </div>
-        `;
-    }
+        </div>
+    `;
 
     toastContainer.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
 
-// ========== GESTION DES QUANTITÉS BOXES FIXES ==========
+// ========================================
+// BOX FIXE (NE PAS TOUCHER LOGIQUE)
+// ========================================
 function updateBoxQty(inputId, delta, min, max) {
     const input = document.getElementById(inputId);
     if (!input) return;
 
-    let currentValue = parseInt(input.value) || min;
-    let newValue = currentValue + delta;
+    let value = parseInt(input.value) || min;
+    value = Math.max(min, Math.min(max, value + delta));
 
-    if (newValue >= min && newValue <= max) {
-        input.value = newValue;
-    }
+    input.value = value;
 }
 
-// ========== AJOUT AU PANIER BOXES FIXES VIA AJAX ==========
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.box-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const url = form.action;
-            const formData = new FormData(form);
-            const submitBtn = form.querySelector('button[type="submit"]');
-
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-            fetch(url, {
-                method: 'POST',
-                body: formData,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(() => {
-                showNotification('Box ajoutée au panier !', 'success');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter';
-
-                const badge = document.getElementById('cartBadge');
-                if (badge) {
-                    const current = parseInt(badge.innerText) || 0;
-                    badge.innerText = current + 1;
-                    badge.classList.add('show');
-                }
-            })
-            .catch(err => {
-                console.error('Erreur :', err);
-                showNotification("Erreur lors de l'ajout", 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Ajouter';
-            });
-        });
-    });
-});
-
-// ========== ANIMATION AU SCROLL ==========
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.box-card');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }, index * 100);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
-
-    cards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(card);
-    });
-});
-
-// ========== GESTION MODAL BOX PERSONNALISABLE ==========
-let selectedCookies = {};
-
+// ========================================
+// MODAL OPEN / CLOSE
+// ========================================
 function openModalBoxPerso() {
     const modal = document.getElementById('modalBoxPerso');
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        updateCounter();
-    }
+    if (!modal) return;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    updateCounter();
 }
 
 function closeModalBoxPerso() {
     const modal = document.getElementById('modalBoxPerso');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        resetSelection();
-    }
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+
+    resetSelection();
 }
 
+// ========================================
+// RESET SELECTION
+// ========================================
 function resetSelection() {
     selectedCookies = {};
+
     document.querySelectorAll('.cookie-qty-input').forEach(input => {
         input.value = 0;
-        const produitId = input.id.replace('qty_', '');
-        updateButtonStates(produitId, 0);
     });
+
+    document.querySelectorAll('.cookie-btn').forEach(btn => {
+        btn.disabled = false;
+    });
+
     updateCounter();
 }
 
+// ========================================
+// UPDATE COOKIE QTY
+// ========================================
 function updateCookieQty(produitId, delta, maxStock) {
     const input = document.getElementById(`qty_${produitId}`);
     if (!input) return;
 
-    let currentQty = parseInt(input.value) || 0;
-    let newQty = currentQty + delta;
-    let totalCookies = getTotalCookies() - currentQty;
+    let current = parseInt(input.value) || 0;
+    let newQty = current + delta;
 
-    if (newQty < 0) newQty = 0;
-    if (newQty > maxStock) newQty = maxStock;
-    if (totalCookies + newQty > 12) newQty = 12 - totalCookies;
+    const total = getTotalCookies();
+    const otherCookies = total - current;
+
+    // limites stock + box size
+    newQty = Math.max(0, Math.min(maxStock, newQty));
+
+    if (otherCookies + newQty > MAX_COOKIES) {
+        newQty = MAX_COOKIES - otherCookies;
+    }
 
     input.value = newQty;
 
     if (newQty > 0) {
-        selectedCookies[`produit_${produitId}`] = newQty;
+        selectedCookies[produitId] = newQty;
     } else {
-        delete selectedCookies[`produit_${produitId}`];
+        delete selectedCookies[produitId];
     }
 
-    updateButtonStates(produitId, newQty);
     updateCounter();
 }
 
-function updateButtonStates(produitId, qty) {
-    const card = document.querySelector(`[data-produit-id="${produitId}"]`);
-    if (!card) return;
-
-    const minusBtn = card.querySelector('.btn-minus');
-    const plusBtn = card.querySelector('.btn-plus');
-
-    if (minusBtn) minusBtn.disabled = qty === 0;
-    if (plusBtn) plusBtn.disabled = getTotalCookies() >= 12;
-}
-
+// ========================================
+// TOTAL
+// ========================================
 function getTotalCookies() {
-    return Object.values(selectedCookies).reduce((sum, qty) => sum + qty, 0);
+    return Object.values(selectedCookies).reduce((a, b) => a + b, 0);
 }
 
+// ========================================
+// UI UPDATE
+// ========================================
 function updateCounter() {
     const total = getTotalCookies();
-    const counterElement = document.getElementById('cookiesSelected');
-    const progressBar = document.getElementById('progressBar');
-    const btnValider = document.getElementById('btnValiderBox');
 
-    if (!counterElement || !progressBar || !btnValider) return;
+    const counter = document.getElementById('cookiesSelected');
+    const progress = document.getElementById('progressBar');
+    const btn = document.getElementById('btnValiderBox');
 
-    counterElement.textContent = total;
-    progressBar.style.width = `${(total / 12) * 100}%`;
+    if (counter) counter.textContent = total;
 
-    if (total === 12) {
-        progressBar.style.backgroundColor = '#10b981';
-        btnValider.disabled = false;
-    } else if (total > 12) {
-        progressBar.style.backgroundColor = '#ef4444';
-        btnValider.disabled = true;
-    } else {
-        progressBar.style.backgroundColor = '#3b82f6';
-        btnValider.disabled = true;
+    const maxUI = document.getElementById('maxCookiesUI');
+if (maxUI) maxUI.textContent = MAX_COOKIES;
+
+    if (progress) {
+        progress.style.width = `${(total / MAX_COOKIES) * 100}%`;
     }
 
+    if (btn) {
+        btn.disabled = total !== MAX_COOKIES;
+    }
+
+    // update buttons state
     document.querySelectorAll('.cookie-card').forEach(card => {
-        const produitId = card.getAttribute('data-produit-id');
-        const input = document.getElementById(`qty_${produitId}`);
-        if (input) updateButtonStates(produitId, parseInt(input.value) || 0);
+        const id = card.dataset.produitId;
+        const input = document.getElementById(`qty_${id}`);
+        if (!input) return;
+
+        const qty = parseInt(input.value) || 0;
+
+        const minus = card.querySelector('.btn-minus');
+        const plus = card.querySelector('.btn-plus');
+
+        if (minus) minus.disabled = qty <= 0;
+        if (plus) plus.disabled = total >= MAX_COOKIES;
     });
 }
 
+// ========================================
+// VALIDATION
+// ========================================
 async function validerBoxPerso() {
     const total = getTotalCookies();
 
-    if (total !== 12) {
-        showNotification('Sélectionnez exactement 12 cookies !', 'error');
+    if (total !== MAX_COOKIES) {
+        showNotification(`Sélectionne exactement ${MAX_COOKIES} cookies`, 'error');
         return;
     }
 
@@ -229,34 +217,35 @@ async function validerBoxPerso() {
         const response = await fetch('/panier/ajouter-box-personnalisable', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cookies: selectedCookies })
+            body: JSON.stringify({
+    cookies: selectedCookies,
+    taille: MAX_COOKIES
+})
         });
 
         const result = await response.json();
 
         if (result.success) {
             closeModalBoxPerso();
-            showNotification(result.message || 'Box ajoutée au panier !', 'success');
-            setTimeout(() => window.location.href = window.location.pathname, 1500);
+            showNotification('Box ajoutée au panier !', 'success');
+            location.reload();
         } else {
-            showNotification(result.message || 'Une erreur est survenue', 'error');
+            showNotification(result.message, 'error');
         }
-    } catch (error) {
-        console.error('Erreur:', error);
-        showNotification("Erreur lors de l'ajout au panier", 'error');
+
+    } catch (e) {
+        showNotification("Erreur serveur", 'error');
     }
 }
 
-// ========== FERMETURE MODAL ==========
-window.addEventListener('click', function(event) {
+// ========================================
+// EVENTS MODAL CLOSE
+// ========================================
+window.addEventListener('click', e => {
     const modal = document.getElementById('modalBoxPerso');
-    if (modal && event.target === modal) closeModalBoxPerso();
+    if (modal && e.target === modal) closeModalBoxPerso();
 });
 
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') closeModalBoxPerso();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.hash === '#modalBoxPerso') openModalBoxPerso();
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModalBoxPerso();
 });

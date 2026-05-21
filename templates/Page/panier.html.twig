@@ -192,49 +192,50 @@
                         {% endfor %}
                     {% endif %}
 
-                    {# ========== PANIER SESSION - BOXES PERSO ========== #}
-                    {% if panier.boxes_perso is defined %}
-                        {% for key, item in panier.boxes_perso %}
-                            <div class="cart-row glass-premium" data-id="{{ key }}" data-type="BoxPerso">
-                                
-                                <div class="product-preview">
-                                    <div class="img-glow-wrap">
-                                        <img src="{{ asset('asset/images/boxs/' ~ item.box.image) }}" 
-                                             alt="Box Personnalisée"
-                                             onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
-                                    </div>
-                                </div>
+                    
+                   {# ========== PANIER SESSION - BOXES PERSO ========== #}
+{% if panier.boxes_perso is defined %}
+    {% for key, item in panier.boxes_perso %}
+        <div class="cart-row glass-premium" data-id="{{ key }}" data-type="BoxPerso">
+            
+            <div class="product-preview">
+                <div class="img-glow-wrap">
+                    <img src="{{ asset('asset/images/boxs/' ~ item.box.image) }}" 
+                         alt="Box Personnalisée"
+                         onerror="this.src='https://via.placeholder.com/150/FF6B8F/FFFFFF?text=Box'">
+                </div>
+            </div>
 
-                                <div class="product-details">
-                                    <span class="product-category">BOX PERSONNALISÉE</span>
-                                    <h3>Ma Box Sur-Mesure</h3>
-                                    <div class="box-composition">
-                                        <p class="flavor-notes">📦 Composition :</p>
-                                        <div class="composition-list">
-                                            {% for produit_id, qty in item.composition %}
-                                                <span class="composition-item">
-                                                    {{ qty }}x Cookie #{{ produit_id }}
-                                                </span>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="product-qty">
-                                    <div class="qty-display">
-                                        Quantité : 1
-                                    </div>
-                                </div>
-
-                                <div class="product-price">
-                                    <span class="total-item-price">{{ item.box.prix|number_format(2, ',', ' ') }} €</span>
-                                    <button class="btn-remove" onclick="removeItemSession({{ key }}, 'BoxPerso')">
-                                        SUPPRIMER
-                                    </button>
-                                </div>
-                            </div>
+            <div class="product-details">
+                <span class="product-category">BOX PERSONNALISÉE</span>
+                <h3>Ma Box Sur-Mesure — {{ item.taille }} cookies</h3>
+                <div class="box-composition">
+                    <p class="flavor-notes">📦 Composition :</p>
+                    <div class="composition-list">
+                        {% for compo in item.compositions %}
+                            <span class="composition-item">
+                                {{ compo.quantite }}x {{ compo.produit.name }}
+                            </span>
                         {% endfor %}
-                    {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-qty">
+                <div class="qty-display">
+                    Quantité : 1
+                </div>
+            </div>
+
+            <div class="product-price">
+                <span class="total-item-price">{{ item.prix|number_format(2, ',', ' ') }} €</span>
+                <button class="btn-remove" onclick="removeItemSession({{ key }}, 'BoxPerso')">
+                    SUPPRIMER
+                </button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
 
                 </section>
 
