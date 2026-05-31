@@ -29,11 +29,12 @@ final class PaiementController extends AbstractController
 
     #[Route('/paiement', name: 'app_paiement')]
     public function index(
-        PanierRepository $panierRepo,
-        LignePanierRepository $lignePanierRepo,
-        AdresseRepository $adresseRepo,
-        Request $request     
-    ): Response
+    PanierRepository $panierRepo,
+    LignePanierRepository $lignePanierRepo,
+    AdresseRepository $adresseRepo,
+    Request $request,
+    \App\Service\PanierService $panierService
+): Response
     {
        if (!$this->getUser()) {
     $this->saveTargetPath(
@@ -44,9 +45,11 @@ final class PaiementController extends AbstractController
     $this->addFlash('warning', 'Veuillez vous connecter pour finaliser votre commande.');
     return $this->redirectToRoute('app_login');
 }
+    $user = $this->getUser();
+    $panierService->migrerSessionVersBDD($user);
 
         $session = $this->container->get('request_stack')->getSession();
-        $user = $this->getUser();
+       
         $panierData = [
             'lignes' => [],
             'total' => 0,

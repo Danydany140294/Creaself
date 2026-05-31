@@ -345,6 +345,50 @@ private function ajouterBoxBDD(User $user, Box $box, int $quantite): void
         $this->entityManager->flush();
     }
 
+    public function migrerSessionVersBDD(User $user): void
+{
+    $session = $this->requestStack->getSession();
+    $panierSession = $session->get(self::SESSION_KEY);
+
+    if (!$panierSession) {
+        return;
+    }
+
+    $panier = $this->panierRepository->findByUser($user);
+
+    if (!$panier) {
+        $panier = new Panier();
+        $panier->setUser($user);
+        $this->entityManager->persist($panier);
+    }
+
+    // Migrer les produits simples
+    foreach ($panierSession['produits'] ?? [] as $id => $item) {
+        $produit = $this->entityManager->getRepository(Produit::class)->find($id);
+        if ($produit) {
+            $this->ajouterProduitBDD($user, $produit, $item['quantite']);
+        }
+    }
+
+    // Migrer les boxes simples
+    foreach ($panierSession['boxes'] ?? [] as $id => $item) {
+    $box = $this->entityManager->getRepository(Box::class)->find($id);
+    if ($box) {
+        $this->ajouterBoxBDD($user, $box, $item['quantite']);
+    }
+}
+
+    // Migrer les boxes personnalisées
+    foreach ($panierSession['boxes_perso'] ?? [] as $item) {
+    $box = $this->entityManager->getRepository(Box::class)->find($item['box']->getId());
+    if (!$box) continue;
+    $this->ajouterBoxPersoBDD($user, $box, $item['cookies'], $item['taille'], $item['prix']);
+}
+
+    // Vider la session après migration
+    $this->viderPanierSession();
+}
+
     // ======================================================
     // UTILITAIRES
     // ======================================================

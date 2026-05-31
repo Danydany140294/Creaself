@@ -240,12 +240,21 @@
         border-bottom: 1px solid var(--footer-border);
         margin-bottom: 4px;
     }
+    .footer-chevron {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.footer-toggle[aria-expanded="true"] .footer-chevron {
+    transform: rotate(180deg);
+}
 
     .footer-logo { height: 58px; }
 
     /* Colonnes : titre cliquable avec chevron */
     .footer-col {
         border-bottom: 1px solid var(--footer-border);
+        overflow: hidden; 
     }
 
     .footer-col-title {

@@ -51,27 +51,74 @@ class PanierController extends AbstractController
     }
 
     #[Route('/api', name: 'app_panier_api', methods: ['GET'])]
-    public function getPanierApi(): JsonResponse
-    {
-        try {
-            $user = $this->security->getUser();
+public function getPanierApi(): JsonResponse
+{
+    try {
+        $user = $this->security->getUser();
 
-            if ($user instanceof User) {
-                return $this->json($this->formatPanierBDD($user));
+        if ($user instanceof User) {
+            $panier = $this->panierRepository->findByUser($user);
+
+            if (!$panier || $panier->isEmpty()) {
+                return $this->json([
+                    'success'         => true,
+                    'items'           => [],
+                    'total'           => 0,
+                    'nombre_articles' => 0,
+                    'is_empty'        => true,
+                ]);
             }
 
-            return $this->json(
-                $this->formatPanierSession(
-                    $this->panierService->getPanier()
-                )
-            );
-        } catch (\Exception $e) {
+            $items = [];
+            foreach ($panier->getLignesPanier() as $ligne) {
+                $taille = $ligne->getTailleBox();
+                $item = [
+                    'id'            => $ligne->getId(),
+                    'nom'           => $ligne->getNomArticle(),
+                    'quantite'      => $ligne->getQuantite(),
+                    'prix_unitaire' => $ligne->getPrixUnitaire(),
+                    'sous_total'    => $ligne->getSousTotal(),
+                    'image'         => null,
+                    'type'          => 'Cookie',
+                    'taille'        => $taille,
+                ];
+
+                if ($ligne->getProduit()) {
+                    $item['image'] = $ligne->getProduit()->getImage();
+                }
+
+                if ($ligne->getBox()) {
+                    $item['image'] = $ligne->getBox()->getImage();
+                    $item['type']  = $ligne->isBoxPersonnalisable()
+                        ? ($taille ? "Box Personnalisée — {$taille} cookies" : 'Box Personnalisée')
+                        : 'Box ' . ucfirst($ligne->getBox()->getType());
+                }
+
+                $items[] = $item;
+            }
+
             return $this->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+                'success'         => true,
+                'items'           => $items,
+                'total'           => $panier->getTotal(),
+                'nombre_articles' => $panier->getNombreArticles(),
+                'is_empty'        => false,
+            ]);
         }
+
+        // Session
+        $data = $this->formatPanierSession($this->panierService->getPanier());
+        $data['items'] = $data['lignes'];
+        unset($data['lignes']);
+        return $this->json($data);
+
+    } catch (\Exception $e) {
+        return $this->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
 
 
     #[Route('/vider', name: 'app_panier_vider', methods: ['POST'])]
@@ -209,7 +256,7 @@ public function viderPanier(Request $request): Response
             $type   = $data['type']   ?? null;
             $change = (int) ($data['change'] ?? 0);
 
-            if (!$id || !$type) {
+            if ($id === null || !$type) {
                 return $this->json([
                     'success' => false,
                     'message' => 'Données invalides',
@@ -310,7 +357,7 @@ public function viderPanier(Request $request): Response
             $id   = $data['id']   ?? null;
             $type = $data['type'] ?? null;
 
-            if (!$id || !$type) {
+            if ($id === null || !$type) {
                 return $this->json([
                     'success' => false,
                     'message' => 'Données invalides',
@@ -467,7 +514,7 @@ public function viderPanier(Request $request): Response
 
         return [
             'success'         => true,
-            'items'           => $items,
+            'lignes'           => $items,
             'total'           => $this->calculerTotal($panier),
             'nombre_articles' => $this->calculerNombreArticles($panier),
             'is_empty'        => empty($items),
@@ -478,63 +525,26 @@ public function viderPanier(Request $request): Response
     // FORMATAGE BDD
     // ======================================================
 
-    private function formatPanierBDD(User $user): array
-    {
-        $panier = $this->panierRepository->findByUser($user);
+   private function formatPanierBDD(User $user): array
+{
+    $panier = $this->panierRepository->findByUser($user);
 
-        if (!$panier || $panier->isEmpty()) {
-            return [
-                'success'         => true,
-                'items'           => [],
-                'total'           => 0,
-                'nombre_articles' => 0,
-                'is_empty'        => true,
-            ];
-        }
-
-        $items = [];
-
-        foreach ($panier->getLignesPanier() as $ligne) {
-            $taille = $ligne->getTailleBox();
-
-            $item = [
-                'id'           => $ligne->getId(),
-                'nom'          => $ligne->getNomArticle(),
-                'quantite'     => $ligne->getQuantite(),
-                'prix_unitaire'=> $ligne->getPrixUnitaire(),
-                'sous_total'   => $ligne->getSousTotal(),
-                'image'        => null,
-                'type'         => 'Cookie',
-                'taille'       => $taille,
-            ];
-
-            if ($ligne->getProduit()) {
-                $item['image'] = $ligne->getProduit()->getImage();
-            }
-
-            if ($ligne->getBox()) {
-                $item['image'] = $ligne->getBox()->getImage();
-
-                if ($ligne->isBoxPersonnalisable()) {
-                    $item['type'] = $taille
-                        ? "Box Personnalisée — {$taille} cookies"
-                        : 'Box Personnalisée';
-                } else {
-                    $item['type'] = 'Box ' . ucfirst($ligne->getBox()->getType());
-                }
-            }
-
-            $items[] = $item;
-        }
-
+    if (!$panier || $panier->isEmpty()) {
         return [
-            'success'         => true,
-            'items'           => $items,
-            'total'           => $panier->getTotal(),
-            'nombre_articles' => $panier->getNombreArticles(),
-            'is_empty'        => false,
+            'lignes'          => [],
+            'total'           => 0,
+            'nombre_articles' => 0,
+            'is_empty'        => true,
         ];
     }
+
+    return [
+        'lignes'          => $panier->getLignesPanier(),
+        'total'           => $panier->getTotal(),
+        'nombre_articles' => $panier->getNombreArticles(),
+        'is_empty'        => false,
+    ];
+}
 
     // ======================================================
     // CALCULS SESSION
