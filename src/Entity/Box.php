@@ -36,6 +36,15 @@ class Box
     #[ORM\Column(nullable: true)]
     private ?int $taille = null;
 
+    #[ORM\Column(nullable: true)]
+private ?float $prix6 = null;
+
+#[ORM\Column(nullable: true)]
+private ?float $prix12 = null;
+
+#[ORM\Column(nullable: true)]
+private ?float $prix24 = null;
+
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     private bool $isActive = true;
 
@@ -139,6 +148,16 @@ class Box
         $this->taille = $taille;
         return $this;
     }
+
+    public function getPrix6(): ?float { return $this->prix6; }
+public function setPrix6(?float $prix6): static { $this->prix6 = $prix6; return $this; }
+
+public function getPrix12(): ?float { return $this->prix12; }
+public function setPrix12(?float $prix12): static { $this->prix12 = $prix12; return $this; }
+
+public function getPrix24(): ?float { return $this->prix24; }
+public function setPrix24(?float $prix24): static { $this->prix24 = $prix24; return $this; }
+
 
     public function isActive(): bool
     {

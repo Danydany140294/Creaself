@@ -579,7 +579,7 @@
 /* ========================================
    RESPONSIVE MOBILE — plus fin, tout visible
    ======================================== */
-@media (max-width: 430px) {
+@media (max-width: 480px) {
     .paiement-experience {
         padding: 70px 1rem 2rem;
         min-height: unset;

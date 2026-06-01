@@ -18,6 +18,15 @@
 
 <main class="container">
 
+{% if box_personnalisable %}
+<div id="box-prices"
+     data-prix6="{{ box_personnalisable.prix6 }}"
+     data-prix12="{{ box_personnalisable.prix12 }}"
+     data-prix24="{{ box_personnalisable.prix24 }}"
+     style="display:none;">
+</div>
+{% endif %}
+
 {# ========================================
    BOX PERSONNALISABLE
 ======================================== #}
@@ -104,11 +113,11 @@
             <div class="featured-footer">
 
                 <div class="featured-price">
-                    <span class="price-label">Prix</span>
-                    <span class="price-value">
-                        {{ box_personnalisable.prix|number_format(2, ',', ' ') }} €
-                    </span>
-                </div>
+    <span class="price-label">Prix</span>
+    <span class="price-value">
+        {{ box_personnalisable.prix12|number_format(2, ',', ' ') }} €
+    </span>
+</div>
 
                 <button type="button"
                         onclick="openModalBoxPerso()"

@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================================
 function setBoxSize(size) {
     const newSize = parseInt(size);
-
     if (isNaN(newSize)) return;
 
     MAX_COOKIES = newSize;
@@ -42,6 +41,16 @@ function setBoxSize(size) {
             btn.classList.add('active');
         }
     });
+
+    // Mettre à jour le prix affiché
+    const prices = document.getElementById('box-prices');
+    const priceEl = document.querySelector('.price-value');
+    if (prices && priceEl) {
+        const prix = prices.dataset[`prix${newSize}`];
+        if (prix) {
+            priceEl.textContent = parseFloat(prix).toFixed(2).replace('.', ',') + ' €';
+        }
+    }
 
     resetSelection();
     updateCounter();
