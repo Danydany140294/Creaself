@@ -538,8 +538,46 @@ public function viderPanier(Request $request): Response
         ];
     }
 
+    $items = [];
+    foreach ($panier->getLignesPanier() as $ligne) {
+        $taille = $ligne->getTailleBox();
+        $item = [
+            'id'            => $ligne->getId(),
+            'nom'           => $ligne->getNomArticle(),
+            'quantite'      => $ligne->getQuantite(),
+            'prix_unitaire' => $ligne->getPrixUnitaire(),
+            'sous_total'    => $ligne->getSousTotal(),
+            'image'         => null,
+            'type'          => 'Cookie',
+            'taille'        => $taille,
+            'composition'   => [],
+        ];
+
+        if ($ligne->getProduit()) {
+            $item['image'] = $ligne->getProduit()->getImage();
+        }
+
+        if ($ligne->getBox()) {
+            $item['image'] = $ligne->getBox()->getImage();
+            $item['type']  = $ligne->isBoxPersonnalisable()
+                ? ($taille ? "Box Personnalisée — {$taille} cookies" : 'Box Personnalisée')
+                : 'Box ' . ucfirst($ligne->getBox()->getType());
+        }
+
+        if ($ligne->isBoxPersonnalisable()) {
+            foreach ($ligne->getCompositionsPanier() as $compo) {
+                $item['composition'][] = [
+                    'nom'      => $compo->getProduit()->getName(),
+                    'quantite' => $compo->getQuantite(),
+                ];
+            }
+        }
+
+        $items[] = $item;
+    }
+
     return [
-        'lignes'          => $panier->getLignesPanier(),
+        'lignes'          => $items,
         'total'           => $panier->getTotal(),
         'nombre_articles' => $panier->getNombreArticles(),
         'is_empty'        => false,
